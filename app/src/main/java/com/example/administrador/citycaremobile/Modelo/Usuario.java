@@ -8,31 +8,38 @@ import android.os.Parcelable;
  */
 
 public class Usuario implements Parcelable {
-    private int idUsuario;
-    private String nome;
-    private String sobrenome;
-    private String cidade;
-    private String estado;
-    private String dirFotoUsuario;
 
+    private Login login;
+    private Tipo tipo;
+    private UsuarioGenerico usuarioGeneric;
+
+    public Usuario(Login login, Cidadao cidadao, UsuarioGenerico usrGeneric){
+        this.login = login;
+        this.tipo = new Tipo(cidadao);
+        this.usuarioGeneric = usrGeneric;
+    }
+
+    public Usuario(Login login, Empresa empresa, UsuarioGenerico usrGeneric){
+        this.login = login;
+        this.tipo = new Tipo(empresa);
+        this.usuarioGeneric = usrGeneric;
+    }
+
+    public Usuario(Login login, Administrador administrador, UsuarioGenerico usrGeneric){
+        this.login = login;
+        this.tipo = new Tipo(administrador);
+        this.usuarioGeneric = usrGeneric;
+    }
 
     protected Usuario(Parcel in) {
-        idUsuario = in.readInt();
-        nome = in.readString();
-        sobrenome = in.readString();
-        cidade = in.readString();
-        estado = in.readString();
-        dirFotoUsuario = in.readString();
+        login = in.readParcelable(Login.class.getClassLoader());
+        tipo = in.readParcelable(Object.class.getClassLoader());
+        usuarioGeneric = in.readParcelable(UsuarioGenerico.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(idUsuario);
-        dest.writeString(nome);
-        dest.writeString(sobrenome);
-        dest.writeString(cidade);
-        dest.writeString(estado);
-        dest.writeString(dirFotoUsuario);
+        dest.writeParcelable(login, flags);
     }
 
     @Override
@@ -52,51 +59,62 @@ public class Usuario implements Parcelable {
         }
     };
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public Login getLogin(){
+        return login;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setLogin(Login login) {
+        this.login = login;
     }
 
-    public String getNome() {
-        return nome;
+    public Object getTipo() {
+        if (tipo.getAdministrador() != null){
+            return tipo.getAdministrador();
+        } else if(tipo.getEmpresa() != null){
+            return tipo.getEmpresa();
+        } else if(tipo.getCidadao() != null){
+            return tipo.getCidadao();
+        } else {
+            return null;
+        }
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public UsuarioGenerico getUsuarioGeneric() {
+        return usuarioGeneric;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public void setUsuarioGeneric(UsuarioGenerico usuarioGenerico) {
+        this.usuarioGeneric = usuarioGenerico;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
-    }
+    private class Tipo {
 
-    public String getCidade() {
-        return cidade;
-    }
+        private Administrador administrador;
+        private Cidadao cidadao;
+        private Empresa empresa;
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
+        public Administrador getAdministrador() {
+            return administrador;
+        }
 
-    public String getEstado() {
-        return estado;
-    }
+        private Cidadao getCidadao() {
+            return cidadao;
+        }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+        private Empresa getEmpresa() {
+            return empresa;
+        }
 
-    public String getDirFotoUsuario() {
-        return dirFotoUsuario;
-    }
+        private Tipo(Administrador administrador){
+            this.administrador = administrador;
+        }
 
-    public void setDirFotoUsuario(String dirFotoUsuario) {
-        this.dirFotoUsuario = dirFotoUsuario;
+        private Tipo(Cidadao cidadao){
+            this.cidadao = cidadao;
+        }
+
+        private Tipo(Empresa empresa){
+            this.empresa = empresa;
+        }
     }
 }
