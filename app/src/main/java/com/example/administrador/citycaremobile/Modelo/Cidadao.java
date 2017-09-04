@@ -11,12 +11,10 @@ public class Cidadao implements Parcelable {
     private int idCidadao;
     private String sexo;
     private Usuario usuarioCidadao;
-    private Login loginCidadao;
 
     protected Cidadao(Parcel in) {
         idCidadao = in.readInt();
         usuarioCidadao = in.readParcelable(Usuario.class.getClassLoader());
-        loginCidadao = in.readParcelable(Login.class.getClassLoader());
         sexo = in.readString();
     }
 
@@ -24,7 +22,6 @@ public class Cidadao implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idCidadao);
         dest.writeParcelable(usuarioCidadao, flags);
-        dest.writeParcelable(loginCidadao, flags);
         dest.writeString(sexo);
     }
 
@@ -67,13 +64,5 @@ public class Cidadao implements Parcelable {
 
     public void setUsuarioCidadao(Usuario usuarioCidadao) {
         this.usuarioCidadao = usuarioCidadao;
-    }
-
-    public Login getLoginCidadao() {
-        return loginCidadao;
-    }
-
-    public void setLoginCidadao(Login loginCidadao) {
-        this.loginCidadao = loginCidadao;
     }
 }

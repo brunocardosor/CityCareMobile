@@ -13,14 +13,12 @@ public class Empresa implements Parcelable {
     private String cnpj;
     private String razaoSocial;
     private Usuario usuarioEmpresa;
-    private Login loginEmpresa;
 
     protected Empresa(Parcel in) {
         idEmpresa = in.readInt();
         cnpj = in.readString();
         razaoSocial = in.readString();
         usuarioEmpresa = in.readParcelable(Usuario.class.getClassLoader());
-        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
     }
 
     @Override
@@ -29,7 +27,6 @@ public class Empresa implements Parcelable {
         dest.writeString(cnpj);
         dest.writeString(razaoSocial);
         dest.writeParcelable(usuarioEmpresa, flags);
-        dest.writeParcelable(loginEmpresa, flags);
     }
 
     @Override
@@ -79,13 +76,5 @@ public class Empresa implements Parcelable {
 
     public void setUsuarioEmpresa(Usuario usuarioEmpresa) {
         this.usuarioEmpresa = usuarioEmpresa;
-    }
-
-    public Login getLoginEmpresa() {
-        return loginEmpresa;
-    }
-
-    public void setLoginEmpresa(Login loginEmpresa) {
-        this.loginEmpresa = loginEmpresa;
     }
 }

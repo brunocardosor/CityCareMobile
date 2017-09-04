@@ -1,5 +1,4 @@
 package com.example.administrador.citycaremobile.Modelo;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,43 +7,34 @@ import android.os.Parcelable;
  */
 
 public class Usuario implements Parcelable {
-
-    private Login login;
     private Tipo tipo;
     private UsuarioGenerico usuarioGeneric;
 
-    public Usuario(Login login, Cidadao cidadao, UsuarioGenerico usrGeneric){
-        this.login = login;
+    public Usuario(Cidadao cidadao, UsuarioGenerico usrGeneric){
         this.tipo = new Tipo(cidadao);
         this.usuarioGeneric = usrGeneric;
     }
 
-    public Usuario(Login login, Empresa empresa, UsuarioGenerico usrGeneric){
-        this.login = login;
+    public Usuario(Empresa empresa, UsuarioGenerico usrGeneric){
         this.tipo = new Tipo(empresa);
         this.usuarioGeneric = usrGeneric;
     }
 
-    public Usuario(Login login, Administrador administrador, UsuarioGenerico usrGeneric){
-        this.login = login;
-        this.tipo = new Tipo(administrador);
-        this.usuarioGeneric = usrGeneric;
-    }
 
     protected Usuario(Parcel in) {
-        login = in.readParcelable(Login.class.getClassLoader());
         tipo = in.readParcelable(Object.class.getClassLoader());
         usuarioGeneric = in.readParcelable(UsuarioGenerico.class.getClassLoader());
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(login, flags);
+    public int describeContents() {
+        return 0;
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(tipo,flags);
+        dest.writeParcelable(usuarioGeneric, flags);
     }
 
     public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
@@ -59,18 +49,8 @@ public class Usuario implements Parcelable {
         }
     };
 
-    public Login getLogin(){
-        return login;
-    }
-
-    public void setLogin(Login login) {
-        this.login = login;
-    }
-
     public Object getTipo() {
-        if (tipo.getAdministrador() != null){
-            return tipo.getAdministrador();
-        } else if(tipo.getEmpresa() != null){
+        if(tipo.getEmpresa() != null){
             return tipo.getEmpresa();
         } else if(tipo.getCidadao() != null){
             return tipo.getCidadao();
@@ -87,15 +67,38 @@ public class Usuario implements Parcelable {
         this.usuarioGeneric = usuarioGenerico;
     }
 
-    private class Tipo {
+    private class Tipo implements Parcelable {
 
-        private Administrador administrador;
         private Cidadao cidadao;
         private Empresa empresa;
 
-        public Administrador getAdministrador() {
-            return administrador;
+        protected Tipo(Parcel in) {
+            cidadao = in.readParcelable(Cidadao.class.getClassLoader());
+            empresa = in.readParcelable(Empresa.class.getClassLoader());
         }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeParcelable(cidadao, flags);
+            dest.writeParcelable(empresa, flags);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<Tipo> CREATOR = new Creator<Tipo>() {
+            @Override
+            public Tipo createFromParcel(Parcel in) {
+                return new Tipo(in);
+            }
+
+            @Override
+            public Tipo[] newArray(int size) {
+                return new Tipo[size];
+            }
+        };
 
         private Cidadao getCidadao() {
             return cidadao;
@@ -103,10 +106,6 @@ public class Usuario implements Parcelable {
 
         private Empresa getEmpresa() {
             return empresa;
-        }
-
-        private Tipo(Administrador administrador){
-            this.administrador = administrador;
         }
 
         private Tipo(Cidadao cidadao){
