@@ -1,14 +1,10 @@
 package com.example.administrador.citycaremobile.Activities;
 
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.administrador.citycaremobile.Fragments.CadastroFragment;
 import com.example.administrador.citycaremobile.Fragments.LoginFragment;
@@ -24,6 +20,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FragmentManager fManager = getSupportFragmentManager();
+
+        FragmentTransaction fTransaction = fManager.beginTransaction();
+        fTransaction.add(R.id.main_fragment, new RecepcaoFragment());
+        fTransaction.commit();
+
     }
 
     @Override

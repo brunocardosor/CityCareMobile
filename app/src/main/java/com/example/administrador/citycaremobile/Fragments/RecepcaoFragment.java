@@ -2,12 +2,17 @@ package com.example.administrador.citycaremobile.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 
 import com.example.administrador.citycaremobile.R;
 
@@ -28,6 +33,9 @@ public class RecepcaoFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Button btMoveToLogin;
+    private Button btMoveToCadastro;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,13 +68,38 @@ public class RecepcaoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //StatusBar Transparente
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recepcao, container, false);
+        View view = inflater.inflate(R.layout.fragment_recepcao, container, false);
+
+        //Botões da View
+        btMoveToLogin = (Button) view.findViewById(R.id.bt_moveToLogin);
+        btMoveToCadastro = (Button) view.findViewById(R.id.bt_moveToCadastro);
+
+        //Action dos botões
+        btMoveToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fManager = getFragmentManager();
+                FragmentTransaction fTransaction = fManager.beginTransaction();
+                fTransaction.replace(R.id.main_fragment,new LoginFragment());
+                fTransaction.addToBackStack(null);
+                fTransaction.commit();
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

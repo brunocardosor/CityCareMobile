@@ -1,6 +1,5 @@
 package com.example.administrador.citycaremobile.Fragments;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -81,8 +80,8 @@ public class CadastroFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cadastro, container, false);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_back);
+        /*((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_back);*/
         return view;
     }
 

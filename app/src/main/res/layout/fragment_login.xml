@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:facebook="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <include layout="@layout/toolbar_transparente"/>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:background="@color/colorPrimary">
+        android:layout_height="200dp"
+        android:background="@color/colorPrimary"
+        android:id="@+id/frameLogin">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_citycare"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:elevation="10dp"/>
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="40dp">
+        android:layout_margin="40dp"
+        android:layout_below="@+id/frameLogin"
+        android:layout_centerHorizontal="true">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,18 +38,19 @@
             android:hint="Inserir senha"
             android:inputType="textPassword"
             android:fontFamily="sans-serif"/>
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:text="Entrar"
+            android:id="@+id/btLogin"
             android:textColor="@android:color/white"/>
         <Button
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Esqueceu a senha?"
+            android:id="@+id/btRecuperarSenha"
             android:background="@android:color/transparent"
             android:textAllCaps="false"/>
         <com.facebook.login.widget.LoginButton
@@ -50,21 +59,35 @@
             android:layout_gravity="center"
             android:id="@+id/login_facebook_button"
             />
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OU"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center"
-            android:layout_margin="20dp" />
+            android:orientation="horizontal"
+            android:gravity="center">
+            <View
+                android:layout_width="120dp"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OU"
+                android:textColor="@android:color/black"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"/>
+            <View
+                android:layout_width="120dp"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+        </LinearLayout>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
             android:textColor="@android:color/white"
-            android:text="Cadastre-se"/>
+            android:text="Cadastre-se"
+            android:id="@+id/btMoveToCadastro"/>
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/logo_citycare"
         android:layout_gravity="center"
+        android:elevation="10dp"
         android:layout_marginBottom="60dp"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,13 +25,15 @@
             android:layout_height="wrap_content"
             android:text="Entrar"
             android:textColor="@android:color/white"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary"
+            android:id="@+id/bt_moveToLogin"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:background="@android:color/transparent"
-            android:text="Cadastra-se"/>
+            android:text="Cadastra-se"
+            android:id="@+id/bt_moveToCadastro"/>
     </LinearLayout>
 
 

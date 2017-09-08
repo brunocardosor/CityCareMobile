@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:id="@+id/toolbar_transparente"
     android:elevation="4dp"
+    android:layout_marginTop="24dp"
     android:background="@android:color/transparent"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    android:navigationIcon="@drawable/ic_action_arrow_back">
+    app:navigationIcon="@mipmap/ic_action_arrow_back"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 </android.support.v7.widget.Toolbar>
+

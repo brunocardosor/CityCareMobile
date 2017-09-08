@@ -5,8 +5,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.example.administrador.citycaremobile.R;
-import com.facebook.login.widget.LoginButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +57,7 @@ public class LoginFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+
     }
 
     @Override
@@ -67,6 +68,25 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //StatusBar Transparente
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        toolbar =(Toolbar) getActivity().findViewById(R.id.toolbar_transparente);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+            }
+        });
+
     }
 
     @Override
@@ -74,11 +94,6 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_back);
-
         return view;
     }
 
