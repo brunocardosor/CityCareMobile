@@ -31,33 +31,35 @@
             android:layout_height="wrap_content"
             android:hint="Insira seu login ou e-mail"
             android:inputType="textEmailAddress"
+            android:id="@+id/edt-login"
             />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Inserir senha"
             android:inputType="textPassword"
-            android:fontFamily="sans-serif"/>
+            android:fontFamily="sans-serif"
+            android:id="@+id/edt_senha"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:text="Entrar"
-            android:id="@+id/btLogin"
+            android:id="@+id/bt_login"
             android:textColor="@android:color/white"/>
         <Button
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Esqueceu a senha?"
-            android:id="@+id/btRecuperarSenha"
+            android:id="@+id/bt_recupera_senha"
             android:background="@android:color/transparent"
             android:textAllCaps="false"/>
         <com.facebook.login.widget.LoginButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:id="@+id/login_facebook_button"
+            android:id="@+id/bt_facebook_login"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +88,7 @@
             android:background="@android:color/black"
             android:textColor="@android:color/white"
             android:text="Cadastre-se"
-            android:id="@+id/btMoveToCadastro"/>
+            android:id="@+id/bt_move_to_cadastro"/>
     </LinearLayout>
 
 

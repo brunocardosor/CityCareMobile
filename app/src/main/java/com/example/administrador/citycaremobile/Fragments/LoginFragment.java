@@ -13,8 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.administrador.citycaremobile.R;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +37,17 @@ public class LoginFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+
+    //View Parametros
     private Toolbar toolbar;
+    private TextView edtEmail;
+    private TextView edtSenha;
+    private Button btLogin;
+    private Button btRecuperaSenha;
+    private Button btLoginFacebook;
+    private Button btMoveToCadastro;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,19 +88,6 @@ public class LoginFragment extends Fragment {
         } else {
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
-        toolbar =(Toolbar) getActivity().findViewById(R.id.toolbar_transparente);
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fManager.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-            }
-        });
-
     }
 
     @Override
@@ -94,6 +95,49 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        //Relacionando view com parametros
+        toolbar =(Toolbar) getActivity().findViewById(R.id.toolbar_transparente);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        edtEmail = (TextView) view.findViewById(R.id.edt_login);
+        edtSenha = (TextView) view.findViewById(R.id.edt_senha);
+        btLogin = (Button) view.findViewById(R.id.bt_login);
+        btLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btRecuperaSenha = (Button) view.findViewById(R.id.bt_recupera_senha);
+        btRecuperaSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btLoginFacebook = (Button) view.findViewById(R.id.bt_facebook_login);
+        btMoveToCadastro = (Button) view.findViewById(R.id.bt_move_to_cadastro);
+        btMoveToCadastro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getFragmentManager() != null) {
+                    FragmentManager fm = getFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.main_fragment, new CadastroFragment());
+                    ft.commit();
+                }
+            }
+        });
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fManager = getFragmentManager();
+                fManager.popBackStack();
+            }
+        });
+
         return view;
     }
 
