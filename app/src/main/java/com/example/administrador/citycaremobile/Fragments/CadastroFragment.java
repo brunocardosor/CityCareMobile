@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -80,8 +81,14 @@ public class CadastroFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cadastro, container, false);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        /*((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_back);*/
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                fm.popBackStack();
+            }
+        });
         return view;
     }
 

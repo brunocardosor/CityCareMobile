@@ -9,7 +9,8 @@
     android:background="@android:color/transparent"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     app:navigationIcon="@mipmap/ic_action_arrow_back"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:title=" ">
 
 </android.support.v7.widget.Toolbar>
 

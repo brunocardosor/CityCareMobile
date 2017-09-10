@@ -12,39 +12,8 @@ public class Empresa implements Parcelable {
     private int idEmpresa;
     private String cnpj;
     private String razaoSocial;
-    private Usuario usuarioEmpresa;
-
-    protected Empresa(Parcel in) {
-        idEmpresa = in.readInt();
-        cnpj = in.readString();
-        razaoSocial = in.readString();
-        usuarioEmpresa = in.readParcelable(Usuario.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(idEmpresa);
-        dest.writeString(cnpj);
-        dest.writeString(razaoSocial);
-        dest.writeParcelable(usuarioEmpresa, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
-        @Override
-        public Empresa createFromParcel(Parcel in) {
-            return new Empresa(in);
-        }
-
-        @Override
-        public Empresa[] newArray(int size) {
-            return new Empresa[size];
-        }
-    };
+    private String nome_fantasia;
+    private Login loginEmpresa;
 
     public int getIdEmpresa() {
         return idEmpresa;
@@ -70,11 +39,57 @@ public class Empresa implements Parcelable {
         this.razaoSocial = razaoSocial;
     }
 
-    public Usuario getUsuarioEmpresa() {
-        return usuarioEmpresa;
+    public String getNome_fantasia() {
+        return nome_fantasia;
     }
 
-    public void setUsuarioEmpresa(Usuario usuarioEmpresa) {
-        this.usuarioEmpresa = usuarioEmpresa;
+    public void setNome_fantasia(String nome_fantasia) {
+        this.nome_fantasia = nome_fantasia;
     }
+
+    public Login getLoginEmpresa() {
+        return loginEmpresa;
+    }
+
+    public void setLoginEmpresa(Login loginEmpresa) {
+        this.loginEmpresa = loginEmpresa;
+    }
+
+    public static Creator<Empresa> getCREATOR() {
+        return CREATOR;
+    }
+
+    protected Empresa(Parcel in) {
+        idEmpresa = in.readInt();
+        cnpj = in.readString();
+        razaoSocial = in.readString();
+        nome_fantasia = in.readString();
+        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(idEmpresa);
+        dest.writeString(cnpj);
+        dest.writeString(razaoSocial);
+        dest.writeString(nome_fantasia);
+        dest.writeParcelable(loginEmpresa, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
+        @Override
+        public Empresa createFromParcel(Parcel in) {
+            return new Empresa(in);
+        }
+
+        @Override
+        public Empresa[] newArray(int size) {
+            return new Empresa[size];
+        }
+    };
 }

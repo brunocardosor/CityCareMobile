@@ -2,6 +2,7 @@ package com.example.administrador.citycaremobile.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,9 +17,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.administrador.citycaremobile.Modelo.Usuario;
 import com.example.administrador.citycaremobile.R;
-
-import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,8 +97,16 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         //Relacionando view com parametros
-        toolbar =(Toolbar) getActivity().findViewById(R.id.toolbar_transparente);
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                fm.popBackStack();
+            }
+        });
 
         edtEmail = (TextView) view.findViewById(R.id.edt_login);
         edtSenha = (TextView) view.findViewById(R.id.edt_senha);
@@ -106,7 +114,16 @@ public class LoginFragment extends Fragment {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String email = edtEmail.getText().toString();
+                String senha = edtSenha.getText().toString();
 
+                AsyncTask<String, Void, Usuario> asyncTask = new AsyncTask<String, Void, Usuario>() {
+
+                    @Override
+                    protected Usuario doInBackground(String... params) {
+                        return null;
+                    }
+                };
             }
         });
         btRecuperaSenha = (Button) view.findViewById(R.id.bt_recupera_senha);
@@ -125,19 +142,11 @@ public class LoginFragment extends Fragment {
                     FragmentManager fm = getFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
                     ft.replace(R.id.main_fragment, new CadastroFragment());
+                    ft.addToBackStack(null);
                     ft.commit();
                 }
             }
         });
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fManager = getFragmentManager();
-                fManager.popBackStack();
-            }
-        });
-
         return view;
     }
 

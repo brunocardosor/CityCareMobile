@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/toolbar_transparente"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/colorPrimary"
+        android:background="#000"
         android:id="@+id/frameLogin">
         <ImageView
             android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:hint="Insira seu login ou e-mail"
             android:inputType="textEmailAddress"
-            android:id="@+id/edt-login"
+            android:id="@+id/edt_login"
             />
         <EditText
             android:layout_width="match_parent"
@@ -90,6 +90,5 @@
             android:text="Cadastre-se"
             android:id="@+id/bt_move_to_cadastro"/>
     </LinearLayout>
-
-
+    <include layout="@layout/toolbar_transparente"/>
 </RelativeLayout>

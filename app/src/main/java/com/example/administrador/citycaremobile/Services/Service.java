@@ -21,13 +21,13 @@ import retrofit2.http.PUT;
 
 public interface Service {
 
-   @Headers("")
+    @Headers("application/json")
 
 
-   //Serviços de Usuário
-   @FormUrlEncoded
-   @POST("")
-   Call<Integer> postUsuario(@Body Usuario usuario);
+    //Serviços de Usuário
+    @FormUrlEncoded
+    @POST("")
+    Call<Integer> postUsuario(@Body Usuario usuario);
 
     @FormUrlEncoded
     @PUT("")

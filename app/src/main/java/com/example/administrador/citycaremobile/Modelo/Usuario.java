@@ -8,22 +8,22 @@ import android.os.Parcelable;
 
 public class Usuario implements Parcelable {
     private Tipo tipo;
-    private UsuarioGenerico usuarioGeneric;
+    private Login login;
 
-    public Usuario(Cidadao cidadao, UsuarioGenerico usrGeneric){
+    public Usuario(Cidadao cidadao, Login usrGeneric){
         this.tipo = new Tipo(cidadao);
-        this.usuarioGeneric = usrGeneric;
+        this.login = usrGeneric;
     }
 
-    public Usuario(Empresa empresa, UsuarioGenerico usrGeneric){
+    public Usuario(Empresa empresa, Login usrGeneric){
         this.tipo = new Tipo(empresa);
-        this.usuarioGeneric = usrGeneric;
+        this.login = usrGeneric;
     }
 
 
     protected Usuario(Parcel in) {
         tipo = in.readParcelable(Object.class.getClassLoader());
-        usuarioGeneric = in.readParcelable(UsuarioGenerico.class.getClassLoader());
+        login = in.readParcelable(Login.class.getClassLoader());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Usuario implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(tipo,flags);
-        dest.writeParcelable(usuarioGeneric, flags);
+        dest.writeParcelable(login, flags);
     }
 
     public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
@@ -59,12 +59,12 @@ public class Usuario implements Parcelable {
         }
     }
 
-    public UsuarioGenerico getUsuarioGeneric() {
-        return usuarioGeneric;
+    public Login getLogin() {
+        return login;
     }
 
-    public void setUsuarioGeneric(UsuarioGenerico usuarioGenerico) {
-        this.usuarioGeneric = usuarioGenerico;
+    public void setLogin(Login login) {
+        this.login = login;
     }
 
     private class Tipo implements Parcelable {

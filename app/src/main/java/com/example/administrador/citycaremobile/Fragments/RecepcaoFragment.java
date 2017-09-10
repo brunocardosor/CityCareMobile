@@ -83,6 +83,9 @@ public class RecepcaoFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recepcao, container, false);
 
+        final FragmentManager fManager = getFragmentManager();
+        final FragmentTransaction fTransaction = fManager.beginTransaction();
+
         //Botões da View
         btMoveToLogin = (Button) view.findViewById(R.id.bt_moveToLogin);
         btMoveToCadastro = (Button) view.findViewById(R.id.bt_moveToCadastro);
@@ -91,9 +94,16 @@ public class RecepcaoFragment extends Fragment {
         btMoveToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fManager = getFragmentManager();
-                FragmentTransaction fTransaction = fManager.beginTransaction();
                 fTransaction.replace(R.id.main_fragment,new LoginFragment());
+                fTransaction.addToBackStack(null);
+                fTransaction.commit();
+            }
+        });
+
+        btMoveToCadastro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fTransaction.replace(R.id.main_fragment, new CadastroFragment());
                 fTransaction.addToBackStack(null);
                 fTransaction.commit();
             }

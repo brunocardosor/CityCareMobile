@@ -20,7 +20,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
-                    android:background="@color/com_facebook_blue"/>
+                    android:background="#000"/>
                 <de.hdodenhof.circleimageview.CircleImageView
                     app:civ_border_width="4dp"
                     app:civ_border_color="@android:color/white"
@@ -63,20 +63,22 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:textSize="9pt"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal">
-                    <RadioButton
-                        android:layout_width="wrap_content"
+                    <RadioGroup
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Masculino"
-                        />
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Feminino"/>
-                </LinearLayout>
+                        android:orientation="horizontal">
+                        <RadioButton
+                            android:id="@+id/radioMasculino"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Masculino"
+                            />
+                        <RadioButton
+                            android:id="@+id/radioFeminino"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Feminino" />
+                    </RadioGroup>
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

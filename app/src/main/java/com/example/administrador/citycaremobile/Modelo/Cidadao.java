@@ -9,20 +9,26 @@ import android.os.Parcelable;
 
 public class Cidadao implements Parcelable {
     private int idCidadao;
+    private String nome;
+    private String sobrenome;
     private String sexo;
-    private Usuario usuarioCidadao;
+    private Login loginCidadao;
 
     protected Cidadao(Parcel in) {
         idCidadao = in.readInt();
-        usuarioCidadao = in.readParcelable(Usuario.class.getClassLoader());
+        nome = in.readString();
+        sobrenome = in.readString();
         sexo = in.readString();
+        loginCidadao = in.readParcelable(Login.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idCidadao);
-        dest.writeParcelable(usuarioCidadao, flags);
+        dest.writeString(nome);
+        dest.writeString(sobrenome);
         dest.writeString(sexo);
+        dest.writeParcelable(loginCidadao, flags);
     }
 
     @Override
@@ -50,6 +56,22 @@ public class Cidadao implements Parcelable {
         this.idCidadao = idCidadao;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
+
     public String getSexo() {
         return sexo;
     }
@@ -58,11 +80,11 @@ public class Cidadao implements Parcelable {
         this.sexo = sexo;
     }
 
-    public Usuario getUsuarioCidadao() {
-        return usuarioCidadao;
+    public Login getLoginCidadao() {
+        return loginCidadao;
     }
 
-    public void setUsuarioCidadao(Usuario usuarioCidadao) {
-        this.usuarioCidadao = usuarioCidadao;
+    public void setLoginCidadao(Login loginCidadao) {
+        this.loginCidadao = loginCidadao;
     }
 }

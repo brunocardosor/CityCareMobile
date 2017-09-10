@@ -7,11 +7,9 @@ import android.os.Parcelable;
  * Created by Administrador on 01/09/2017.
  */
 
-public class UsuarioGenerico implements Parcelable {
+public class Login implements Parcelable {
 
-    private int idUsuario;
-    private String nome;
-    private String sobrenome;
+    private int idLogin;
     private String cidade;
     private String estado;
     private String dirFotoUsuario;
@@ -21,10 +19,8 @@ public class UsuarioGenerico implements Parcelable {
     private boolean status_login;
     private boolean administrador;
 
-    protected UsuarioGenerico(Parcel in) {
-        idUsuario = in.readInt();
-        nome = in.readString();
-        sobrenome = in.readString();
+    protected Login(Parcel in) {
+        idLogin = in.readInt();
         cidade = in.readString();
         estado = in.readString();
         dirFotoUsuario = in.readString();
@@ -37,9 +33,7 @@ public class UsuarioGenerico implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(idUsuario);
-        dest.writeString(nome);
-        dest.writeString(sobrenome);
+        dest.writeInt(idLogin);
         dest.writeString(cidade);
         dest.writeString(estado);
         dest.writeString(dirFotoUsuario);
@@ -55,15 +49,15 @@ public class UsuarioGenerico implements Parcelable {
         return 0;
     }
 
-    public static final Creator<UsuarioGenerico> CREATOR = new Creator<UsuarioGenerico>() {
+    public static final Creator<Login> CREATOR = new Creator<Login>() {
         @Override
-        public UsuarioGenerico createFromParcel(Parcel in) {
-            return new UsuarioGenerico(in);
+        public Login createFromParcel(Parcel in) {
+            return new Login(in);
         }
 
         @Override
-        public UsuarioGenerico[] newArray(int size) {
-            return new UsuarioGenerico[size];
+        public Login[] newArray(int size) {
+            return new Login[size];
         }
     };
 
@@ -107,28 +101,12 @@ public class UsuarioGenerico implements Parcelable {
         this.administrador = administrador;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public int getIdLogin() {
+        return idLogin;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSobrenome() {
-        return sobrenome;
-    }
-
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setIdLogin(int idLogin) {
+        this.idLogin = idLogin;
     }
 
     public String getCidade() {
