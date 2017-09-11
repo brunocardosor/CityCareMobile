@@ -22,6 +22,9 @@ public class Cidadao implements Parcelable {
         loginCidadao = in.readParcelable(Login.class.getClassLoader());
     }
 
+    public Cidadao(){
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idCidadao);

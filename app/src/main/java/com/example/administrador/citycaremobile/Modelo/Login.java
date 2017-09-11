@@ -17,7 +17,7 @@ public class Login implements Parcelable {
     private String login;
     private String senha;
     private boolean status_login;
-    private boolean administrador;
+    private boolean asAdministrador;
 
     protected Login(Parcel in) {
         idLogin = in.readInt();
@@ -28,7 +28,11 @@ public class Login implements Parcelable {
         login = in.readString();
         senha = in.readString();
         status_login = in.readByte() != 0;
-        administrador = in.readByte() != 0;
+        asAdministrador = in.readByte() != 0;
+    }
+
+    public Login(){
+
     }
 
     @Override
@@ -41,7 +45,7 @@ public class Login implements Parcelable {
         dest.writeString(login);
         dest.writeString(senha);
         dest.writeByte((byte) (status_login ? 1 : 0));
-        dest.writeByte((byte) (administrador ? 1 : 0));
+        dest.writeByte((byte) (asAdministrador ? 1 : 0));
     }
 
     @Override
@@ -94,11 +98,11 @@ public class Login implements Parcelable {
     }
 
     public boolean isAdministrador() {
-        return administrador;
+        return asAdministrador;
     }
 
     public void setAdministrador(boolean administrador) {
-        this.administrador = administrador;
+        this.asAdministrador = administrador;
     }
 
     public int getIdLogin() {

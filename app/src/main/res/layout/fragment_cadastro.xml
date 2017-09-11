@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,39 +9,71 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <RelativeLayout
+                android:id="@+id/framePicture"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
-                    android:background="#000"/>
+                    android:background="#000"
+                    />
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_marginTop="65dp"
                     app:civ_border_width="4dp"
                     app:civ_border_color="@android:color/white"
                     android:id="@+id/pic_profile"
-                    android:layout_alignParentBottom="true"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_centerHorizontal="true"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/teste_pic"/>
-                <!--FloatingButton para adicionar ou alterar a foto do usuário-->
-                <android.support.design.widget.FloatingActionButton
-                    android:layout_alignRight="@+id/pic_profile"
-                    android:layout_alignTop="@id/pic_profile"
+                    android:src="@color/cardview_dark_background"
+                    android:layout_centerHorizontal="true"/>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:src="@drawable/ic_action_photo_camera"
-                    />
+                    android:orientation="vertical"
+                    android:layout_alignRight="@+id/pic_profile"
+                    android:layout_alignTop="@id/pic_profile">
+                <!--FloatingButton para adicionar ou alterar a foto do usuário-->
+                    <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:src="@drawable/ic_add_picture"
+                        android:id="@+id/fab_get_picture"
+                        android:elevation="4dp"
+                        />
+                    <android.support.design.widget.FloatingActionButton
+                        android:layout_marginBottom="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:src="@drawable/ic_camera"
+                        android:id="@+id/fab_camera"
+                        android:elevation="4dp"
+                        android:visibility="gone"
+                        />
+                    <android.support.design.widget.FloatingActionButton
+                        android:layout_alignRight="@+id/pic_profile"
+                        android:layout_below="@id/fab_camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:src="@drawable/ic_galery"
+                        android:id="@+id/fab_galery"
+                        android:elevation="4dp"
+                        android:visibility="gone"
+                        />
+                </LinearLayout>
             </RelativeLayout>
             <LinearLayout
+                android:layout_below="@+id/framePicture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -51,59 +83,68 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nome"/>
+                    android:hint="Nome"
+                    android:id="@+id/edt_nome"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Sobrenome"/>
+                    android:hint="Sobrenome"
+                    android:id="@+id/edt_sobrenome"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sexo:"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:textSize="9pt"/>
+                    android:textSize="9pt"
+                    android:id="@+id/radial_group"/>
                     <RadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <RadioButton
-                            android:id="@+id/radioMasculino"
+                            android:id="@+id/radio_masculino"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Masculino"
                             />
                         <RadioButton
-                            android:id="@+id/radioFeminino"
+                            android:id="@+id/radio_feminino"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Feminino" />
                     </RadioGroup>
                 <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spin_cidade"/>
                 <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spin_estado"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="E-mail"/>
+                    android:hint="E-mail"
+                    android:id="@+id/edt_email"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Login"/>
+                    android:hint="Login"
+                    android:id="@+id/edt_login"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Senha"/>
+                    android:hint="Senha"
+                    android:id="@+id/edt_senha"/>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cadastrar-se"
                     android:textColor="@android:color/white"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary"
+                    android:id="@+id/bt_cadastrar"/>
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
-</RelativeLayout>
+</FrameLayout>

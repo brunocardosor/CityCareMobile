@@ -8,7 +8,7 @@ import android.os.Parcelable;
 
 public class Usuario implements Parcelable {
     private Tipo tipo;
-    private Login login;
+    private Login login
 
     public Usuario(Cidadao cidadao, Login usrGeneric){
         this.tipo = new Tipo(cidadao);

@@ -1,19 +1,39 @@
 package com.example.administrador.citycaremobile.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Picture;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Login;
+import com.example.administrador.citycaremobile.Modelo.Usuario;
 import com.example.administrador.citycaremobile.R;
+
+import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +52,18 @@ public class CadastroFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //Atributos da View
     private Toolbar toolbar;
+    private CircleImageView profileImage;
+    private TextView txtSexo;
+    private FloatingActionButton fabGetPicture, fabCamera, fabGalery;
+    private EditText edtNome, edtSobrenome, edtEmail, edtLogin, edtSenha;
+    private Spinner spinnerCidade, spinnerEstado;
+    private RadioButton rbMasculino, rbFeminino;
+    private Button btCadastrar;
+
+    private boolean open;
 
     private OnFragmentInteractionListener mListener;
 
@@ -77,10 +108,160 @@ public class CadastroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cadastro, container, false);
+
+        //Relacionando Atributos de View com a View
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        profileImage = (CircleImageView) view.findViewById(R.id.pic_profile);
+        fabGetPicture = (FloatingActionButton) view.findViewById(R.id.fab_get_picture);
+        //Ação do Botão para adicionar foto
+        fabGetPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(open){
+                    fabCamera.setVisibility(View.GONE);
+                    fabCamera.setClickable(false);
+
+                    fabGalery.setVisibility(View.GONE);
+                    fabGalery.setClickable(false);
+
+                    open = false;
+
+                } else {
+                    fabCamera.setVisibility(View.VISIBLE);
+                    fabCamera.setClickable(true);
+
+                    fabGalery.setVisibility(View.VISIBLE);
+                    fabGalery.setClickable(true);
+
+                    open = true;
+                }
+            }
+        });
+
+        fabCamera = (FloatingActionButton) view.findViewById(R.id.fab_camera);
+        //Ação do Botão para abrir a camera
+        fabCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        fabGalery = (FloatingActionButton) view.findViewById(R.id.fab_galery);
+        //Ação do Botão para abri a galeria
+        fabGalery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        edtNome = (EditText) view.findViewById(R.id.edt_nome);
+        edtSobrenome = (EditText) view.findViewById(R.id.edt_sobrenome);
+        txtSexo = (TextView) view.findViewById(R.id.radial_group);
+        rbMasculino = (RadioButton) view.findViewById(R.id.radio_masculino);
+        rbFeminino = (RadioButton) view.findViewById(R.id.radio_feminino);
+        spinnerEstado = (Spinner) view.findViewById(R.id.spin_estado);
+        spinnerCidade = (Spinner) view.findViewById(R.id.spin_cidade);
+        spinnerCidade.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(spinnerEstado.getSelectedItemPosition() != 0){
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        edtLogin = (EditText) view.findViewById(R.id.edt_login);
+        edtEmail = (EditText) view.findViewById(R.id.edt_email);
+        edtSenha = (EditText) view.findViewById(R.id.edt_senha);
+
+        btCadastrar = (Button) view.findViewById(R.id.bt_cadastrar);
+        //Ação do Botão de Cadastro
+        btCadastrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(TextUtils.isEmpty(edtNome.getText())) {
+                    edtNome.setError(getString(R.string.campo_incorreto));
+                }
+                if(!rbFeminino.isChecked() && !rbMasculino.isChecked()){
+                    txtSexo.setError(getString(R.string.campo_incorreto));
+                }
+                if (spinnerEstado.getSelectedItemPosition() == 0){
+                    TextView erroSpinCidade = (TextView) spinnerEstado.getSelectedView();
+                    erroSpinCidade.setError(getString(R.string.campo_incorreto));
+                    erroSpinCidade.setTextColor(Color.RED);
+                    erroSpinCidade.setText(getString(R.string.campo_incorreto));
+                }
+                if(spinnerCidade.getSelectedItemPosition() == 0) {
+                    TextView erroSpinCidade = (TextView) spinnerCidade.getSelectedView();
+                    erroSpinCidade.setError(getString(R.string.campo_incorreto));
+                    erroSpinCidade.setTextColor(Color.RED);
+                    erroSpinCidade.setText(getString(R.string.campo_incorreto));
+                }
+                if(TextUtils.isEmpty(edtLogin.getText())){
+                    edtLogin.setError(getString(R.string.campo_incorreto));
+                }
+                if(TextUtils.isEmpty(edtEmail.getText())){
+                    edtEmail.setError(getString(R.string.campo_incorreto));
+                }
+                if(TextUtils.isEmpty(edtSenha.getText())){
+                    edtSenha.setError(getString(R.string.campo_incorreto));
+                } else {
+                    //Instancia de Login
+                    Login login = new Login();
+                    login.setLogin(edtLogin.getText().toString());
+                    login.setEmail(edtEmail.getText().toString());
+                    login.setSenha(edtSenha.getText().toString());
+                    login.setEstado(spinnerEstado.getSelectedItem().toString());
+                    login.setCidade(spinnerCidade.getSelectedItem().toString());
+                    login.setStatus_login(false);
+                    login.setAdministrador(false);
+
+                    //Instancia de Cidadao
+                    Cidadao cidadao = new Cidadao();
+                    cidadao.setNome(edtNome.getText().toString());
+                    if(!TextUtils.isEmpty(edtSobrenome.getText())){
+                        cidadao.setSobrenome(edtSobrenome.getText().toString());
+                    }
+                    if (rbMasculino.isChecked()){
+                        cidadao.setSexo("Masculino");
+                    } else {
+                        cidadao.setSexo("Feminino");
+                    }
+                    cidadao.setLoginCidadao(login);
+                    AsyncTask<Usuario, Void, Integer> cadastrarTask = new AsyncTask<Usuario, Void, Integer>() {
+
+                        ProgressDialog dialog;
+
+                        @Override
+                        protected void onPreExecute() {
+                            dialog.show(getActivity(),null, "Cadastrando...",false);
+                        }
+
+                        @Override
+                        protected Integer doInBackground(Usuario... params) {
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Integer integer) {
+                            dialog.dismiss();
+                        }
+                    };
+                }
+            }
+        });
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
