@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -128,12 +129,7 @@ public class CadastroFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 123);
-
-            }
-        });
-               /* if(open){
+                if(open){
                     fabCamera.setVisibility(View.GONE);
                     fabCamera.setClickable(false);
 
@@ -150,7 +146,9 @@ public class CadastroFragment extends Fragment {
                     fabGalery.setClickable(true);
 
                     open = true;
-                } */
+                }
+            }
+        });
 
 
         fabCamera = (FloatingActionButton) view.findViewById(R.id.fab_camera);
@@ -158,7 +156,8 @@ public class CadastroFragment extends Fragment {
         fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(Intent.createChooser(i,"Selecionar Foto"), 124);
             }
         });
 
@@ -167,7 +166,8 @@ public class CadastroFragment extends Fragment {
         fabGalery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 123);
             }
         });
         edtNome = (EditText) view.findViewById(R.id.edt_nome);
@@ -291,6 +291,12 @@ public class CadastroFragment extends Fragment {
             if(requestCode == 123){
                 imagemSelecionada = data.getData();
                 profileImage.setImageURI(imagemSelecionada);
+            }
+
+            if(requestCode == 124){
+                Bundle bundle = data.getExtras();
+                Bitmap bitmap = (Bitmap) bundle.get("data");
+                profileImage.setImageBitmap(bitmap);
             }
         }
     }
