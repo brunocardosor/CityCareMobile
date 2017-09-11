@@ -1,13 +1,16 @@
 package com.example.administrador.citycaremobile.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Picture;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -64,6 +67,7 @@ public class CadastroFragment extends Fragment {
     private Button btCadastrar;
 
     private boolean open;
+    private Uri imagemSelecionada;
 
     private OnFragmentInteractionListener mListener;
 
@@ -121,9 +125,15 @@ public class CadastroFragment extends Fragment {
         fabGetPicture = (FloatingActionButton) view.findViewById(R.id.fab_get_picture);
         //Ação do Botão para adicionar foto
         fabGetPicture.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                if(open){
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 123);
+
+            }
+        });
+               /* if(open){
                     fabCamera.setVisibility(View.GONE);
                     fabCamera.setClickable(false);
 
@@ -140,9 +150,8 @@ public class CadastroFragment extends Fragment {
                     fabGalery.setClickable(true);
 
                     open = true;
-                }
-            }
-        });
+                } */
+
 
         fabCamera = (FloatingActionButton) view.findViewById(R.id.fab_camera);
         //Ação do Botão para abrir a camera
@@ -240,6 +249,8 @@ public class CadastroFragment extends Fragment {
                         cidadao.setSexo("Feminino");
                     }
                     cidadao.setLoginCidadao(login);
+
+                    Usuario usuario = new Usuario(cidadao, login);
                     AsyncTask<Usuario, Void, Integer> cadastrarTask = new AsyncTask<Usuario, Void, Integer>() {
 
                         ProgressDialog dialog;
@@ -270,7 +281,18 @@ public class CadastroFragment extends Fragment {
                 fm.popBackStack();
             }
         });
+
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK){
+            if(requestCode == 123){
+                imagemSelecionada = data.getData();
+                profileImage.setImageURI(imagemSelecionada);
+            }
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
