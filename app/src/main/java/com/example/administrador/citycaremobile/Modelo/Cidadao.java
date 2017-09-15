@@ -3,33 +3,53 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Administrador on 01/09/2017.
  */
 
 public class Cidadao implements Parcelable {
-    private int idCidadao;
+
+    @SerializedName("id_cidadao")
+    private Integer idCidadao;
+    @SerializedName("nome")
     private String nome;
+    @SerializedName("sobrenome")
     private String sobrenome;
+    @SerializedName("cidade")
+    private String cidade;
+    @SerializedName("estado")
+    private String estado;
+    @SerializedName("dir_foto_usuario")
+    private String dir_foto_usuario;
+    @SerializedName("sexo")
     private String sexo;
+    @SerializedName("fk_login_cidadao")
     private Login loginCidadao;
 
-    protected Cidadao(Parcel in) {
-        idCidadao = in.readInt();
-        nome = in.readString();
-        sobrenome = in.readString();
-        sexo = in.readString();
-        loginCidadao = in.readParcelable(Login.class.getClassLoader());
-    }
 
     public Cidadao(){
     }
 
+
+    protected Cidadao(Parcel in) {
+        nome = in.readString();
+        sobrenome = in.readString();
+        cidade = in.readString();
+        estado = in.readString();
+        dir_foto_usuario = in.readString();
+        sexo = in.readString();
+        loginCidadao = in.readParcelable(Login.class.getClassLoader());
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(idCidadao);
         dest.writeString(nome);
         dest.writeString(sobrenome);
+        dest.writeString(cidade);
+        dest.writeString(estado);
+        dest.writeString(dir_foto_usuario);
         dest.writeString(sexo);
         dest.writeParcelable(loginCidadao, flags);
     }
@@ -51,11 +71,11 @@ public class Cidadao implements Parcelable {
         }
     };
 
-    public int getIdCidadao() {
+    public Integer getIdCidadao() {
         return idCidadao;
     }
 
-    public void setIdCidadao(int idCidadao) {
+    public void setIdCidadao(Integer idCidadao) {
         this.idCidadao = idCidadao;
     }
 
@@ -73,6 +93,30 @@ public class Cidadao implements Parcelable {
 
     public void setSobrenome(String sobrenome) {
         this.sobrenome = sobrenome;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getDir_foto_usuario() {
+        return dir_foto_usuario;
+    }
+
+    public void setDir_foto_usuario(String dir_foto_usuario) {
+        this.dir_foto_usuario = dir_foto_usuario;
     }
 
     public String getSexo() {

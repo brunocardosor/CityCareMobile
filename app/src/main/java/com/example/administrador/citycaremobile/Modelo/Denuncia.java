@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
-import java.util.jar.Pack200;
 
 /**
  * Created by Administrador on 01/09/2017.
@@ -21,7 +20,7 @@ public class Denuncia implements Parcelable {
     private boolean statusDenuncia;
     private Solucao solucaoDenuncia;
     private Categoria categoriaDenuncia;
-    private Usuario usuarioDenuncia;
+    private Login login;
 
     protected Denuncia(Parcel in) {
         idDenuncia = in.readInt();
@@ -32,7 +31,7 @@ public class Denuncia implements Parcelable {
         statusDenuncia = in.readByte() != 0;
         solucaoDenuncia = in.readParcelable(Solucao.class.getClassLoader());
         categoriaDenuncia = in.readParcelable(Categoria.class.getClassLoader());
-        usuarioDenuncia = in.readParcelable(Usuario.class.getClassLoader());
+        login = in.readParcelable(Login.class.getClassLoader());
     }
 
     @Override
@@ -45,7 +44,7 @@ public class Denuncia implements Parcelable {
         dest.writeByte((byte) (statusDenuncia ? 1 : 0));
         dest.writeParcelable(solucaoDenuncia, flags);
         dest.writeParcelable(categoriaDenuncia, flags);
-        dest.writeParcelable(usuarioDenuncia, flags);
+        dest.writeParcelable(login, flags);
     }
 
     @Override
@@ -137,11 +136,11 @@ public class Denuncia implements Parcelable {
         this.categoriaDenuncia = categoriaDenuncia;
     }
 
-    public Usuario getUsuarioDenuncia() {
-        return usuarioDenuncia;
+    public Login getLogin() {
+        return login;
     }
 
-    public void setUsuarioDenuncia(Usuario usuarioDenuncia) {
-        this.usuarioDenuncia = usuarioDenuncia;
+    public void setLogin(Login login) {
+        this.login = login;
     }
 }

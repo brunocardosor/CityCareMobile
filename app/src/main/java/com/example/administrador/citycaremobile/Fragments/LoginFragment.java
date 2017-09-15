@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.administrador.citycaremobile.Modelo.Usuario;
 import com.example.administrador.citycaremobile.R;
 
 /**
@@ -116,14 +115,6 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 String email = edtEmail.getText().toString();
                 String senha = edtSenha.getText().toString();
-
-                AsyncTask<String, Void, Usuario> asyncTask = new AsyncTask<String, Void, Usuario>() {
-
-                    @Override
-                    protected Usuario doInBackground(String... params) {
-                        return null;
-                    }
-                };
             }
         });
         btRecuperaSenha = (Button) view.findViewById(R.id.bt_recupera_senha);

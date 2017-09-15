@@ -1,13 +1,12 @@
 package com.example.administrador.citycaremobile.Services;
 
+import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
-import com.example.administrador.citycaremobile.Modelo.Usuario;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -21,31 +20,29 @@ import retrofit2.http.PUT;
 
 public interface Service {
 
-    @Headers("application/json")
+    //Serviços de Cidadao
+    @Headers("Content-Type: application/json")
+    @POST("cidadao/cadastrar")
+    Call<Integer> postCidadao(@Body Cidadao cidadao);
 
+    @Headers("Content-Type:application/json")
+    @PUT("/cidadao/put")
+    Call<Integer> putUsuario(@Body Cidadao cidadao);
 
-    //Serviços de Usuário
+    @Headers("Content-Type:application/json")
     @FormUrlEncoded
-    @POST("")
-    Call<Integer> postUsuario(@Body Usuario usuario);
-
-    @FormUrlEncoded
-    @PUT("")
-    Call<Integer> putUsuario(@Body Usuario usuario);
-
-    @FormUrlEncoded
-    @GET("")
-    Call<Usuario> getUsuarioByLogin(@Field("login") String login,
+    @GET("/cidadao/get-by-login")
+    Call<Cidadao> getCidadaoByLogin(@Field("login") String login,
                                     @Field("senha") String senha);
-
+    @Headers("Content-Type:application/json")
     @FormUrlEncoded
-    @GET("")
-    Call<Usuario> getUsuarioByEmail(@Field("email") String email,
+    @GET("/cidadao/get-by-email")
+    Call<Cidadao> getCidadaoByEmail(@Field("email") String email,
                                     @Field("senha") String senha);
-
-    @GET("")
-    Call<Usuario> getUsuarioById(@Field("id_usuario") String idUsuario);
-
+    @Headers("Content-Type:application/json")
+    @FormUrlEncoded
+    @GET("/cidadao/get-by-id")
+    Call<Cidadao> getCidadaoById(@Field("id_usuario") String idUsuario);
 
 
     //Serviços de denúncia
@@ -54,6 +51,4 @@ public interface Service {
     Call<List<Denuncia>> getDenuncias();
 
     Call<Denuncia> getDenuncia(@Field("id_denuncia") int idDenuncia);
-
-
 }

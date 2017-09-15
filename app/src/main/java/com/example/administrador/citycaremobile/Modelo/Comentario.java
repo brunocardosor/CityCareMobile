@@ -11,13 +11,13 @@ public class Comentario implements Parcelable {
 
     private int idComentario;
     private String descricaoComentario;
-    private Usuario usuarioComentario;
+    private Login login;
     private Denuncia denunciaComentario;
 
     protected Comentario(Parcel in) {
         idComentario = in.readInt();
         descricaoComentario = in.readString();
-        usuarioComentario = in.readParcelable(Usuario.class.getClassLoader());
+        login = in.readParcelable(Login.class.getClassLoader());
         denunciaComentario = in.readParcelable(Denuncia.class.getClassLoader());
     }
 
@@ -25,7 +25,7 @@ public class Comentario implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idComentario);
         dest.writeString(descricaoComentario);
-        dest.writeParcelable(usuarioComentario, flags);
+        dest.writeParcelable(login, flags);
         dest.writeParcelable(denunciaComentario, flags);
     }
 
@@ -62,12 +62,12 @@ public class Comentario implements Parcelable {
         this.descricaoComentario = descricaoComentario;
     }
 
-    public Usuario getUsuarioComentario() {
-        return usuarioComentario;
+    public Login getUsuarioComentario() {
+        return login;
     }
 
-    public void setUsuarioComentario(Usuario usuarioComentario) {
-        this.usuarioComentario = usuarioComentario;
+    public void setUsuarioComentario(Login login) {
+        this.login = login;
     }
 
     public Denuncia getDenunciaComentario() {

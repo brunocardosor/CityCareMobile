@@ -9,19 +9,19 @@ import android.os.Parcelable;
 
 public class Agiliza implements Parcelable {
 
-    private Usuario usuarioAgiliza;
+    private Login login;
     private Denuncia usuarioDenuncia;
     private boolean interacao;
 
     protected Agiliza(Parcel in) {
-        usuarioAgiliza = in.readParcelable(Usuario.class.getClassLoader());
+        login = in.readParcelable(Login.class.getClassLoader());
         usuarioDenuncia = in.readParcelable(Denuncia.class.getClassLoader());
         interacao = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(usuarioAgiliza, flags);
+        dest.writeParcelable(login, flags);
         dest.writeParcelable(usuarioDenuncia, flags);
         dest.writeByte((byte) (interacao ? 1 : 0));
     }
@@ -43,12 +43,12 @@ public class Agiliza implements Parcelable {
         }
     };
 
-    public Usuario getUsuarioAgiliza() {
-        return usuarioAgiliza;
+    public Login getLogin() {
+        return login;
     }
 
-    public void setUsuarioAgiliza(Usuario usuarioAgiliza) {
-        this.usuarioAgiliza = usuarioAgiliza;
+    public void setLogin(Login login) {
+        this.login = login;
     }
 
     public Denuncia getUsuarioDenuncia() {

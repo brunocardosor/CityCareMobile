@@ -15,11 +15,13 @@ public class Solucao implements Parcelable{
     private String descricaoSolucao;
     private String dirFotoSolucao;
     private Date dataSolucao;
+    private Login loginSolucao;
 
     protected Solucao(Parcel in) {
         idSolucao = in.readInt();
         descricaoSolucao = in.readString();
         dirFotoSolucao = in.readString();
+        loginSolucao = in.readParcelable(Login.class.getClassLoader());
     }
 
     @Override
@@ -27,6 +29,7 @@ public class Solucao implements Parcelable{
         dest.writeInt(idSolucao);
         dest.writeString(descricaoSolucao);
         dest.writeString(dirFotoSolucao);
+        dest.writeParcelable(loginSolucao, flags);
     }
 
     @Override
@@ -76,5 +79,13 @@ public class Solucao implements Parcelable{
 
     public void setDataSolucao(Date dataSolucao) {
         this.dataSolucao = dataSolucao;
+    }
+
+    public Login getLoginSolucao() {
+        return loginSolucao;
+    }
+
+    public void setLoginSolucao(Login loginSolucao) {
+        this.loginSolucao = loginSolucao;
     }
 }

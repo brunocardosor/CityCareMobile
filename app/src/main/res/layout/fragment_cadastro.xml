@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,7 +39,7 @@
                     android:orientation="vertical"
                     android:layout_alignRight="@+id/pic_profile"
                     android:layout_alignTop="@id/pic_profile">
-                <!--FloatingButton para adicionar ou alterar a foto do usuário-->
+                    <!--FloatingButton para adicionar ou alterar a foto do usuário-->
                     <android.support.design.widget.FloatingActionButton
                         android:layout_width="wrap_content"
                         android:layout_marginBottom="15dp"
@@ -71,34 +71,33 @@
                         android:visibility="gone"
                         />
                 </LinearLayout>
-            </RelativeLayout>
-            <LinearLayout
-                android:layout_below="@+id/framePicture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="40dp"
-                android:layout_marginLeft="40dp"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-                <EditText
+                <LinearLayout
+                    android:layout_below="@+id/pic_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nome"
-                    android:id="@+id/edt_nome"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Sobrenome"
-                    android:id="@+id/edt_sobrenome"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Sexo:"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:textSize="9pt"
-                    android:id="@+id/radial_group"/>
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nome"
+                        android:id="@+id/edt_nome"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Sobrenome"
+                        android:id="@+id/edt_sobrenome"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sexo:"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:textSize="9pt"
+                        android:id="@+id/radial_group"/>
                     <RadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,37 +114,43 @@
                             android:layout_height="wrap_content"
                             android:text="Feminino" />
                     </RadioGroup>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spin_cidade"/>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spin_estado"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="E-mail"
-                    android:id="@+id/edt_email"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Login"
-                    android:id="@+id/edt_login"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Senha"
-                    android:id="@+id/edt_senha"/>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cadastrar-se"
-                    android:textColor="@android:color/white"
-                    android:background="@color/colorPrimary"
-                    android:id="@+id/bt_cadastrar"/>
-            </LinearLayout>
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spin_cidade"/>
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spin_estado"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="E-mail"
+                        android:id="@+id/edt_email"
+                        android:inputType="textEmailAddress"
+                        android:focusableInTouchMode="true"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Login"
+                        android:id="@+id/edt_login"
+                        android:inputType="text"
+                        android:focusableInTouchMode="true"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Senha"
+                        android:id="@+id/edt_senha"
+                        android:inputType="textPassword"/>
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cadastrar-se"
+                        android:textColor="@android:color/white"
+                        android:background="@color/colorPrimary"
+                        android:id="@+id/bt_cadastrar"/>
+                </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-</FrameLayout>
+</RelativeLayout>

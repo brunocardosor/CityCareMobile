@@ -3,14 +3,13 @@ package com.example.administrador.citycaremobile.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -18,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +28,21 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Login;
-import com.example.administrador.citycaremobile.Modelo.Usuario;
 import com.example.administrador.citycaremobile.R;
-
-import org.w3c.dom.Text;
+import com.example.administrador.citycaremobile.Services.CallService;
+import com.example.administrador.citycaremobile.Services.Service;
+import com.google.gson.Gson;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.app.ProgressDialog.show;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -150,7 +155,6 @@ public class CadastroFragment extends Fragment {
             }
         });
 
-
         fabCamera = (FloatingActionButton) view.findViewById(R.id.fab_camera);
         //Ação do Botão para abrir a camera
         fabCamera.setOnClickListener(new View.OnClickListener() {
@@ -197,34 +201,35 @@ public class CadastroFragment extends Fragment {
         btCadastrar = (Button) view.findViewById(R.id.bt_cadastrar);
         //Ação do Botão de Cadastro
         btCadastrar.setOnClickListener(new View.OnClickListener() {
+            ProgressDialog dialog = new ProgressDialog(getActivity());
             @Override
             public void onClick(View v) {
 
-                if(TextUtils.isEmpty(edtNome.getText())) {
+                if (TextUtils.isEmpty(edtNome.getText())) {
                     edtNome.setError(getString(R.string.campo_incorreto));
                 }
-                if(!rbFeminino.isChecked() && !rbMasculino.isChecked()){
+                if (!rbFeminino.isChecked() && !rbMasculino.isChecked()) {
                     txtSexo.setError(getString(R.string.campo_incorreto));
                 }
-                if (spinnerEstado.getSelectedItemPosition() == 0){
+                if (spinnerEstado.getSelectedItemPosition() == 0) {
                     TextView erroSpinCidade = (TextView) spinnerEstado.getSelectedView();
                     erroSpinCidade.setError(getString(R.string.campo_incorreto));
                     erroSpinCidade.setTextColor(Color.RED);
                     erroSpinCidade.setText(getString(R.string.campo_incorreto));
                 }
-                if(spinnerCidade.getSelectedItemPosition() == 0) {
+                if (spinnerCidade.getSelectedItemPosition() == 0) {
                     TextView erroSpinCidade = (TextView) spinnerCidade.getSelectedView();
                     erroSpinCidade.setError(getString(R.string.campo_incorreto));
                     erroSpinCidade.setTextColor(Color.RED);
                     erroSpinCidade.setText(getString(R.string.campo_incorreto));
                 }
-                if(TextUtils.isEmpty(edtLogin.getText())){
+                if (TextUtils.isEmpty(edtLogin.getText())) {
                     edtLogin.setError(getString(R.string.campo_incorreto));
                 }
-                if(TextUtils.isEmpty(edtEmail.getText())){
+                if (TextUtils.isEmpty(edtEmail.getText())) {
                     edtEmail.setError(getString(R.string.campo_incorreto));
                 }
-                if(TextUtils.isEmpty(edtSenha.getText())){
+                if (TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
                 } else {
                     //Instancia de Login
@@ -232,44 +237,59 @@ public class CadastroFragment extends Fragment {
                     login.setLogin(edtLogin.getText().toString());
                     login.setEmail(edtEmail.getText().toString());
                     login.setSenha(edtSenha.getText().toString());
-                    login.setEstado(spinnerEstado.getSelectedItem().toString());
-                    login.setCidade(spinnerCidade.getSelectedItem().toString());
                     login.setStatus_login(false);
                     login.setAdministrador(false);
 
                     //Instancia de Cidadao
                     Cidadao cidadao = new Cidadao();
                     cidadao.setNome(edtNome.getText().toString());
-                    if(!TextUtils.isEmpty(edtSobrenome.getText())){
+                    if (!TextUtils.isEmpty(edtSobrenome.getText())) {
                         cidadao.setSobrenome(edtSobrenome.getText().toString());
                     }
-                    if (rbMasculino.isChecked()){
+                    if (rbMasculino.isChecked()) {
                         cidadao.setSexo("Masculino");
                     } else {
                         cidadao.setSexo("Feminino");
                     }
+                    cidadao.setCidade(/*spinnerCidade.getSelectedItem().toString()*/ "Ceará");
+                    cidadao.setEstado(/*spinnerEstado.getSelectedItem().toString()*/"Juazeiro do Norte");
                     cidadao.setLoginCidadao(login);
 
-                    Usuario usuario = new Usuario(cidadao, login);
-                    AsyncTask<Usuario, Void, Integer> cadastrarTask = new AsyncTask<Usuario, Void, Integer>() {
+                    dialog.setMessage("Cadastrando...");
+                    dialog.setIndeterminate(false);
+                    dialog.show();
 
-                        ProgressDialog dialog;
-
+                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
-                        protected void onPreExecute() {
-                            dialog.show(getActivity(),null, "Cadastrando...",false);
-                        }
-
-                        @Override
-                        protected Integer doInBackground(Usuario... params) {
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Integer integer) {
+                        public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
                         }
-                    };
+                    });
+
+                    Service service = CallService.createService(Service.class);
+                    Call<Integer> call = service.postCidadao(cidadao);
+                        call.enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.isSuccessful()) {
+                                    Integer i = response.body();
+                                    if (i != null) {
+                                        if (i == 1) {
+                                            dialog.dismiss();
+                                            Toast.makeText(getActivity(), "Cadastro completo", Toast.LENGTH_LONG).show();
+                                            Log.i("SERVICE", "SUCESSO");
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable t) {
+                                dialog.dismiss();
+                                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                                Log.e("SERVICE", t.getMessage());
+                            }
+                        });
                 }
             }
         });

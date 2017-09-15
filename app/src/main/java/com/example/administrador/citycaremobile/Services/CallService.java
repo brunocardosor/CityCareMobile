@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CallService {
 
     //Url base do webservice
-    public static final String API_BASE_URL =("");
+    public static final String API_BASE_URL =("http://api.projetocitycare.com.br/index.php/");
 
     public static <S> S createService(Class<S> serviceClass){
 
@@ -29,7 +29,7 @@ public class CallService {
 
         httpClient.addInterceptor(loggingInterceptor);
 
-
+        Gson gson = new Gson();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))

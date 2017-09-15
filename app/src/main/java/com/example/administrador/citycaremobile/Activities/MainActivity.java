@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity
         LoginFragment.OnFragmentInteractionListener,
         CadastroFragment.OnFragmentInteractionListener {
 
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
