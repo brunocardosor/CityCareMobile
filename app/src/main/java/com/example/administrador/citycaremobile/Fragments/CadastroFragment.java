@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -205,32 +206,44 @@ public class CadastroFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                dialog.setMessage("Cadastrando...");
+                dialog.setIndeterminate(false);
+                dialog.show();
+
+
                 if (TextUtils.isEmpty(edtNome.getText())) {
                     edtNome.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (!rbFeminino.isChecked() && !rbMasculino.isChecked()) {
                     txtSexo.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (spinnerEstado.getSelectedItemPosition() == 0) {
                     TextView erroSpinCidade = (TextView) spinnerEstado.getSelectedView();
                     erroSpinCidade.setError(getString(R.string.campo_incorreto));
                     erroSpinCidade.setTextColor(Color.RED);
                     erroSpinCidade.setText(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (spinnerCidade.getSelectedItemPosition() == 0) {
                     TextView erroSpinCidade = (TextView) spinnerCidade.getSelectedView();
                     erroSpinCidade.setError(getString(R.string.campo_incorreto));
                     erroSpinCidade.setTextColor(Color.RED);
                     erroSpinCidade.setText(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (TextUtils.isEmpty(edtLogin.getText())) {
                     edtLogin.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (TextUtils.isEmpty(edtEmail.getText())) {
                     edtEmail.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 }
                 if (TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
                 } else {
                     //Instancia de Login
                     Login login = new Login();
@@ -241,7 +254,7 @@ public class CadastroFragment extends Fragment {
                     login.setAdministrador(false);
 
                     //Instancia de Cidadao
-                    Cidadao cidadao = new Cidadao();
+                    final Cidadao cidadao = new Cidadao();
                     cidadao.setNome(edtNome.getText().toString());
                     if (!TextUtils.isEmpty(edtSobrenome.getText())) {
                         cidadao.setSobrenome(edtSobrenome.getText().toString());
@@ -255,10 +268,6 @@ public class CadastroFragment extends Fragment {
                     cidadao.setEstado(/*spinnerEstado.getSelectedItem().toString()*/"Juazeiro do Norte");
                     cidadao.setLoginCidadao(login);
 
-                    dialog.setMessage("Cadastrando...");
-                    dialog.setIndeterminate(false);
-                    dialog.show();
-
                     dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
@@ -266,30 +275,7 @@ public class CadastroFragment extends Fragment {
                         }
                     });
 
-                    Service service = CallService.createService(Service.class);
-                    Call<Integer> call = service.postCidadao(cidadao);
-                        call.enqueue(new Callback<Integer>() {
-                            @Override
-                            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                if (response.isSuccessful()) {
-                                    Integer i = response.body();
-                                    if (i != null) {
-                                        if (i == 1) {
-                                            dialog.dismiss();
-                                            Toast.makeText(getActivity(), "Cadastro completo", Toast.LENGTH_LONG).show();
-                                            Log.i("SERVICE", "SUCESSO");
-                                        }
-                                    }
-                                }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Integer> call, Throwable t) {
-                                dialog.dismiss();
-                                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
-                                Log.e("SERVICE", t.getMessage());
-                            }
-                        });
                 }
             }
         });
