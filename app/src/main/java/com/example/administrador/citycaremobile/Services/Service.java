@@ -23,7 +23,7 @@ public interface Service {
     //Serviços de Cidadao
     @Headers("Content-Type: application/json")
     @POST("cidadao/cadastrar")
-    Call<Cidadao> postCidadao(@Body Cidadao cidadao);
+    Call<Object> postCidadao(@Body Cidadao cidadao);
 
     @Headers("Content-Type:application/json")
     @PUT("/cidadao/put")
