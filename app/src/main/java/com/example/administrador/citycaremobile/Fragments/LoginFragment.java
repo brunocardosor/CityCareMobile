@@ -70,7 +70,6 @@ public class LoginFragment extends Fragment {
         });
 
         edtLogin.requestFocus();
-
         return view;
     }
 
@@ -79,4 +78,5 @@ public class LoginFragment extends Fragment {
 
         return true;
     }
+
 }

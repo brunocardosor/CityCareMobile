@@ -6,6 +6,10 @@
         <item name="android:editTextStyle">@style/Theme.AppCompat.Light.NoActionBar</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:searchViewStyle">@style/Theme.AppCompat.Light.DarkActionBar</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAscend</item>
+        <item name="android:textColorPrimary">@color/cardview_light_background</item>
 
 
     </style>

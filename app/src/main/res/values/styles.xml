@@ -4,6 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:editTextStyle">@style/Theme.AppCompat.Light.NoActionBar</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAscend</item>
+        <item name="android:textColorPrimary">@color/cardview_light_background</item>
 
     </style>
 </resources>

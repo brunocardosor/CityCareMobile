@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         btEntrar = (TextView) findViewById(R.id.move_to_login);
-        searchView = (SearchView) findViewById(R.id.seach_button);
 
         btEntrar.setOnClickListener(new View.OnClickListener() {
             @Override

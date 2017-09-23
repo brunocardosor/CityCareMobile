@@ -18,7 +18,6 @@ public class AcessoActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.fragment_acess_activity, new LoginFragment());
-        ft.addToBackStack(null);
         ft.commit();
     }
 }

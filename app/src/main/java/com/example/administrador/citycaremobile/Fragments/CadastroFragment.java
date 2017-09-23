@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -34,6 +36,7 @@ import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
+import com.example.administrador.citycaremobile.Utils.SystemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -210,6 +213,9 @@ public class CadastroFragment extends DialogFragment {
                     }
                     if (rbMasculino.isChecked()) {
                         cidadao.setSexo("Masculino");
+                    } if(new SystemUtils().verificaConexao(getContext())){
+                        Snackbar snackbar = Snackbar.make(getView(),"Sem conexão com a internet",Snackbar.LENGTH_LONG);
+                        snackbar.show();
                     } else {
                         cidadao.setSexo("Feminino");
                     }
@@ -252,6 +258,13 @@ public class CadastroFragment extends DialogFragment {
 
         edtNome.requestFocus();
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FragmentManager fm = getFragmentManager();
+        fm.popBackStack();
     }
 
     @Override

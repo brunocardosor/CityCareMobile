@@ -47,7 +47,8 @@
                     android:background="?android:attr/editTextBackground"
                     android:hint="Login/E-mail"
                     android:inputType="textEmailAddress"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textColor="@android:color/black" />
 
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -61,7 +62,8 @@
                     android:hint="Senha"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat" />
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textColor="@android:color/black" />
 
             </android.support.design.widget.TextInputLayout>
             <Button
