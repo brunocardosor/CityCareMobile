@@ -103,7 +103,7 @@
         <!--ImageView da foto da denúncia-->
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/recepcao"/>
@@ -140,12 +140,12 @@
             android:layout_margin="15dp"/>
         <!--Caixa de texto para digitar comentário-->
         <EditText
-            android:layout_width="240dp"
+            android:id="@+id/edt_comentario"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:hint="Faça um comentário"
-            android:id="@+id/edt_comentario"
-            />
+            android:textColor="@color/cardview_light_background" />
         <!--Botão de envio de comentário-->
         <ImageButton
             android:id="@+id/bt_enviar_comentario"
