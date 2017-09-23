@@ -30,10 +30,14 @@ public class UsuarioApplication extends Application {
     }
 
     public void setUsuario(Empresa empresa){
-        if(cidadao==null)
+        if(cidadao == null)
         this.empresa = empresa;
         else
             new Exception("Não é possivel instânciar dois usuários");
+    }
+
+    public static UsuarioApplication getInstance(){
+        return instance;
     }
 
     @Override

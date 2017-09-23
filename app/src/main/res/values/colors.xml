@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f36b21</color>
-    <color name="colorPrimaryDark">#f36b21</color>
-    <color name="colorAccent">#f36b21</color>
+    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimaryDark">#f44336</color>
+    <color name="colorAccent">#f44336</color>
     <color name="preto_opaco">#41000000</color>
     <color name="background_material_light">#ffffff</color>
+    <color name="colorAscend">#0768b6</color>
+    <color name="SecudaryTextColor">#ffffff</color>
 </resources>

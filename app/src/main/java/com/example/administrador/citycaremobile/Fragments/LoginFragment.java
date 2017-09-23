@@ -4,9 +4,11 @@ package com.example.administrador.citycaremobile.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,7 +18,7 @@ import android.widget.EditText;
 import com.facebook.login.widget.LoginButton;
 import com.example.administrador.citycaremobile.R;
 
-public class LoginFragment extends DialogFragment {
+public class LoginFragment extends Fragment {
     //View Atributes
     private EditText edtLogin, edtSenha;
     private LoginButton loginButtonFacebook;
@@ -29,13 +31,8 @@ public class LoginFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
         edtLogin = (EditText) view.findViewById(R.id.edt_login);
         edtSenha = (EditText) view.findViewById(R.id.edt_senha);
         btLogin = (Button) view.findViewById(R.id.bt_login);
@@ -56,15 +53,30 @@ public class LoginFragment extends DialogFragment {
         btMoveToCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getChildFragmentManager();
-                CadastroFragment cf = new CadastroFragment();
-                fm.beginTransaction().hide(LoginFragment.this).commit();
-                cf.show(fm,"CadastroDialog");
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.fragment_acess_activity, new CadastroFragment());
+                ft.addToBackStack(null);
+                ft.commit();
             }
         });
 
         loginButtonFacebook = (LoginButton) view.findViewById(R.id.bt_facebook_login);
+        loginButtonFacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         edtLogin.requestFocus();
+
+        return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return true;
     }
 }

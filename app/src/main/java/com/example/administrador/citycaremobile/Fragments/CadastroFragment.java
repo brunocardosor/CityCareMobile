@@ -3,7 +3,6 @@ package com.example.administrador.citycaremobile.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,15 +13,12 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +27,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Login;
 import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
+import com.example.administrador.citycaremobile.Utils.ErrorUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -71,12 +71,7 @@ public class CadastroFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cadastro,container,false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_cadastro,container,false);
 
         //Relacionando Atributos de View com a View
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
@@ -231,40 +226,32 @@ public class CadastroFragment extends DialogFragment {
                     });
 
                     Service service = CallService.createService(Service.class);
-                    Call<Object> call = service.postCidadao(cidadao);
-                    call.enqueue(new Callback<Object>() {
+                    Call<Boolean> call = service.postCidadao(cidadao);
+                    call.enqueue(new Callback<Boolean>() {
                         @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
-                            try{
-                                if(response.body() instanceof Boolean){
-                                    Boolean retorno = (Boolean) response.body();
-                                    Toast.makeText(getActivity(), String.valueOf(retorno), Toast.LENGTH_SHORT).show();}
-                                dialog.dismiss();
-                            } catch (Exception ex){
-                                Toast.makeText(getActivity(), ex.getMessage(), Toast.LENGTH_LONG).show();
-                                dialog.dismiss();
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getContext(), "SUCESS", Toast.LENGTH_SHORT).show();
+                            } else {
+                                APIError error = ErrorUtils.parseError(response);
+                                Toast.makeText(getContext(), error.getCode() + error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
+                        public void onFailure(Call<Boolean> call, Throwable t) {
                             Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         }
                     });
                 }
 
             }
         });
-        edtNome.requestFocus();
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        FragmentManager fm = getChildFragmentManager();
-        LoginFragment lf = new LoginFragment();
-        lf.show(fm, "LoginDialog");
+        edtNome.requestFocus();
+        return view;
     }
 
     @Override
@@ -278,6 +265,7 @@ public class CadastroFragment extends DialogFragment {
             if (requestCode == 124) {
                 Bundle bundle = data.getExtras();
                 Bitmap bitmap = (Bitmap) bundle.get("data");
+                profileImage.setImageBitmap(bitmap);
             }
             if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);

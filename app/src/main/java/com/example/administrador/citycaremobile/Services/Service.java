@@ -5,6 +5,7 @@ import com.example.administrador.citycaremobile.Modelo.Denuncia;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -23,17 +24,17 @@ public interface Service {
     //Serviços de Cidadao
     @Headers("Content-Type: application/json")
     @POST("cidadao/cadastrar")
-    Call<Object> postCidadao(@Body Cidadao cidadao);
+    Call<Boolean> postCidadao(@Body Cidadao cidadao);
 
     @Headers("Content-Type:application/json")
     @PUT("/cidadao/put")
     Call<Boolean> putUsuario(@Body Cidadao cidadao);
 
     @Headers("Content-Type:application/json")
-    @FormUrlEncoded
     @GET("/cidadao/get-by-login")
     Call<Cidadao> getCidadaoByLogin(@Field("login") String login,
                                     @Field("senha") String senha);
+
     @Headers("Content-Type:application/json")
     @FormUrlEncoded
     @GET("/cidadao/get-by-email")
