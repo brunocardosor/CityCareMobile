@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -35,13 +36,18 @@ import com.example.administrador.citycaremobile.Modelo.Login;
 import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
+import com.example.administrador.citycaremobile.Utils.DadosUtils;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
+import com.example.administrador.citycaremobile.Utils.PatternUtils;
 import com.example.administrador.citycaremobile.Utils.SystemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -64,6 +70,8 @@ public class CadastroFragment extends DialogFragment {
 
     private boolean open;
     private Uri imagemSelecionada;
+
+    private PatternUtils patternUtils;
 
 
     public CadastroFragment() {
@@ -134,11 +142,19 @@ public class CadastroFragment extends DialogFragment {
         rbFeminino = (RadioButton) view.findViewById(R.id.radio_feminino);
         spinnerEstado = (Spinner) view.findViewById(R.id.spin_estado);
         spinnerCidade = (Spinner) view.findViewById(R.id.spin_cidade);
-        spinnerCidade.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        final DadosUtils dadosUtils = new DadosUtils(getContext());
+        List<String> estados = dadosUtils.listarEstados();
+        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item, estados);
+        spinnerEstado.setAdapter(estadoAdapter);
+        spinnerEstado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerEstado.getSelectedItemPosition() != 0){
-
+                if(position != 0){
+                    List<String> cidades = dadosUtils.listarCidades(position);
+                    ArrayAdapter<String> cidadeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, cidades);
+                    spinnerCidade.setAdapter(cidadeAdapter);
+                    spinnerCidade.setClickable(true);
                 }
             }
 
@@ -192,9 +208,14 @@ public class CadastroFragment extends DialogFragment {
                 if (TextUtils.isEmpty(edtEmail.getText())) {
                     edtEmail.setError(getString(R.string.campo_incorreto));
                     dialog.dismiss();
+                } else if (!patternUtils.emailValido(edtEmail.getText().toString())) {
+                    edtEmail.setError("E-mail Inválido");
                 }
                 if (TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
+                    dialog.dismiss();
+                }else if(edtSenha.getText().length() >= 8){
+                    edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
                 } else {
                     //Instancia de Login
@@ -213,14 +234,16 @@ public class CadastroFragment extends DialogFragment {
                     }
                     if (rbMasculino.isChecked()) {
                         cidadao.setSexo("Masculino");
-                    } if(new SystemUtils().verificaConexao(getContext())){
-                        Snackbar snackbar = Snackbar.make(getView(),"Sem conexão com a internet",Snackbar.LENGTH_LONG);
-                        snackbar.show();
                     } else {
                         cidadao.setSexo("Feminino");
                     }
-                    cidadao.setCidade(/*spinnerCidade.getSelectedItem().toString()*/"Juazeiro do Norte");
-                    cidadao.setEstado(/*spinnerEstado.getSelectedItem().toString()*/"Ceará");
+                    if(new SystemUtils().verificaConexao(getContext())) {
+                        Snackbar snackbar = Snackbar.make(getView(), "Sem conexão com a internet", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+
+                    cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
+                    cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
                     cidadao.setDir_foto_usuario("www.google.com");
                     cidadao.setLoginCidadao(login);
 
@@ -232,13 +255,15 @@ public class CadastroFragment extends DialogFragment {
                     });
 
                     Service service = CallService.createService(Service.class);
-                    Call<Boolean> call = service.postCidadao(cidadao);
-                    call.enqueue(new Callback<Boolean>() {
+                    Call<Void> call = service.postCidadao(cidadao);
+                    call.enqueue(new Callback<Void>() {
                         @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        public void onResponse(Call<Void> call, Response<Void> response) {
 
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(), "SUCESS", Toast.LENGTH_SHORT).show();
+                                FragmentManager fm = getFragmentManager();
+                                fm.popBackStack();
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
                                 Toast.makeText(getContext(), error.getCode() + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -246,13 +271,12 @@ public class CadastroFragment extends DialogFragment {
                         }
 
                         @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
+                        public void onFailure(Call<Void> call, Throwable t) {
                             Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });
                 }
-
             }
         });
 

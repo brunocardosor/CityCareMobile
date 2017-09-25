@@ -22,24 +22,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
-                android:elevation="0dp">
-
-                <TextView
+                app:elevation="0dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/citycare_logo_toolbar"
+                    />
+                <Button
                     android:id="@+id/move_to_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:background="@color/cardview_light_background"
-                    android:gravity="left|center"
-                    android:paddingBottom="4dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="4dp"
+                    android:background="@drawable/shape_button_radius"
+                    android:gravity="center"
                     android:text="Entrar"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorAscend"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    style="?attr/buttonBarButtonStyle"
+                    android:textColor="@color/colorPrimary"
+                    />
 
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
@@ -58,5 +61,14 @@
             android:id="@+id/view_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <android.support.v4.widget.DrawerLayout
+            android:id="@+id/nav_drawer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/header_nav_drawer"
+            app:menu="@menu/menu_nav_drawer"
+            android:visibility="gone"/>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

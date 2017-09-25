@@ -69,10 +69,10 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_button_radio"
+                android:background="@drawable/shape_button_entrar"
                 android:text="Entrar"
                 android:id="@+id/bt_login"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@android:color/white"/>
             <Button
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
+                android:background="@drawable/shape_button_cadastrar"
                 android:textColor="@android:color/white"
                 android:text="Cadastre-se"
                 android:id="@+id/bt_move_to_cadastro"/>

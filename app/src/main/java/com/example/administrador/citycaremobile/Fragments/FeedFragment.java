@@ -1,6 +1,10 @@
 package com.example.administrador.citycaremobile.Fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +18,10 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.example.administrador.citycaremobile.Activities.AcessoActivity;
+import com.example.administrador.citycaremobile.Activities.DenunciaActivity;
+import com.example.administrador.citycaremobile.Modelo.Denuncia;
+import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
 
 /**
@@ -78,12 +86,25 @@ public class FeedFragment extends Fragment {
         bt_denunciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                popupView = layoutInflater.inflate(R.layout.popup_escrever_denuncia,null);
-
-                PopupWindow popupWindowCompat = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                popupWindowCompat.showAtLocation(v, Gravity.CENTER,0,0);
-
+                if(UsuarioApplication.getInstance().getUsuario() == null){
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Você não está logado ao CityCare para fazer uma denúncia.")
+                            .setPositiveButton("Acessar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(getActivity(), AcessoActivity.class);
+                            startActivity(i);
+                        }
+                    }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }else{
+                    Intent i = new Intent(getActivity(), DenunciaActivity.class);
+                    startActivity(i);
+                }
             }
         });
 

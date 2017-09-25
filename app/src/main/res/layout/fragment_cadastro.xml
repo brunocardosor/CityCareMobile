@@ -18,6 +18,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent">
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize">
+
+                </android.support.design.widget.AppBarLayout>
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
@@ -128,14 +133,17 @@
                             android:layout_height="wrap_content"
                             android:text="Feminino" />
                     </RadioGroup>
+
                     <Spinner
+                        android:id="@+id/spin_estado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:id="@+id/spin_cidade"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spin_cidade"/>
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spin_estado"/>
+                        android:clickable="false" />
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -174,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:text="Cadastrar-se"
                         android:textColor="@android:color/white"
-                        android:background="@color/colorPrimary"
+                        android:background="@drawable/shape_button_cadastrar"
                         android:id="@+id/bt_cadastrar"/>
                 </LinearLayout>
             </RelativeLayout>

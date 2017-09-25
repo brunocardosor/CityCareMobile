@@ -45,9 +45,4 @@ public class UsuarioApplication extends Application {
         super.onCreate();
         instance = this;
     }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-    }
 }

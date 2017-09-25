@@ -24,7 +24,7 @@ public interface Service {
     //Serviços de Cidadao
     @Headers("Content-Type: application/json")
     @POST("cidadao/cadastrar")
-    Call<Boolean> postCidadao(@Body Cidadao cidadao);
+    Call<Void> postCidadao(@Body Cidadao cidadao);
 
     @Headers("Content-Type:application/json")
     @PUT("/cidadao/put")
@@ -32,13 +32,13 @@ public interface Service {
 
     @Headers("Content-Type:application/json")
     @GET("/cidadao/get-by-login")
-    Call<Cidadao> getCidadaoByLogin(@Field("login") String login,
+    Call<Object> getAcessByLogin(@Field("login") String login,
                                     @Field("senha") String senha);
 
     @Headers("Content-Type:application/json")
     @FormUrlEncoded
     @GET("/cidadao/get-by-email")
-    Call<Cidadao> getCidadaoByEmail(@Field("email") String email,
+    Call<Object> getAcessByEmail(@Field("email") String email,
                                     @Field("senha") String senha);
     @Headers("Content-Type:application/json")
     @FormUrlEncoded
