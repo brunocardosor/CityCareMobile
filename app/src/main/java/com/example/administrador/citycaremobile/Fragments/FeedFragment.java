@@ -42,7 +42,6 @@ public class FeedFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private FloatingActionButton bt_denunciar;
-    private View popupView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,8 +86,9 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(UsuarioApplication.getInstance().getUsuario() == null){
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialog);
                     builder.setMessage("Você não está logado ao CityCare para fazer uma denúncia.")
+                            .setTitle("Oooops!")
                             .setPositiveButton("Acessar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -100,7 +100,7 @@ public class FeedFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    });
+                    }).show();
                 }else{
                     Intent i = new Intent(getActivity(), DenunciaActivity.class);
                     startActivity(i);

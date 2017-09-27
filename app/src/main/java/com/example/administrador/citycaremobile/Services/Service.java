@@ -30,26 +30,11 @@ public interface Service {
     @PUT("/cidadao/put")
     Call<Boolean> putUsuario(@Body Cidadao cidadao);
 
+    //Login
     @Headers("Content-Type:application/json")
-    @GET("/cidadao/get-by-login")
+    @FormUrlEncoded
+    @POST("/login")
     Call<Object> getAcessByLogin(@Field("login") String login,
                                     @Field("senha") String senha);
 
-    @Headers("Content-Type:application/json")
-    @FormUrlEncoded
-    @GET("/cidadao/get-by-email")
-    Call<Object> getAcessByEmail(@Field("email") String email,
-                                    @Field("senha") String senha);
-    @Headers("Content-Type:application/json")
-    @FormUrlEncoded
-    @GET("/cidadao/get-by-id")
-    Call<Cidadao> getCidadaoById(@Field("id_usuario") String idUsuario);
-
-
-    //Serviços de denúncia
-    @FormUrlEncoded
-    @GET("")
-    Call<List<Denuncia>> getDenuncias();
-
-    Call<Denuncia> getDenuncia(@Field("id_denuncia") int idDenuncia);
 }

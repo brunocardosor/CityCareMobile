@@ -45,6 +45,7 @@ import com.google.gson.JsonElement;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,7 +83,7 @@ public class CadastroFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cadastro,container,false);
+        View view = inflater.inflate(R.layout.fragment_cadastro, container, false);
 
         //Relacionando Atributos de View com a View
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
@@ -95,7 +96,7 @@ public class CadastroFragment extends DialogFragment {
 
             @Override
             public void onClick(View v) {
-                if(open){
+                if (open) {
                     fabCamera.setVisibility(View.GONE);
                     fabCamera.setClickable(false);
 
@@ -122,7 +123,7 @@ public class CadastroFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(Intent.createChooser(i,"Selecionar Foto"), 124);
+                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 124);
             }
         });
 
@@ -145,12 +146,12 @@ public class CadastroFragment extends DialogFragment {
 
         final DadosUtils dadosUtils = new DadosUtils(getContext());
         List<String> estados = dadosUtils.listarEstados();
-        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item, estados);
+        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, estados);
         spinnerEstado.setAdapter(estadoAdapter);
         spinnerEstado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0){
+                if (position != 0) {
                     List<String> cidades = dadosUtils.listarCidades(position);
                     ArrayAdapter<String> cidadeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, cidades);
                     spinnerCidade.setAdapter(cidadeAdapter);
@@ -171,6 +172,7 @@ public class CadastroFragment extends DialogFragment {
         //Ação do Botão de Cadastro
         btCadastrar.setOnClickListener(new View.OnClickListener() {
             ProgressDialog dialog = new ProgressDialog(getActivity());
+
             @Override
             public void onClick(View v) {
 
@@ -214,7 +216,7 @@ public class CadastroFragment extends DialogFragment {
                 if (TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
                     dialog.dismiss();
-                }else if(edtSenha.getText().length() >= 8){
+                } else if (edtSenha.getText().length() >= 8) {
                     edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
                 } else {
@@ -237,10 +239,7 @@ public class CadastroFragment extends DialogFragment {
                     } else {
                         cidadao.setSexo("Feminino");
                     }
-                    if(new SystemUtils().verificaConexao(getContext())) {
-                        Snackbar snackbar = Snackbar.make(getView(), "Sem conexão com a internet", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }
+
 
                     cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
                     cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
@@ -296,19 +295,36 @@ public class CadastroFragment extends DialogFragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
                 imagemSelecionada = data.getData();
-                CropImage.activity(imagemSelecionada).setAspectRatio(1,1).start(getActivity());
+                CropImage.activity(imagemSelecionada).setAspectRatio(1, 1).start(getActivity());
             }
 
             if (requestCode == 124) {
-                Bundle bundle = data.getExtras();
-                Bitmap bitmap = (Bitmap) bundle.get("data");
-                profileImage.setImageBitmap(bitmap);
+                Uri imageUri = getPickImageResultUri(data);
+                CropImage.activity(imageUri).setAspectRatio(1,1).start(getActivity());
             }
-            if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                imagemSelecionada = result.getUri();
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                Uri result = CropImage.getPickImageResultUri(getContext(),data);
+                imagemSelecionada = result;
                 profileImage.setImageURI(imagemSelecionada);
             }
         }
+    }
+
+    private Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getContext().getExternalCacheDir();
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
+        }
+        return outputFileUri;
+    }
+
+    public Uri getPickImageResultUri(Intent  data) {
+        boolean isCamera = true;
+        if (data != null && data.getData() != null) {
+            String action = data.getAction();
+            isCamera = action != null  && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+        }
+        return isCamera ?  getCaptureImageOutputUri() : data.getData();
     }
 }

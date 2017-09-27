@@ -37,9 +37,8 @@ public class LoginFragment extends Fragment {
     private EditText edtLogin, edtSenha;
     private LoginButton loginButtonFacebook;
     private Button btLogin, btMoveToCadastro, btRecuperarSenha;
-    private PatternUtils patternUtils;
 
-    public LoginFragment(){
+    public LoginFragment() {
 
     }
 
@@ -52,80 +51,83 @@ public class LoginFragment extends Fragment {
         edtSenha = (EditText) view.findViewById(R.id.edt_senha);
         btLogin = (Button) view.findViewById(R.id.bt_login);
         btLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(TextUtils.isEmpty(edtLogin.getText())){
-                    edtLogin.setError("Campo necessário para Acesso");
-                }
-                if(TextUtils.isEmpty(edtSenha.getText())){
-                    edtSenha.setError("Campo nessário para Acesso");
-                }else if(edtSenha.getText().length() >= 8){
-                    edtSenha.setError("Tamanho mínimo para senha é de 8 dígitos");
-                } else {
-                    String login = edtLogin.getText().toString();
-                    String senha = edtSenha.getText().toString();
+                                       @Override
+                                       public void onClick(View v) {
+                                           if (TextUtils.isEmpty(edtLogin.getText())) {
+                                               edtLogin.setError("Campo necessário para Acesso");
+                                           }
+                                           if (TextUtils.isEmpty(edtSenha.getText())) {
+                                               edtSenha.setError("Campo nessário para Acesso");
+                                           } else if (edtSenha.getText().length() < 8) {
+                                               edtSenha.setError("Tamanho mínimo para senha é de 8 dígitos");
+                                           } else {
+                                               String login = edtLogin.getText().toString();
+                                               String senha = edtSenha.getText().toString();
 
-                    if(patternUtils.emailValido(edtLogin.getText().toString())){
-                        Service service = CallService.createService(Service.class);
-                        Call<Object> call = service.getAcessByEmail(login, senha);
-                        call.enqueue(new Callback<Object>() {
-                            @Override
-                            public void onResponse(Call<Object> call, Response<Object> response) {
-                                if(response.isSuccessful()){
-                                    if (response.code() == 1){
-                                        Cidadao cidadao = (Cidadao) response.body();
-                                        UsuarioApplication.getInstance().setUsuario(cidadao);
-                                        getActivity().finish();
-                                    } else if(response.code() == 2){
-                                        Empresa empresa = (Empresa) response.body();
-                                        UsuarioApplication.getInstance().setUsuario(empresa);
-                                        getActivity().finish();
-                                    } else {
-                                        APIError error = ErrorUtils.parseError(response);
-                                        Toast.makeText(getContext(),error.getMessage(),Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
+                                               Service service = CallService.createService(Service.class);
+                                               Call<Object> call = service.getAcessByEmail(login, senha);
+                                               call.enqueue(new Callback<Object>() {
+                                                   @Override
+                                                   public void onResponse(Call<Object> call, Response<Object> response) {
+                                                       if (response.code() == 222) {
+                                                           Cidadao cidadao = (Cidadao) response.body();
+                                                           UsuarioApplication.getInstance().setUsuario(cidadao);
+                                                           getActivity().finish();
+                                                       } else if (response.code() == 223) {
+                                                           Empresa empresa = (Empresa) response.body();
+                                                           UsuarioApplication.getInstance().setUsuario(empresa);
+                                                           getActivity().finish();
+                                                       } else {
+                                                           APIError error = ErrorUtils.parseError(response);
+                                                           Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                                                       }
+                                                   }
 
-                            @Override
-                            public void onFailure(Call<Object> call, Throwable t) {
+                                                   @Override
+                                                   public void onFailure(Call<Object> call, Throwable t) {
+                                                       Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                                   }
+                                               });
+                                           }
+                                       }
+                                   });
 
-                            }
-                        });
-                    }
-                }
-            }
-        });
-        btRecuperarSenha = (Button) view.findViewById(R.id.bt_recupera_senha);
-        btRecuperarSenha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    btRecuperarSenha =(Button) view.findViewById(R.id.bt_recupera_senha);
+        btRecuperarSenha.setOnClickListener(new View.OnClickListener()
 
-            }
-        });
-        btMoveToCadastro = (Button) view.findViewById(R.id.bt_move_to_cadastro);
-        btMoveToCadastro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.fragment_acess_activity, new CadastroFragment());
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-        });
+    {
+        @Override
+        public void onClick (View v){
 
-        loginButtonFacebook = (LoginButton) view.findViewById(R.id.bt_facebook_login);
-        loginButtonFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
+    });
+    btMoveToCadastro =(Button)view.findViewById(R.id.bt_move_to_cadastro);
+        btMoveToCadastro.setOnClickListener(new View.OnClickListener()
 
-            }
-        });
+    {
+        @Override
+        public void onClick (View v){
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_acess_activity, new CadastroFragment());
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    });
+
+    loginButtonFacebook =(LoginButton)view.findViewById(R.id.bt_facebook_login);
+        loginButtonFacebook.setOnClickListener(new View.OnClickListener()
+
+    {
+        @Override
+        public void onClick (View v){
+
+    }
+    });
 
         edtLogin.requestFocus();
         return view;
-    }
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

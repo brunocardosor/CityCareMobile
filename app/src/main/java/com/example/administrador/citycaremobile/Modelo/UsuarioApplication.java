@@ -1,6 +1,7 @@
 package com.example.administrador.citycaremobile.Modelo;
 
 import android.app.Application;
+import android.os.AsyncTask;
 
 /**
  * Created by Administrador on 17/09/2017.
