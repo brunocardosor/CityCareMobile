@@ -1,6 +1,5 @@
 package com.example.administrador.citycaremobile.Services;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
@@ -34,8 +33,7 @@ public class CallService {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
-                        .create()))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();
 

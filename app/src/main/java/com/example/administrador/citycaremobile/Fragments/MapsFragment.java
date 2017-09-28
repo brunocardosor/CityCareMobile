@@ -29,7 +29,6 @@ public class MapsFragment extends Fragment  {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-
             }
         });
         return view;

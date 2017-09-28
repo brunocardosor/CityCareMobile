@@ -9,10 +9,10 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/denuncia_recyler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/denuncia_recyler"
-        tools:listitem="@layout/cardview_denuncia"/>
+        tools:listitem="@layout/cardview_denuncia" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_create_denuncia"

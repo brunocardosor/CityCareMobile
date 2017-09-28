@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Login;
+import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
@@ -72,7 +73,7 @@ public class CadastroFragment extends DialogFragment {
     private boolean open;
     private Uri imagemSelecionada;
 
-    private PatternUtils patternUtils;
+    private PatternUtils patternUtils = new PatternUtils();
 
 
     public CadastroFragment() {
@@ -213,10 +214,10 @@ public class CadastroFragment extends DialogFragment {
                 } else if (!patternUtils.emailValido(edtEmail.getText().toString())) {
                     edtEmail.setError("E-mail Inválido");
                 }
-                if (TextUtils.isEmpty(edtSenha.getText())) {
+                if(TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
                     dialog.dismiss();
-                } else if (edtSenha.getText().length() >= 8) {
+                } else if (edtSenha.getText().length() < 8) {
                     edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
                 } else {
@@ -254,7 +255,7 @@ public class CadastroFragment extends DialogFragment {
                     });
 
                     Service service = CallService.createService(Service.class);
-                    Call<Void> call = service.postCidadao(cidadao);
+                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken(),cidadao);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -265,7 +266,8 @@ public class CadastroFragment extends DialogFragment {
                                 fm.popBackStack();
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
-                                Toast.makeText(getContext(), error.getCode() + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), error.getCode() + ":" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
                             }
                         }
 
