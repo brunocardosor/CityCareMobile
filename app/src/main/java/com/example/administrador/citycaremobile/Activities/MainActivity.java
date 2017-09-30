@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.example.administrador.citycaremobile.Adapters.TabAdapter;
 
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
@@ -26,6 +28,7 @@ import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Services.Token;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,11 +48,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+
         btEntrar = (TextView) findViewById(R.id.move_to_login);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
         navDrawer.setVisibility(View.GONE);
         navDrawer.setClickable(false);
+
+        View headerView = navDrawer.getHeaderView(0);
+        TextView nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
+        CircleImageView picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
+
 
         btEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
             navDrawer.setVisibility(View.VISIBLE);
             toolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
+            if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
+                Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
+                nomeNavView.setText(empresa.getNome_fantasia());
+            } else {
+                Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
+                nomeNavView.setText(cidadao.getNome() + cidadao.getSobrenome());
+            }
         }
 
         //TAB LAYOUT
