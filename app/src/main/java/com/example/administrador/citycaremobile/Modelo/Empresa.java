@@ -13,7 +13,44 @@ public class Empresa implements Parcelable {
     private String cnpj;
     private String razaoSocial;
     private String nome_fantasia;
+    private String cidade;
+    private String estado;
     private Login loginEmpresa;
+
+    public Empresa(int idEmpresa, String cnpj,
+                   String razaoSocial, String nome_fantasia,
+                   String cidade, String estado,
+                   Login loginEmpresa) {
+        this.idEmpresa = idEmpresa;
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.nome_fantasia = nome_fantasia;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.loginEmpresa = loginEmpresa;
+    }
+
+    protected Empresa(Parcel in) {
+        idEmpresa = in.readInt();
+        cnpj = in.readString();
+        razaoSocial = in.readString();
+        nome_fantasia = in.readString();
+        cidade = in.readString();
+        estado = in.readString();
+        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
+    }
+
+    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
+        @Override
+        public Empresa createFromParcel(Parcel in) {
+            return new Empresa(in);
+        }
+
+        @Override
+        public Empresa[] newArray(int size) {
+            return new Empresa[size];
+        }
+    };
 
     public int getIdEmpresa() {
         return idEmpresa;
@@ -55,27 +92,25 @@ public class Empresa implements Parcelable {
         this.loginEmpresa = loginEmpresa;
     }
 
-    public static Creator<Empresa> getCREATOR() {
-        return CREATOR;
+    public String getCidade() {
+        return cidade;
     }
 
-    protected Empresa(Parcel in) {
-        idEmpresa = in.readInt();
-        cnpj = in.readString();
-        razaoSocial = in.readString();
-        nome_fantasia = in.readString();
-        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
-    public Empresa(int idEmpresa, String cnpj, String razaoSocial, String nome_fantasia, Login loginEmpresa) {
-        this.idEmpresa = idEmpresa;
-        this.cnpj = cnpj;
-        this.razaoSocial = razaoSocial;
-        this.nome_fantasia = nome_fantasia;
-        this.loginEmpresa = loginEmpresa;
+    public String getEstado() {
+        return estado;
     }
 
-    public Empresa() {
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
@@ -84,23 +119,8 @@ public class Empresa implements Parcelable {
         dest.writeString(cnpj);
         dest.writeString(razaoSocial);
         dest.writeString(nome_fantasia);
+        dest.writeString(cidade);
+        dest.writeString(estado);
         dest.writeParcelable(loginEmpresa, flags);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
-        @Override
-        public Empresa createFromParcel(Parcel in) {
-            return new Empresa(in);
-        }
-
-        @Override
-        public Empresa[] newArray(int size) {
-            return new Empresa[size];
-        }
-    };
 }

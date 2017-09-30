@@ -11,16 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:navigationIcon="@drawable/ic_action_back"
+        app:navigationIcon="@drawable/ic_action_arrow_back"
         android:id="@+id/toolbar_edt_denuncia"
+        app:title="Denuncia"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="20dp"
-            android:text="Denuncia"
-            android:textColor="@android:color/white"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
