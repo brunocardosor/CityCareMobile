@@ -14,6 +14,13 @@
         app:navigationIcon="@drawable/ic_action_back"
         android:id="@+id/toolbar_edt_denuncia"
         >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:text="Denuncia"
+            android:textColor="@android:color/white"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,16 +45,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/layout_info">
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:id="@+id/pic_profile_denuncia"
-                    android:src="@drawable/recepcao"
                     />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/pic_profile_denuncia"
                     android:layout_centerInParent="true">
@@ -57,7 +62,6 @@
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:layout_centerInParent="true"
-                    android:text="Bruno Cardoso"
                     android:id="@+id/txt_username"/>
                 <Spinner
                     android:layout_width="match_parent"
@@ -82,15 +86,16 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/descricao_denuncia"
                 android:id="@+id/foto_denuncia"
-                android:src="@drawable/recepcao"
-                android:scaleType="center"/>
+                android:scaleType="center"
+                android:clickable="false"/>
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_drop_picture"
                 android:layout_margin="10dp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignRight="@id/foto_denuncia"
                 android:layout_alignTop="@id/foto_denuncia"
-                android:backgroundTint="@color/colorPrimaryDark"
+                app:backgroundTint="@color/colorPrimaryDark"
                 android:src="@drawable/ic_action_close"
                 android:visibility="gone"
                 android:clickable="false"/>
@@ -135,7 +140,6 @@
                 android:layout_marginRight="15dp"
                 android:textSize="10dp"
                 android:gravity="center_vertical"
-                android:text="Rua do Rosário nº 211 - Bairro Socorro"
                 />
         </LinearLayout>
 

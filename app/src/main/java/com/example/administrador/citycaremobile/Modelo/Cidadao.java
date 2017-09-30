@@ -29,6 +29,19 @@ public class Cidadao implements Parcelable {
     private Login loginCidadao;
 
 
+    public Cidadao(Integer idCidadao, String nome, String sobrenome,
+                   String cidade, String estado, String dir_foto_usuario,
+                   String sexo, Login loginCidadao) {
+        this.idCidadao = idCidadao;
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.dir_foto_usuario = dir_foto_usuario;
+        this.sexo = sexo;
+        this.loginCidadao = loginCidadao;
+    }
+
     public Cidadao(){
     }
 

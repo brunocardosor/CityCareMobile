@@ -144,7 +144,6 @@
                             android:layout_marginRight="10dp"
                             android:background="@android:color/transparent"
                             android:lines="1"
-                            android:text="Você e outras 90 pessoas deram importância para esse problema"
                             android:textColor="@android:color/darker_gray" />
                     </LinearLayout>
                 </LinearLayout>
@@ -170,7 +169,6 @@
                     android:layout_marginBottom="9dp"
                     android:background="@android:color/white"
                     android:hint="Faça um comentário"
-                    android:singleLine="false"
                     android:textColor="@color/cardview_light_background"/>
                 <!--Botão de envio de comentário-->
                 <ImageButton

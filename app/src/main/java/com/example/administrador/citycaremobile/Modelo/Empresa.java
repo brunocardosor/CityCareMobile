@@ -67,6 +67,17 @@ public class Empresa implements Parcelable {
         loginEmpresa = in.readParcelable(Login.class.getClassLoader());
     }
 
+    public Empresa(int idEmpresa, String cnpj, String razaoSocial, String nome_fantasia, Login loginEmpresa) {
+        this.idEmpresa = idEmpresa;
+        this.cnpj = cnpj;
+        this.razaoSocial = razaoSocial;
+        this.nome_fantasia = nome_fantasia;
+        this.loginEmpresa = loginEmpresa;
+    }
+
+    public Empresa() {
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idEmpresa);

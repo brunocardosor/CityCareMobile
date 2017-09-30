@@ -76,15 +76,22 @@ public class LoginFragment extends Fragment {
 
                     Service service = CallService.createService(Service.class);
                     Call<Object> call = service.login("application/json",
-                            UsuarioApplication.getToken(),
+                            UsuarioApplication.getToken().getToken(),
                             acesso);
                     call.enqueue(new Callback<Object>() {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
+                            Gson gson = new Gson();
                             if (response.code() == 222) {
-
+                                Object o = response.body();
+                                String jsonCidadao = gson.toJson(o);
+                                Cidadao cidadao = gson.fromJson(jsonCidadao,Cidadao.class);
+                                UsuarioApplication.getInstance().setUsuario(cidadao);
+                                getActivity().finish();
                             } else if (response.code() == 223) {
-                                Empresa empresa = (Empresa) response.body();
+                                Object o = response.body();
+                                String jsonEmpresa = gson.toJson(o);
+                                Empresa empresa = gson.fromJson(jsonEmpresa,Empresa.class);
                                 UsuarioApplication.getInstance().setUsuario(empresa);
                                 getActivity().finish();
                             } else {
@@ -96,6 +103,7 @@ public class LoginFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<Object> call, Throwable t) {
+                            Log.e("ERRORLogin", t.getMessage());
                             Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     });

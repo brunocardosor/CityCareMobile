@@ -28,8 +28,11 @@ public class DenunciaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class DenunciaHolder extends RecyclerView.ViewHolder{
 
-        public DenunciaHolder(View itemView) {
-            super(itemView);
+        public DenunciaHolder(View view) {
+            super(view);
+
+
+
 
 
         }

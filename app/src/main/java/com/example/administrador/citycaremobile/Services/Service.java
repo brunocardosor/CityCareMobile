@@ -35,7 +35,7 @@ public interface Service {
 
     @Headers("content-type:application/json")
     @GET("auth")
-    Call<String> autentication();
+    Call<Token> autentication();
 
     //Login
     @POST("login")

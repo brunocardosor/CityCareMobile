@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/drawer_layout"
     tools:context="com.example.administrador.citycaremobile.Activities.MainActivity">
 
     <LinearLayout
@@ -22,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
+                app:title=" "
                 app:elevation="0dp">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -55,20 +57,21 @@
             android:background="@color/colorPrimary"
             android:backgroundTint="@color/colorPrimary"
             app:tabIndicatorColor="@color/cardview_light_background"
-            app:tabTextColor="@android:color/background_light" />
+            app:tabTextColor="@android:color/background_light"
+            />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <android.support.v4.widget.DrawerLayout
-            android:id="@+id/nav_drawer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/header_nav_drawer"
-            app:menu="@menu/menu_nav_drawer"
-            android:visibility="gone"/>
     </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header_nav_drawer"
+        app:menu="@menu/menu_nav_drawer"
+        android:visibility="visible"/>
 </android.support.v4.widget.DrawerLayout>

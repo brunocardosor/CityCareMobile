@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CallService {
 
     //Url base do webservice
-    public static final String API_BASE_URL =("http://servico.projetocitycare.com.br/index.php/");
+    public static final String API_BASE_URL =("http://servico.projetocitycare.com.br/");
 
     static Retrofit retrofit;
 

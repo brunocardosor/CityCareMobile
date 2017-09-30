@@ -7,8 +7,8 @@
     android:gravity="center_horizontal"
     android:background="@drawable/recepcao">
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="40dp"
         android:layout_gravity="center_vertical">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -26,6 +26,7 @@
             android:layout_marginTop="10dp"
             android:text="Bruno Cardoso"
             android:textSize="17dp"
+            android:layout_centerHorizontal="true"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>
     </RelativeLayout>

@@ -18,6 +18,7 @@ public class DenunciaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_denuncia);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_edt_denuncia);
+        toolbar.setTitle("");
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

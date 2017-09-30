@@ -255,7 +255,7 @@ public class CadastroFragment extends DialogFragment {
                     });
 
                     Service service = CallService.createService(Service.class);
-                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken(),cidadao);
+                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken().getToken(),cidadao);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
