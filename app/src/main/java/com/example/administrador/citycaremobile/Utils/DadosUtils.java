@@ -72,14 +72,15 @@ public class DadosUtils extends SQLiteOpenHelper {
 
     public List<String> listarCategoria() {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor c = db.query("cateogira", null, "categoria", null, null, null, null);
+        Cursor c = db.query("categoria", null, null, null, null, null, null);
         List<String> categorias = new ArrayList<String>();
+        categorias.add("Categorias");
         if (c.moveToFirst()) {
             do {
                 Categoria categoria = new Categoria();
-                categorias.add(categoria.toString());
                 categoria.setIdCategoria(c.getInt(c.getColumnIndex("id_categoria")));
                 categoria.setDescricaoCategoria(c.getString((c.getColumnIndex("descricao_categoria"))));
+                categorias.add(categoria.toString());
             } while (c.moveToNext());
         }
         return categorias;

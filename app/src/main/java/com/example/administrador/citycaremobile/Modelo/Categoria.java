@@ -21,6 +21,11 @@ public class Categoria implements Parcelable {
 
     }
 
+    public Categoria(int idCategoria, String descricaoCategoria) {
+        this.idCategoria = idCategoria;
+        this.descricaoCategoria = descricaoCategoria;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(idCategoria);

@@ -16,11 +16,31 @@ public class Denuncia implements Parcelable {
     private String dirFotoDenuncia;
     private double latitude;
     private double longitude;
+    private String cidade;
+    private String estado;
     private Date dataDenuncia;
     private boolean statusDenuncia;
     private Solucao solucaoDenuncia;
     private Categoria categoriaDenuncia;
     private Login login;
+
+    public Denuncia() {
+    }
+
+    public Denuncia(int idDenuncia, String descricaoDenuncia, String dirFotoDenuncia, double latitude, double longitude, String cidade, String estado, Date dataDenuncia, boolean statusDenuncia, Solucao solucaoDenuncia, Categoria categoriaDenuncia, Login login) {
+        this.idDenuncia = idDenuncia;
+        this.descricaoDenuncia = descricaoDenuncia;
+        this.dirFotoDenuncia = dirFotoDenuncia;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.dataDenuncia = dataDenuncia;
+        this.statusDenuncia = statusDenuncia;
+        this.solucaoDenuncia = solucaoDenuncia;
+        this.categoriaDenuncia = categoriaDenuncia;
+        this.login = login;
+    }
 
     protected Denuncia(Parcel in) {
         idDenuncia = in.readInt();
@@ -28,6 +48,8 @@ public class Denuncia implements Parcelable {
         dirFotoDenuncia = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        cidade = in.readString();
+        estado = in.readString();
         statusDenuncia = in.readByte() != 0;
         solucaoDenuncia = in.readParcelable(Solucao.class.getClassLoader());
         categoriaDenuncia = in.readParcelable(Categoria.class.getClassLoader());
@@ -41,6 +63,8 @@ public class Denuncia implements Parcelable {
         dest.writeString(dirFotoDenuncia);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(cidade);
+        dest.writeString(estado);
         dest.writeByte((byte) (statusDenuncia ? 1 : 0));
         dest.writeParcelable(solucaoDenuncia, flags);
         dest.writeParcelable(categoriaDenuncia, flags);
@@ -102,6 +126,22 @@ public class Denuncia implements Parcelable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public Date getDataDenuncia() {

@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         navDrawer.setVisibility(View.GONE);
         navDrawer.setClickable(false);
 
-
         if (UsuarioApplication.getInstance().getUsuario() != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
@@ -143,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
             navDrawer.setVisibility(View.VISIBLE);
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            });
         }
     }
 }

@@ -5,15 +5,12 @@ import android.app.ProgressDialog;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,16 +37,9 @@ import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.DadosUtils;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 import com.example.administrador.citycaremobile.Utils.PatternUtils;
-import com.example.administrador.citycaremobile.Utils.SystemUtils;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -58,20 +48,17 @@ import retrofit2.Response;
 
 import static android.app.ProgressDialog.show;
 
-public class CadastroFragment extends DialogFragment {
+public class CadastroFragment extends Fragment{
 
     //Atributos da View
     private Toolbar toolbar;
     private CircleImageView profileImage;
     private TextView txtSexo;
-    private FloatingActionButton fabGetPicture, fabCamera, fabGalery;
+    private FloatingActionButton fabGetPicture;
     private EditText edtNome, edtSobrenome, edtEmail, edtLogin, edtSenha;
     private Spinner spinnerCidade, spinnerEstado;
     private RadioButton rbMasculino, rbFeminino;
     private Button btCadastrar;
-
-    private boolean open;
-    private Uri imagemSelecionada;
 
     private PatternUtils patternUtils = new PatternUtils();
 
@@ -97,46 +84,10 @@ public class CadastroFragment extends DialogFragment {
 
             @Override
             public void onClick(View v) {
-                if (open) {
-                    fabCamera.setVisibility(View.GONE);
-                    fabCamera.setClickable(false);
-
-                    fabGalery.setVisibility(View.GONE);
-                    fabGalery.setClickable(false);
-
-                    open = false;
-
-                } else {
-                    fabCamera.setVisibility(View.VISIBLE);
-                    fabCamera.setClickable(true);
-
-                    fabGalery.setVisibility(View.VISIBLE);
-                    fabGalery.setClickable(true);
-
-                    open = true;
-                }
+                CropImage.startPickImageActivity(getActivity(), CadastroFragment.this);
             }
         });
 
-        fabCamera = (FloatingActionButton) view.findViewById(R.id.fab_camera);
-        //Ação do Botão para abrir a camera
-        fabCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 124);
-            }
-        });
-
-        fabGalery = (FloatingActionButton) view.findViewById(R.id.fab_galery);
-        //Ação do Botão para abri a galeria
-        fabGalery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                startActivityForResult(Intent.createChooser(i, "Selecionar Foto"), 123);
-            }
-        });
         edtNome = (EditText) view.findViewById(R.id.edt_nome);
         edtSobrenome = (EditText) view.findViewById(R.id.edt_sobrenome);
         txtSexo = (TextView) view.findViewById(R.id.radial_group);
@@ -214,7 +165,7 @@ public class CadastroFragment extends DialogFragment {
                 } else if (!patternUtils.emailValido(edtEmail.getText().toString())) {
                     edtEmail.setError("E-mail Inválido");
                 }
-                if(TextUtils.isEmpty(edtSenha.getText())) {
+                if (TextUtils.isEmpty(edtSenha.getText())) {
                     edtSenha.setError(getString(R.string.campo_incorreto));
                     dialog.dismiss();
                 } else if (edtSenha.getText().length() < 8) {
@@ -255,7 +206,7 @@ public class CadastroFragment extends DialogFragment {
                     });
 
                     Service service = CallService.createService(Service.class);
-                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken().getToken(),cidadao);
+                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken().getToken(), cidadao);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -294,39 +245,16 @@ public class CadastroFragment extends DialogFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 123) {
-                imagemSelecionada = data.getData();
-                CropImage.activity(imagemSelecionada).setAspectRatio(1, 1).start(getActivity());
-            }
-
-            if (requestCode == 124) {
-                Uri imageUri = getPickImageResultUri(data);
-                CropImage.activity(imageUri).setAspectRatio(1,1).start(getActivity());
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+                Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
+                CropImage.activity(imageUri).setAspectRatio(1, 1).setMaxCropResultSize(1024, 1024).start(getContext(), this);
             }
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                Uri result = CropImage.getPickImageResultUri(getContext(),data);
-                imagemSelecionada = result;
-                profileImage.setImageURI(imagemSelecionada);
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                profileImage.setImageBitmap(result.getBitmap());
             }
         }
-    }
-
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
-        File getImage = getContext().getExternalCacheDir();
-        if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
-        }
-        return outputFileUri;
-    }
-
-    public Uri getPickImageResultUri(Intent  data) {
-        boolean isCamera = true;
-        if (data != null && data.getData() != null) {
-            String action = data.getAction();
-            isCamera = action != null  && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-        }
-        return isCamera ?  getCaptureImageOutputUri() : data.getData();
     }
 }

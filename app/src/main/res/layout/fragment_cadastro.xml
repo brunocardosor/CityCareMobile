@@ -55,27 +55,6 @@
                         android:layout_marginBottom="15dp"
                         android:elevation="4dp"
                         />
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_marginBottom="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorPrimary"
-                        android:src="@drawable/ic_camera"
-                        android:id="@+id/fab_camera"
-                        android:elevation="4dp"
-                        android:visibility="gone"
-                        />
-                    <android.support.design.widget.FloatingActionButton
-                        android:layout_alignRight="@+id/pic_profile"
-                        android:layout_marginBottom="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorPrimary"
-                        android:src="@drawable/ic_galery"
-                        android:id="@+id/fab_galery"
-                        android:elevation="4dp"
-                        android:visibility="gone"
-                        />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_below="@+id/pic_profile"
@@ -108,7 +87,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Sobrenome"
                             android:textColor="@android:color/black"
-                            android:inputType="textCapCharacters"
+                            android:inputType="textPersonName"
                             android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
                     <TextView
