@@ -1,6 +1,8 @@
 package com.example.administrador.citycaremobile.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -80,20 +82,60 @@ public class LoginFragment extends Fragment {
                             acesso);
                     call.enqueue(new Callback<Object>() {
                         @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
+                        public void onResponse(final Call<Object> call, Response<Object> response) {
                             Gson gson = new Gson();
                             if (response.code() == 222) {
                                 Object o = response.body();
                                 String jsonCidadao = gson.toJson(o);
-                                Cidadao cidadao = gson.fromJson(jsonCidadao,Cidadao.class);
-                                UsuarioApplication.getInstance().setUsuario(cidadao);
-                                getActivity().finish();
+                                Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
+                                if (cidadao.getLoginCidadao().isStatus_login()) {
+                                    UsuarioApplication.getInstance().setUsuario(cidadao);
+                                    getActivity().finish();
+                                } else {
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                    builder.setTitle("Acesso desativado")
+                                            .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
+                                            .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Service service = CallService.createService(Service.class);
+                                                    Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
+                                                    //serviço de re-ativação da conta
+                                                }
+                                            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
+                                }
+
                             } else if (response.code() == 223) {
                                 Object o = response.body();
                                 String jsonEmpresa = gson.toJson(o);
-                                Empresa empresa = gson.fromJson(jsonEmpresa,Empresa.class);
-                                UsuarioApplication.getInstance().setUsuario(empresa);
-                                getActivity().finish();
+                                Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
+                                if (empresa.getLoginEmpresa().isStatus_login()) {
+                                    UsuarioApplication.getInstance().setUsuario(empresa);
+                                    getActivity().finish();
+                                } else {
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                    builder.setTitle("Acesso desativado")
+                                            .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
+                                            .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Service service = CallService.createService(Service.class);
+                                                    Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
+                                                    //serviço de re-ativação da conta
+                                                }
+                                            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
+                                }
+
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
                                 Log.i("ERRO", error.getMessage());

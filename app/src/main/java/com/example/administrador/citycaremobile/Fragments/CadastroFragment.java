@@ -212,7 +212,7 @@ public class CadastroFragment extends Fragment{
                         public void onResponse(Call<Void> call, Response<Void> response) {
 
                             if (response.isSuccessful()) {
-                                Toast.makeText(getContext(), "SUCESS", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
                                 FragmentManager fm = getFragmentManager();
                                 fm.popBackStack();
                             } else {
