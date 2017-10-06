@@ -43,6 +43,4 @@ public interface Service {
                        @Header("X-Token") String token,
                        @Body Login login);
 
-
-
 }

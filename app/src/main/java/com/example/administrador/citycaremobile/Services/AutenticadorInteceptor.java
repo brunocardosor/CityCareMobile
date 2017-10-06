@@ -2,6 +2,7 @@ package com.example.administrador.citycaremobile.Services;
 
 import java.io.IOException;
 
+import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -14,8 +15,8 @@ public class AutenticadorInteceptor implements Interceptor {
 
     private String authToken;
 
-    public AutenticadorInteceptor(String authToken) {
-        this.authToken = authToken;
+    public AutenticadorInteceptor(String username, String password) {
+        this.authToken = Credentials.basic(username,password);
     }
 
     @Override

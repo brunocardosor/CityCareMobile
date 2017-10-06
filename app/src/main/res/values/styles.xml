@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:editTextStyle">@style/Theme.AppCompat.Light.NoActionBar</item>
@@ -8,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAscend</item>
         <item name="android:textColorPrimary">@color/cardview_light_background</item>
+        <item name="android:actionMenuTextColor">@android:color/darker_gray</item>
     </style>
 
     <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog">

@@ -38,18 +38,18 @@ public class UsuarioApplication extends Application {
         }
     }
 
-    public void setUsuario(Cidadao cidadao) {
+    public void setUsuario(Cidadao cidadao) throws Exception {
         if (empresa == null)
             this.cidadao = cidadao;
         else
-            new Exception("Não é possivel instânciar dois usuários");
+            throw new Exception("Não é possivel instânciar dois usuários");
     }
 
-    public void setUsuario(Empresa empresa) {
+    public void setUsuario(Empresa empresa) throws Exception {
         if (cidadao == null)
             this.empresa = empresa;
         else
-            new Exception("Não é possivel instânciar dois usuários");
+            throw new Exception("Não é possivel instânciar dois usuários");
     }
 
     public static UsuarioApplication getInstance() {
@@ -70,7 +70,7 @@ public class UsuarioApplication extends Application {
         instance = this;
 
 
-        Service service = CallService.createService(Service.class);
+        Service service = CallService.createService(Service.class,usuario,senha);
         Call<Token> call = service.autentication();
         call.enqueue(new Callback<Token>() {
             @Override

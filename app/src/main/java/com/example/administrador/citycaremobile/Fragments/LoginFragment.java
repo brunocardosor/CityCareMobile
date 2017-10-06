@@ -83,60 +83,72 @@ public class LoginFragment extends Fragment {
                     call.enqueue(new Callback<Object>() {
                         @Override
                         public void onResponse(final Call<Object> call, Response<Object> response) {
-                            Gson gson = new Gson();
-                            if (response.code() == 222) {
-                                Object o = response.body();
-                                String jsonCidadao = gson.toJson(o);
-                                Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
-                                if (cidadao.getLoginCidadao().isStatus_login()) {
-                                    UsuarioApplication.getInstance().setUsuario(cidadao);
-                                    getActivity().finish();
-                                } else {
-                                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                    builder.setTitle("Acesso desativado")
-                                            .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
-                                            .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Service service = CallService.createService(Service.class);
-                                                    Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
-                                                    //serviço de re-ativação da conta
-                                                }
-                                            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+
+                            if(response.isSuccessful()){
+                                Gson gson = new Gson();
+                                if (response.code() == 222) {
+                                    Object o = response.body();
+                                    String jsonCidadao = gson.toJson(o);
+                                    Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
+                                    if (cidadao.getLoginCidadao().isStatus_login()) {
+                                        try {
+                                            UsuarioApplication.getInstance().setUsuario(cidadao);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    }).show();
+                                        getActivity().finish();
+                                    } else {
+                                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        builder.setTitle("Acesso desativado")
+                                                .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
+                                                .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Service service = CallService.createService(Service.class);
+                                                        Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
+                                                        //serviço de re-ativação da conta
+                                                    }
+                                                }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                                    }
+
+                                } else if (response.code() == 223) {
+                                    Object o = response.body();
+                                    String jsonEmpresa = gson.toJson(o);
+                                    Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
+                                    if (empresa.getLoginEmpresa().isStatus_login()) {
+                                        try {
+                                            UsuarioApplication.getInstance().setUsuario(empresa);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        getActivity().finish();
+                                    } else {
+                                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        builder.setTitle("Acesso desativado")
+                                                .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
+                                                .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Service service = CallService.createService(Service.class);
+                                                        Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
+                                                        //serviço de re-ativação da conta
+                                                    }
+                                                }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                                    }
+
                                 }
 
-                            } else if (response.code() == 223) {
-                                Object o = response.body();
-                                String jsonEmpresa = gson.toJson(o);
-                                Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
-                                if (empresa.getLoginEmpresa().isStatus_login()) {
-                                    UsuarioApplication.getInstance().setUsuario(empresa);
-                                    getActivity().finish();
-                                } else {
-                                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                    builder.setTitle("Acesso desativado")
-                                            .setMessage("O acesso utilizado não está ativado. Deseja ativa-lo?")
-                                            .setPositiveButton("Ativar", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Service service = CallService.createService(Service.class);
-                                                    Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
-                                                    //serviço de re-ativação da conta
-                                                }
-                                            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    }).show();
-                                }
-
-                            } else {
+                        } else {
                                 APIError error = ErrorUtils.parseError(response);
                                 Log.i("ERRO", error.getMessage());
                                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();

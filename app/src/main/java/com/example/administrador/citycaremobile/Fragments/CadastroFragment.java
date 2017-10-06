@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ import retrofit2.Response;
 
 import static android.app.ProgressDialog.show;
 
-public class CadastroFragment extends Fragment{
+public class CadastroFragment extends Fragment {
 
     //Atributos da View
     private Toolbar toolbar;
@@ -177,7 +178,7 @@ public class CadastroFragment extends Fragment{
                     login.setLogin(edtLogin.getText().toString());
                     login.setEmail(edtEmail.getText().toString());
                     login.setSenha(edtSenha.getText().toString());
-                    login.setStatus_login(false);
+                    login.setStatus_login(true);
                     login.setAdministrador(false);
 
                     //Instancia de Cidadao
@@ -191,7 +192,6 @@ public class CadastroFragment extends Fragment{
                     } else {
                         cidadao.setSexo("Feminino");
                     }
-
 
                     cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
                     cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
@@ -246,15 +246,19 @@ public class CadastroFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
-                Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
-                CropImage.activity(imageUri).setAspectRatio(1, 1).setMaxCropResultSize(1024, 1024).start(getContext(), this);
-            }
-            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                profileImage.setImageBitmap(result.getBitmap());
-            }
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+            Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
+            CropImage.activity(imageUri).setAspectRatio(1, 1).setOutputCompressFormat(Bitmap.CompressFormat.JPEG).start(getContext(), this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            Uri imageUri = result.getUri();
+            profileImage.setImageURI(imageUri);
+        }
+        if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            Exception error = result.getError();
+            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

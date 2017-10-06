@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/drawer_layout"
+    tools:openDrawer="start"
     tools:context="com.example.administrador.citycaremobile.Activities.MainActivity">
 
     <LinearLayout
@@ -73,5 +74,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header_nav_drawer"
         app:menu="@menu/menu_nav_drawer"
+        android:fitsSystemWindows="true"
         android:visibility="visible"/>
 </android.support.v4.widget.DrawerLayout>

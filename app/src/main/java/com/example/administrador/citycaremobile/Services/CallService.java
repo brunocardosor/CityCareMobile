@@ -40,6 +40,20 @@ public class CallService {
         return retrofit.create(serviceClass);
     }
 
+    public static <S> S createService(Class<S> serviceClass, String username, String password){
+        AutenticadorInteceptor autenticadorInteceptor = new AutenticadorInteceptor(username, password);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                .addInterceptor(autenticadorInteceptor);
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+        return retrofit.create(serviceClass);
+    }
+
     public static Retrofit getRetrofit() {
         return retrofit;
     }
