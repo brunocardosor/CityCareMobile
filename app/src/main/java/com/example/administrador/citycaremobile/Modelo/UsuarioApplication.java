@@ -21,12 +21,12 @@ import retrofit2.Response;
 
 public class UsuarioApplication extends Application {
 
-    private static Cidadao cidadao;
-    private static Empresa empresa;
+    private Cidadao cidadao;
+    private Empresa empresa;
     private static UsuarioApplication instance = null;
     private static String usuario = "root";
     private static String senha = "carecity";
-    private static Token token = null;
+    private Token token = null;
 
     public Object getUsuario() {
         if (cidadao != null && empresa == null) {
@@ -52,11 +52,19 @@ public class UsuarioApplication extends Application {
             throw new Exception("Não é possivel instânciar dois usuários");
     }
 
+    public void logout(){
+        if(cidadao != null){
+            cidadao = null;
+        } else if (empresa != null){
+            empresa = null;
+        }
+    }
+
     public static UsuarioApplication getInstance() {
         return instance;
     }
 
-    public static Token getToken() {
+    public Token getToken() {
         return token;
     }
 

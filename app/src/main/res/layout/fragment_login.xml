@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
-                    android:text="Esqueceu a senha?"
+                    android:text="Não consegue acessar?"
                     android:textAllCaps="false"
                     android:textColor="@android:color/black" />
 

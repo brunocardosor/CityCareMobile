@@ -78,7 +78,7 @@ public class LoginFragment extends Fragment {
 
                     Service service = CallService.createService(Service.class);
                     Call<Object> call = service.login("application/json",
-                            UsuarioApplication.getToken().getToken(),
+                            UsuarioApplication.getInstance().getToken().getToken(),
                             acesso);
                     call.enqueue(new Callback<Object>() {
                         @Override

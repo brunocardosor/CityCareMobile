@@ -1,8 +1,7 @@
 package com.example.administrador.citycaremobile.Fragments;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,16 +38,23 @@ import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.DadosUtils;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 import com.example.administrador.citycaremobile.Utils.PatternUtils;
+import com.example.administrador.citycaremobile.Utils.SystemUtils;
+import com.google.gson.Gson;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.app.ProgressDialog.show;
 
 public class CadastroFragment extends Fragment {
 
@@ -60,6 +67,8 @@ public class CadastroFragment extends Fragment {
     private Spinner spinnerCidade, spinnerEstado;
     private RadioButton rbMasculino, rbFeminino;
     private Button btCadastrar;
+    private Uri imageUri;
+    private File file;
 
     private PatternUtils patternUtils = new PatternUtils();
 
@@ -172,6 +181,8 @@ public class CadastroFragment extends Fragment {
                 } else if (edtSenha.getText().length() < 8) {
                     edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
+                } if (new SystemUtils().verificaConexao(getContext())){
+                    Toasty.error(getContext(),"Sem conexão com a internet").show();
                 } else {
                     //Instancia de Login
                     Login login = new Login();
@@ -195,37 +206,55 @@ public class CadastroFragment extends Fragment {
 
                     cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
                     cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
-                    cidadao.setDir_foto_usuario("www.google.com");
                     cidadao.setLoginCidadao(login);
 
                     dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
+
                         }
                     });
 
+                    try {
+                        String path = "file:" + imageUri.getPath();
+                        file = new File(new URI(path));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+
+                    final RequestBody requestFile = RequestBody.create(
+                            MediaType.parse("multipart/form-data"),
+                            file
+                    );
+                    MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
+
+                    String json = new Gson().toJson(cidadao);
+                    RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), json);
+
                     Service service = CallService.createService(Service.class);
-                    Call<Void> call = service.postCidadao("application/json", UsuarioApplication.getToken().getToken(), cidadao);
-                    call.enqueue(new Callback<Void>() {
+                    Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                            fotoBody,
+                            jsonBody);
+                    cadastrarCidadao.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
-
                             if (response.isSuccessful()) {
-                                dialog.dismiss();
-                                FragmentManager fm = getFragmentManager();
-                                fm.popBackStack();
+                                if (response.code() == 201) {
+                                    dialog.dismiss();
+                                    FragmentManager fm = getFragmentManager();
+                                    fm.popBackStack();
+                                }
+
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
-                                Toast.makeText(getContext(), error.getCode() + ":" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                                new Throwable(error.getMessage());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(getActivity(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
+                            Log.e("ErrorCadastro", t.getLocalizedMessage());
                         }
                     });
                 }
@@ -235,6 +264,7 @@ public class CadastroFragment extends Fragment {
         edtNome.requestFocus();
         return view;
     }
+
 
     @Override
     public void onDestroy() {
@@ -248,11 +278,15 @@ public class CadastroFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
             Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
-            CropImage.activity(imageUri).setAspectRatio(1, 1).setOutputCompressFormat(Bitmap.CompressFormat.JPEG).start(getContext(), this);
+            CropImage.activity(imageUri)
+                    .setAspectRatio(1, 1)
+                    .setRequestedSize(1024, 1024)
+                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                    .start(getContext(), this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri imageUri = result.getUri();
+            imageUri = result.getUri();
             profileImage.setImageURI(imageUri);
         }
         if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
