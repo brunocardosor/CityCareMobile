@@ -181,7 +181,7 @@ public class CadastroFragment extends Fragment {
                 } else if (edtSenha.getText().length() < 8) {
                     edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
-                } if (new SystemUtils().verificaConexao(getContext())){
+                } if (!new SystemUtils().verificaConexao(getContext())){
                     Toasty.error(getContext(),"Sem conexão com a internet").show();
                 } else {
                     //Instancia de Login
@@ -212,7 +212,6 @@ public class CadastroFragment extends Fragment {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
-
                         }
                     });
 

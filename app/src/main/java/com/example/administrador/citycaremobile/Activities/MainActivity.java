@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
+        navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
+        navDrawer.setVisibility(View.GONE);
+        navDrawer.setClickable(false);
+
         View headerView = navDrawer.getHeaderView(0);
         Menu menuView = navDrawer.getMenu();
 
@@ -84,9 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
         btEntrar = (TextView) findViewById(R.id.move_to_login);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
-        navDrawer.setVisibility(View.GONE);
-        navDrawer.setClickable(false);
 
         menuView.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

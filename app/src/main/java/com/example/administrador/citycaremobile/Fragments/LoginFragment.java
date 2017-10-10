@@ -26,6 +26,7 @@ import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
+import com.example.administrador.citycaremobile.Utils.SystemUtils;
 import com.facebook.login.widget.LoginButton;
 import com.example.administrador.citycaremobile.R;
 import com.google.gson.Gson;
@@ -35,6 +36,7 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 
+import es.dmoral.toasty.Toasty;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,6 +71,8 @@ public class LoginFragment extends Fragment {
                     edtSenha.setError("Campo nessário para Acesso");
                 } else if (edtSenha.getText().length() < 8) {
                     edtSenha.setError("Tamanho mínimo para senha é de 8 dígitos");
+                } else if (!new SystemUtils().verificaConexao(getContext())) {
+                    Toasty.error(getContext(), "Sem conexão com a internet").show();
                 } else {
                     String login = edtLogin.getText().toString();
                     String senha = edtSenha.getText().toString();
@@ -84,7 +88,7 @@ public class LoginFragment extends Fragment {
                         @Override
                         public void onResponse(final Call<Object> call, Response<Object> response) {
 
-                            if(response.isSuccessful()){
+                            if (response.isSuccessful()) {
                                 Gson gson = new Gson();
                                 if (response.code() == 222) {
                                     Object o = response.body();
@@ -148,7 +152,7 @@ public class LoginFragment extends Fragment {
 
                                 }
 
-                        } else {
+                            } else {
                                 APIError error = ErrorUtils.parseError(response);
                                 Log.i("ERRO", error.getMessage());
                                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
