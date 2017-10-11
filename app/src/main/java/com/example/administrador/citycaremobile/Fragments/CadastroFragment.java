@@ -229,7 +229,7 @@ public class CadastroFragment extends Fragment {
 
                     String json = new Gson().toJson(cidadao);
                     RequestBody requestJson = RequestBody.create(
-                            MediaType.parse("text/html"),
+                            MediaType.parse("multipart/from-data"),
                             json);
 
                     MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
