@@ -228,12 +228,14 @@ public class CadastroFragment extends Fragment {
                     );
 
                     String json = new Gson().toJson(cidadao);
-                    RequestBody requestJson = RequestBody.create(MediaType.parse("multipart/form-data"),json);
+                    RequestBody requestJson = RequestBody.create(
+                            MediaType.parse("text/html"),
+                            json);
 
                     MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
 
-                    MultipartBody.Part jsonBody = MultipartBody.Part.create(
+                    MultipartBody.Part jsonBody = MultipartBody.Part.createFormData("cidadao","JsonCidadao",
                             requestJson);
 
                     Service service = CallService.createService(Service.class);
