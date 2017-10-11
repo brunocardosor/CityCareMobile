@@ -32,7 +32,6 @@ import retrofit2.http.Url;
 
 public interface Service {
 
-    @Headers("content-type:applicationq/json")
     @POST("cidadao/cadastrar")
     @Multipart
     Call<Void> postCidadao(@Header("X-Token") String token,
