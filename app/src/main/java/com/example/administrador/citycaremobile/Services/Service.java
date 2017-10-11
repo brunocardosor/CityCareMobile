@@ -36,7 +36,7 @@ public interface Service {
     @Multipart
     Call<Void> postCidadao(@Header("X-Token") String token,
                            @Part MultipartBody.Part foto,
-                           @Part("cidadao") RequestBody cidadao);
+                           @Part("cidadao") Cidadao cidadao);
 
     @PUT("cidadao/put")
     Call<Boolean> putUsuario(@Header("Content-type") String content,

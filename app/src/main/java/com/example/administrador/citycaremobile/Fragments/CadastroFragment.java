@@ -227,19 +227,12 @@ public class CadastroFragment extends Fragment {
                             file
                     );
 
-                    String json = new Gson().toJson(cidadao);
-                    RequestBody jsonBody = RequestBody.create(
-                            MediaType.parse("multipart/from-data"),
-                            json);
-
                     MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
-
-
 
                     Service service = CallService.createService(Service.class);
                     Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
                             fotoBody,
-                            jsonBody);
+                            cidadao);
                     cadastrarCidadao.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
