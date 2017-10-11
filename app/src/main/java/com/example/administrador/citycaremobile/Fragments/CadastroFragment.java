@@ -228,7 +228,7 @@ public class CadastroFragment extends Fragment {
                     );
 
                     String json = new Gson().toJson(cidadao);
-                    RequestBody requestJson = RequestBody.create(MediaType.parse("multipart/form-data"),json);
+                    RequestBody requestJson = RequestBody.create(MediaType.parse("application/json"),json);
 
                     MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
@@ -250,7 +250,6 @@ public class CadastroFragment extends Fragment {
                                     FragmentManager fm = getFragmentManager();
                                     fm.popBackStack();
                                 }
-
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
                                 new Throwable(error.getMessage());
