@@ -82,13 +82,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/descricao_denuncia"
                 android:id="@+id/foto_denuncia"
-                android:scaleType="center"
+                android:scaleType="centerCrop"
                 android:clickable="false"/>
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_drop_picture"
                 android:layout_margin="10dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignRight="@id/foto_denuncia"
                 android:layout_alignTop="@id/foto_denuncia"
                 app:backgroundTint="@color/colorPrimaryDark"

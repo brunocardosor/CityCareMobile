@@ -3,7 +3,10 @@ package com.example.administrador.citycaremobile.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -31,6 +35,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -48,6 +53,8 @@ public class DenunciaActivity extends AppCompatActivity {
     private ImageView picDenuncia;
     private Denuncia denuncia;
     private Button publicar;
+    private Uri imgDenuncia;
+    private File denunciaFoto;
 
 
     @Override
@@ -70,17 +77,23 @@ public class DenunciaActivity extends AppCompatActivity {
         localizacaoDenuncia = (TextView) findViewById(R.id.localizacao_denuncia);
         publicar = (Button) findViewById(R.id.bt_publicar);
 
-        if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
+        if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
             profileNomeDenuncia.setText(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getNome());
-        else if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
+        else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
             profileNomeDenuncia.setText(((Empresa) UsuarioApplication.getInstance().getUsuario()).getNome_fantasia());
+
+        DadosUtils dadosUtils = new DadosUtils(this);
+        List<String> categorias = dadosUtils.listarCategoria();
+        ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categorias);
+        spinCategoria.setAdapter(categoriasAdapter);
 
         btGetFromCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(Intent
-                        .createChooser(new Intent(MediaStore.ACTION_IMAGE_CAPTURE),
-                                "Capturar imagem"),123);
+                Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                denunciaFoto = new File(Environment.getExternalStorageDirectory(), "denunciaFoto");
+                camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(denunciaFoto));
+                startActivityForResult(Intent.createChooser(camera,"Capturar foto do problema"),123);
             }
         });
 
@@ -90,7 +103,7 @@ public class DenunciaActivity extends AppCompatActivity {
                 startActivityForResult(Intent
                         .createChooser(new Intent(Intent.ACTION_PICK,
                                         MediaStore.Images.Media.INTERNAL_CONTENT_URI),
-                                "Selecionar foto"),124);
+                                "Selecionar foto"), 124);
             }
         });
 
@@ -112,6 +125,7 @@ public class DenunciaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 picDenuncia.setImageBitmap(null);
+                fabCloseImage.setVisibility(View.GONE);
             }
         });
 
@@ -120,12 +134,14 @@ public class DenunciaActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (spinCategoria.getSelectedItemPosition() == 0 ||
                         TextUtils.isEmpty(edtDescricaoDenuncia.getText()) ||
-                        TextUtils.isEmpty(localizacaoDenuncia.getText())){
-                    if(spinCategoria.getSelectedItemPosition() == 0){
+                        TextUtils.isEmpty(localizacaoDenuncia.getText())) {
+                    if (spinCategoria.getSelectedItemPosition() == 0) {
 
-                    } if(TextUtils.isEmpty(edtDescricaoDenuncia.getText())){
+                    }
+                    if (TextUtils.isEmpty(edtDescricaoDenuncia.getText())) {
 
-                    } if (TextUtils.isEmpty(localizacaoDenuncia.getText())){
+                    }
+                    if (TextUtils.isEmpty(localizacaoDenuncia.getText())) {
 
                     }
 
@@ -133,18 +149,14 @@ public class DenunciaActivity extends AppCompatActivity {
                     denuncia.setDescricaoDenuncia(edtDescricaoDenuncia.getText().toString());
                     Categoria categoria = new Categoria(spinCategoria.getSelectedItemPosition(), spinCategoria.getSelectedItem().toString());
                     denuncia.setCategoriaDenuncia(categoria);
-                    if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
+                    if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
                         denuncia.setLogin(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao());
-                    if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
+                    if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
                         denuncia.setLogin(((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa());
                 }
             }
         });
 
-        DadosUtils dadosUtils = new DadosUtils(this);
-        List<String> categorias = dadosUtils.listarCategoria();
-        ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,categorias);
-        spinCategoria.setAdapter(categoriasAdapter);
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -158,29 +170,36 @@ public class DenunciaActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
-                Bitmap imgFile = (Bitmap) data.getExtras().get("data");
-                picDenuncia.setImageBitmap(imgFile);
+                imgDenuncia = Uri.fromFile(denunciaFoto);
+                picDenuncia.setImageURI(imgDenuncia);
                 fabCloseImage.setVisibility(View.VISIBLE);
                 fabCloseImage.setClickable(true);
             }
-            if(requestCode == 124){
-                Uri imgFile = data.getData();
-                try {
-                    picDenuncia.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(),imgFile));
-                    fabCloseImage.setVisibility(View.VISIBLE);
-                    fabCloseImage.setClickable(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (requestCode == 124) {
+                imgDenuncia = data.getData();
+                picDenuncia.setImageURI(imgDenuncia);
+                fabCloseImage.setVisibility(View.VISIBLE);
+                fabCloseImage.setClickable(true);
             }
-            if(requestCode == 125){
-                Place place = PlacePicker.getPlace(this,data);
+            if (requestCode == 125) {
+                Place place = PlacePicker.getPlace(this, data);
+
+                double latitude = place.getLatLng().latitude;
+                double longitude = place.getLatLng().longitude;
+
                 localizacaoDenuncia.setText(place.getAddress());
-                denuncia.setLatitude(place.getLatLng().latitude);
-                denuncia.setLongitude(place.getLatLng().longitude);
-                denuncia.setCidade(place.getLocale().getCountry());
+                denuncia.setLatitude(latitude);
+                denuncia.setLongitude(longitude);
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    List<Address> local = geocoder.getFromLocation(latitude, longitude, 1);
+                    denuncia.setCidade(local.get(0).getLocality());
+                    denuncia.setEstado(local.get(0).getAdminArea());
+                } catch (IOException e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
