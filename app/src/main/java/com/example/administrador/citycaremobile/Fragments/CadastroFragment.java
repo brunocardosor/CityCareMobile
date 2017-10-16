@@ -239,13 +239,11 @@ public class CadastroFragment extends Fragment {
                                 file
                         );
 
-                        RequestBody requestJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(cidadao));
-
                         MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
                         Service service = CallService.createService(Service.class);
                         Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                requestJson,
+                                cidadao,
                                 fotoBody);
                         cadastrarCidadao.enqueue(new Callback<Void>() {
                             @Override
@@ -273,7 +271,7 @@ public class CadastroFragment extends Fragment {
                         RequestBody requestJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(cidadao));
                         Service service = CallService.createService(Service.class);
                         Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                requestJson, null);
+                                cidadao, null);
                         callCadastro.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -299,7 +297,6 @@ public class CadastroFragment extends Fragment {
                 }
             }
         });
-
 
         edtNome.requestFocus();
         return view;

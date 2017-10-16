@@ -1,12 +1,14 @@
 package com.example.administrador.citycaremobile.Services;
 
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Login;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -24,12 +26,15 @@ public interface Service {
     @POST("cidadao/cadastrar")
     @Multipart
     Call<Void> postCidadao(@Header("X-Token") String token,
-                           @Part("cidadao") RequestBody cidadao,
+                           @Part Cidadao cidadao,
                            @Part MultipartBody.Part foto);
 
     @PUT("cidadao/put")
-    Call<Boolean> putUsuario(@Header("Content-type") String content,
-                             @Header("X-Token") String token,
+    Call<Cidadao> putUsuario(@Header("X-Token") String token,
+                             @Body Cidadao cidadao);
+    @Headers("content-type:application/json")
+    @DELETE
+    Call<Void> deleteCidadao(@Header("X-Token") String token,
                              @Body Cidadao cidadao);
 
     @Headers("content-type:application/json")
@@ -42,11 +47,11 @@ public interface Service {
                        @Header("X-Token") String token,
                        @Body Login login);
 
-
-
-    @POST("cidadao/cadastrar")
+    @Headers("content-type:application/json")
+    @POST("denuncia/post")
     @Multipart
-    Call<Void> postCidadaoParam(@Header("X-Token") String token,
-                           @Part("cidadao") RequestBody cidadao,
-                           @Part MultipartBody.Part foto);
+    Call<Void> denunciar(@Header("X-Token") String token,
+                         @Part MultipartBody.Part file,
+                         @Part Denuncia denuncia);
+
 }

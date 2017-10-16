@@ -10,6 +10,12 @@ import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Services.Token;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,6 +33,9 @@ public class UsuarioApplication extends Application {
     private static String usuario = "root";
     private static String senha = "carecity";
     private Token token = null;
+    private static DateTimeZone timeZone;
+
+
 
     public Object getUsuario() {
         if (cidadao != null && empresa == null) {
@@ -72,11 +81,17 @@ public class UsuarioApplication extends Application {
         this.token = token;
     }
 
+    public DateTimeZone getTimeZone(){
+        return timeZone;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
 
+        timeZone = DateTimeZone.getDefault();
+        Log.i("TimeZone","Time Zone: " + timeZone);
 
         Service service = CallService.createService(Service.class,usuario,senha);
         Call<Token> call = service.autentication();
@@ -101,3 +116,4 @@ public class UsuarioApplication extends Application {
         });
     }
 }
+

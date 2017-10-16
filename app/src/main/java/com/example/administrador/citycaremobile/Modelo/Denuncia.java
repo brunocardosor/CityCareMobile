@@ -18,7 +18,7 @@ public class Denuncia implements Parcelable {
     private double longitude;
     private String cidade;
     private String estado;
-    private Date dataDenuncia;
+    private String dataDenuncia;
     private boolean statusDenuncia;
     private Solucao solucaoDenuncia;
     private Categoria categoriaDenuncia;
@@ -27,7 +27,7 @@ public class Denuncia implements Parcelable {
     public Denuncia() {
     }
 
-    public Denuncia(int idDenuncia, String descricaoDenuncia, String dirFotoDenuncia, double latitude, double longitude, String cidade, String estado, Date dataDenuncia, boolean statusDenuncia, Solucao solucaoDenuncia, Categoria categoriaDenuncia, Login login) {
+    public Denuncia(int idDenuncia, String descricaoDenuncia, String dirFotoDenuncia, double latitude, double longitude, String cidade, String estado, String dataDenuncia, boolean statusDenuncia, Solucao solucaoDenuncia, Categoria categoriaDenuncia, Login login) {
         this.idDenuncia = idDenuncia;
         this.descricaoDenuncia = descricaoDenuncia;
         this.dirFotoDenuncia = dirFotoDenuncia;
@@ -50,6 +50,7 @@ public class Denuncia implements Parcelable {
         longitude = in.readDouble();
         cidade = in.readString();
         estado = in.readString();
+        dataDenuncia = in.readString();
         statusDenuncia = in.readByte() != 0;
         solucaoDenuncia = in.readParcelable(Solucao.class.getClassLoader());
         categoriaDenuncia = in.readParcelable(Categoria.class.getClassLoader());
@@ -65,6 +66,7 @@ public class Denuncia implements Parcelable {
         dest.writeDouble(longitude);
         dest.writeString(cidade);
         dest.writeString(estado);
+        dest.writeString(dataDenuncia);
         dest.writeByte((byte) (statusDenuncia ? 1 : 0));
         dest.writeParcelable(solucaoDenuncia, flags);
         dest.writeParcelable(categoriaDenuncia, flags);
@@ -144,11 +146,11 @@ public class Denuncia implements Parcelable {
         this.estado = estado;
     }
 
-    public Date getDataDenuncia() {
+    public String getDataDenuncia() {
         return dataDenuncia;
     }
 
-    public void setDataDenuncia(Date dataDenuncia) {
+    public void setDataDenuncia(String dataDenuncia) {
         this.dataDenuncia = dataDenuncia;
     }
 

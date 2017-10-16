@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,23 +24,38 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
+import com.example.administrador.citycaremobile.Services.CallService;
+import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.DadosUtils;
+import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class DenunciaActivity extends AppCompatActivity {
 
@@ -54,7 +70,7 @@ public class DenunciaActivity extends AppCompatActivity {
     private Denuncia denuncia;
     private Button publicar;
     private Uri imgDenuncia;
-    private File denunciaFoto;
+    private File file;
 
 
     @Override
@@ -90,10 +106,8 @@ public class DenunciaActivity extends AppCompatActivity {
         btGetFromCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                denunciaFoto = new File(Environment.getExternalStorageDirectory(), "denunciaFoto");
-                camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(denunciaFoto));
-                startActivityForResult(Intent.createChooser(camera,"Capturar foto do problema"),123);
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(Intent.createChooser(i,"Selecionar Foto"), 123);
             }
         });
 
@@ -149,10 +163,52 @@ public class DenunciaActivity extends AppCompatActivity {
                     denuncia.setDescricaoDenuncia(edtDescricaoDenuncia.getText().toString());
                     Categoria categoria = new Categoria(spinCategoria.getSelectedItemPosition(), spinCategoria.getSelectedItem().toString());
                     denuncia.setCategoriaDenuncia(categoria);
-                    if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
+                    if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
                         denuncia.setLogin(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao());
-                    if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
+                    } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
                         denuncia.setLogin(((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa());
+                    }
+                    denuncia.setCategoriaDenuncia(categoria);
+                    denuncia.setDataDenuncia(DateTime.now().toString());
+                    denuncia.setStatusDenuncia(false);
+
+                    try{
+                        file = new File(new URI(imgDenuncia.toString()));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+
+                    RequestBody requestFile = RequestBody.create(
+                            MediaType.parse("multipart/form-data"),
+                            file
+                    );
+
+                    MultipartBody.Part imgBody = MultipartBody.Part.createFormData("fotoDenuncia", file.getName(),requestFile);
+
+                    Service service = CallService.createService(Service.class);
+                    Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                            imgBody,
+                            denuncia);
+                    denunciar.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                            if(response.isSuccessful()){
+                                if(response.code() != 204)
+                                Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                            } else {
+                                APIError error = ErrorUtils.parseError(response);
+                                Log.e("ErrorDenunciar", error.getMessage());
+                                Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
                 }
             }
         });
@@ -172,8 +228,7 @@ public class DenunciaActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
-                imgDenuncia = Uri.fromFile(denunciaFoto);
-                picDenuncia.setImageURI(imgDenuncia);
+                picDenuncia.setImageURI(data.getData());
                 fabCloseImage.setVisibility(View.VISIBLE);
                 fabCloseImage.setClickable(true);
             }
