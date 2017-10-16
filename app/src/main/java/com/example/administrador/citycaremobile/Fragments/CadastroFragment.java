@@ -199,6 +199,7 @@ public class CadastroFragment extends Fragment {
                 }
                 if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
                         && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
+                        && patternUtils.emailValido(edtEmail.getText().toString())
                         && !TextUtils.isEmpty(edtLogin.getText()) && !TextUtils.isEmpty(edtEmail.getText())
                         && !TextUtils.isEmpty(edtSenha.getText()) && edtSenha.getText().length() >= 8
                         && new SystemUtils().verificaConexao(getContext())) {
@@ -225,10 +226,9 @@ public class CadastroFragment extends Fragment {
                     cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
                     cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
                     cidadao.setLoginCidadao(login);
-
-                   if (imageUri.getPath() != null) {
+                    if (imageUri.getPath() != "") {
                         try {
-                            String path = "file:" + imageUri.getPath();
+                            String path = imageUri.toString();
                             file = new File(new URI(path));
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
@@ -268,22 +268,33 @@ public class CadastroFragment extends Fragment {
                         });
                     } else {
                         cidadao.setDir_foto_usuario("link de foto genérica");
-                        RequestBody requestJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(cidadao));
                         Service service = CallService.createService(Service.class);
                         Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
                                 cidadao, null);
                         callCadastro.enqueue(new Callback<Void>() {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() == 201) {
-                                        dialog.dismiss();
-                                        FragmentManager fm = getFragmentManager();
-                                        fm.popBackStack();
-                                    }
+                                if (response.code() == 201) {
+                                    dialog.dismiss();
+                                    FragmentManager fm = getFragmentManager();
+                                    fm.popBackStack();
+
                                 } else {
                                     APIError error = ErrorUtils.parseError(response);
-                                    new Throwable(error.getMessage());
+                                    String[] columnCode = TextUtils.split(error.getMessage(), "key");
+                                    switch (columnCode[1]) {
+                                        case "'UNIQ_AA08CB10AA08CB10'":
+                                            edtLogin.setError("Este Login já está em uso");
+                                            dialog.dismiss();
+                                            break;
+                                        case "'UNIQ_AA08CB10E7927C74'":
+                                            edtEmail.setError("Este E-mail já pertence a um cadastro");
+                                            dialog.dismiss();
+                                            break;
+                                        default:
+                                            Log.e("Erro Desconhecido", error.getMessage());
+                                            dialog.dismiss();
+                                    }
                                 }
                             }
 

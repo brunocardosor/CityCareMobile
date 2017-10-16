@@ -228,6 +228,7 @@ public class DenunciaActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
+                imgDenuncia = data.getData();
                 picDenuncia.setImageURI(data.getData());
                 fabCloseImage.setVisibility(View.VISIBLE);
                 fabCloseImage.setClickable(true);

@@ -26,7 +26,7 @@ public interface Service {
     @POST("cidadao/cadastrar")
     @Multipart
     Call<Void> postCidadao(@Header("X-Token") String token,
-                           @Part Cidadao cidadao,
+                           @Part("cidadao") Cidadao cidadao,
                            @Part MultipartBody.Part foto);
 
     @PUT("cidadao/put")

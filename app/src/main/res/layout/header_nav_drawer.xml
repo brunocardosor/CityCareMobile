@@ -19,14 +19,13 @@
             android:id="@+id/pic_profile_drawer"
             app:civ_border_width="4dp"
             app:civ_border_color="@android:color/white"
-            android:src="@drawable/recepcao"/>
+            />
         <TextView
             android:layout_below="@+id/pic_profile_drawer"
             android:id="@+id/name_nav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Bruno Cardoso"
             android:textSize="17dp"
             android:layout_centerHorizontal="true"
             android:textColor="@android:color/white"
