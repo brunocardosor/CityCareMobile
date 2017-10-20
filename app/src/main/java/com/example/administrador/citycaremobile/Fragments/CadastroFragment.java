@@ -281,7 +281,7 @@ public class CadastroFragment extends Fragment {
 
                                 } else {
                                     APIError error = ErrorUtils.parseError(response);
-                                    String[] columnCode = TextUtils.split(error.getMessage(), "key");
+                                    String[] columnCode = TextUtils.split(error.getMessage(), "key ");
                                     switch (columnCode[1]) {
                                         case "'UNIQ_AA08CB10AA08CB10'":
                                             edtLogin.setError("Este Login já está em uso");
