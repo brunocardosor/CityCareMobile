@@ -3,15 +3,21 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Administrador on 01/09/2017.
  */
 
 public class Comentario implements Parcelable {
 
+    @SerializedName("id_comentario")
     private int idComentario;
+    @SerializedName("descricao_comentario")
     private String descricaoComentario;
+    @SerializedName("fk_comentario_login")
     private Login login;
+    @SerializedName("denuncia_comentario")
     private Denuncia denunciaComentario;
 
     protected Comentario(Parcel in) {

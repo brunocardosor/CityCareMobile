@@ -1,14 +1,9 @@
 package com.example.administrador.citycaremobile.Activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -41,14 +34,12 @@ import com.example.administrador.citycaremobile.Utils.DadosUtils;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.Response;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.joda.time.DateTime;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -59,7 +50,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -102,7 +92,7 @@ public class DenunciaActivity extends AppCompatActivity {
         if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
             profileNomeDenuncia.setText(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getNome());
         else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
-            profileNomeDenuncia.setText(((Empresa) UsuarioApplication.getInstance().getUsuario()).getNome_fantasia());
+            profileNomeDenuncia.setText(((Empresa) UsuarioApplication.getInstance().getUsuario()).getNomeFantasia());
 
         DadosUtils dadosUtils = new DadosUtils(this);
         List<String> categorias = dadosUtils.listarCategoria();

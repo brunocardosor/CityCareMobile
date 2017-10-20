@@ -3,14 +3,19 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Administrador on 01/09/2017.
  */
 
 public class Agiliza implements Parcelable {
 
+    @SerializedName("fk_agiliza_login")
     private Login login;
+    @SerializedName("usuario_denuncia")
     private Denuncia usuarioDenuncia;
+    @SerializedName("interacao")
     private boolean interacao;
 
     protected Agiliza(Parcel in) {

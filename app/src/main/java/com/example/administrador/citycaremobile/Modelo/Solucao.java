@@ -3,6 +3,8 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -11,10 +13,15 @@ import java.util.Date;
 
 public class Solucao implements Parcelable{
 
+    @SerializedName("id_solucao")
     private int idSolucao;
+    @SerializedName("descricao_solucao")
     private String descricaoSolucao;
+    @SerializedName("dir_foto_solucao")
     private String dirFotoSolucao;
-    private Date dataSolucao;
+    @SerializedName("data_solucao")
+    private String dataSolucao;
+    @SerializedName("fk_solucao_login")
     private Login loginSolucao;
 
     protected Solucao(Parcel in) {
@@ -73,11 +80,11 @@ public class Solucao implements Parcelable{
         this.dirFotoSolucao = dirFotoSolucao;
     }
 
-    public Date getDataSolucao() {
+    public String getDataSolucao() {
         return dataSolucao;
     }
 
-    public void setDataSolucao(Date dataSolucao) {
+    public void setDataSolucao(String dataSolucao) {
         this.dataSolucao = dataSolucao;
     }
 

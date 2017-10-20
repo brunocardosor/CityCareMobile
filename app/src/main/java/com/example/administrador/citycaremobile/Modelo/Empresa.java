@@ -3,18 +3,27 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Administrador on 01/09/2017.
  */
 
 public class Empresa implements Parcelable {
 
+    @SerializedName("id_empresa")
     private int idEmpresa;
+    @SerializedName("cnpj")
     private String cnpj;
+    @SerializedName("razao_social")
     private String razaoSocial;
-    private String nome_fantasia;
+    @SerializedName("nome_fantasia")
+    private String nomeFantasia;
+    @SerializedName("cidadae")
     private String cidade;
+    @SerializedName("estado")
     private String estado;
+    @SerializedName("fk_empresa_login")
     private Login loginEmpresa;
 
     public Empresa(int idEmpresa, String cnpj,
@@ -24,7 +33,7 @@ public class Empresa implements Parcelable {
         this.idEmpresa = idEmpresa;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
-        this.nome_fantasia = nome_fantasia;
+        this.nomeFantasia = nome_fantasia;
         this.cidade = cidade;
         this.estado = estado;
         this.loginEmpresa = loginEmpresa;
@@ -34,7 +43,7 @@ public class Empresa implements Parcelable {
         idEmpresa = in.readInt();
         cnpj = in.readString();
         razaoSocial = in.readString();
-        nome_fantasia = in.readString();
+        nomeFantasia = in.readString();
         cidade = in.readString();
         estado = in.readString();
         loginEmpresa = in.readParcelable(Login.class.getClassLoader());
@@ -76,12 +85,12 @@ public class Empresa implements Parcelable {
         this.razaoSocial = razaoSocial;
     }
 
-    public String getNome_fantasia() {
-        return nome_fantasia;
+    public String getNomeFantasia() {
+        return nomeFantasia;
     }
 
-    public void setNome_fantasia(String nome_fantasia) {
-        this.nome_fantasia = nome_fantasia;
+    public void setNomeFantasia(String nomeFantasia) {
+        this.nomeFantasia = nomeFantasia;
     }
 
     public Login getLoginEmpresa() {
@@ -118,7 +127,7 @@ public class Empresa implements Parcelable {
         dest.writeInt(idEmpresa);
         dest.writeString(cnpj);
         dest.writeString(razaoSocial);
-        dest.writeString(nome_fantasia);
+        dest.writeString(nomeFantasia);
         dest.writeString(cidade);
         dest.writeString(estado);
         dest.writeParcelable(loginEmpresa, flags);

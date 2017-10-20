@@ -3,6 +3,8 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -11,9 +13,13 @@ import java.util.List;
 
 public class Postagem implements Parcelable {
 
+    @SerializedName("fk_postagem_cidadao")
     private Cidadao cidadao;
+    @SerializedName("fk_postagem_denuncia")
     private Denuncia denuncia;
+    @SerializedName("postagem_agiliza")
     private List<Agiliza> agilizas;
+    @SerializedName("postagem_comentario")
     private List<Comentario> comentarios;
 
     public Postagem(Denuncia denuncia, List<Agiliza> agilizas, List<Comentario> comentarios, Cidadao cidadao) {

@@ -8,33 +8,21 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Adapters.TabAdapter;
 
-import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
-import com.example.administrador.citycaremobile.Services.CallService;
-import com.example.administrador.citycaremobile.Services.Service;
-import com.example.administrador.citycaremobile.Services.Token;
-import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             });
             if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
-                nomeNavView.setText(empresa.getNome_fantasia());
+                nomeNavView.setText(empresa.getNomeFantasia());
                 picProfileNav.setImageURI(null);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
