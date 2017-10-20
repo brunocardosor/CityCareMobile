@@ -3,6 +3,8 @@ package com.example.administrador.citycaremobile.Modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -11,17 +13,29 @@ import java.util.Date;
 
 public class Denuncia implements Parcelable {
 
+    @SerializedName("id_denuncia")
     private int idDenuncia;
+    @SerializedName("descricao_denuncia")
     private String descricaoDenuncia;
+    @SerializedName("dir_foto_denuncia")
     private String dirFotoDenuncia;
+    @SerializedName("latitude_denuncia")
     private double latitude;
+    @SerializedName("longitude_denuncia")
     private double longitude;
+    @SerializedName("cidade")
     private String cidade;
+    @SerializedName("estado")
     private String estado;
+    @SerializedName("data_denuncia")
     private String dataDenuncia;
+    @SerializedName("status_denuncia")
     private boolean statusDenuncia;
+    @SerializedName("fk_solucao_denuncia")
     private Solucao solucaoDenuncia;
+    @SerializedName("fk_categoria_denuncia")
     private Categoria categoriaDenuncia;
+    @SerializedName("fk_login_denuncia")
     private Login login;
 
     public Denuncia() {
