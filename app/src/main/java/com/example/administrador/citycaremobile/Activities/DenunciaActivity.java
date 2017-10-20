@@ -1,7 +1,9 @@
 package com.example.administrador.citycaremobile.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,6 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -40,9 +44,11 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Response;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.joda.time.DateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -106,8 +112,7 @@ public class DenunciaActivity extends AppCompatActivity {
         btGetFromCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(Intent.createChooser(i,"Selecionar Foto"), 123);
+                CropImage.startPickImageActivity(DenunciaActivity.this);
             }
         });
 
@@ -173,7 +178,8 @@ public class DenunciaActivity extends AppCompatActivity {
                     denuncia.setStatusDenuncia(false);
 
                     try{
-                        file = new File(new URI(imgDenuncia.toString()));
+                        String path = "file:" + imgDenuncia.getPath();
+                        file = new File(new URI(path));
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
@@ -187,8 +193,8 @@ public class DenunciaActivity extends AppCompatActivity {
 
                     Service service = CallService.createService(Service.class);
                     Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
-                            imgBody,
-                            denuncia);
+                            denuncia,
+                            imgBody);
                     denunciar.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
@@ -203,7 +209,6 @@ public class DenunciaActivity extends AppCompatActivity {
                             }
 
                         }
-
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
 
@@ -224,38 +229,27 @@ public class DenunciaActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 123) {
-                imgDenuncia = data.getData();
-                picDenuncia.setImageURI(data.getData());
-                fabCloseImage.setVisibility(View.VISIBLE);
-                fabCloseImage.setClickable(true);
-            }
-            if (requestCode == 124) {
-                imgDenuncia = data.getData();
-                picDenuncia.setImageURI(imgDenuncia);
-                fabCloseImage.setVisibility(View.VISIBLE);
-                fabCloseImage.setClickable(true);
-            }
-            if (requestCode == 125) {
-                Place place = PlacePicker.getPlace(this, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+            imgDenuncia = CropImage.getPickImageResultUri(this,data);
+            picDenuncia.setImageURI(imgDenuncia);
+        }
+        if (requestCode == 125) {
+            Place place = PlacePicker.getPlace(this, data);
 
-                double latitude = place.getLatLng().latitude;
-                double longitude = place.getLatLng().longitude;
+            double latitude = place.getLatLng().latitude;
+            double longitude = place.getLatLng().longitude;
 
-                localizacaoDenuncia.setText(place.getAddress());
-                denuncia.setLatitude(latitude);
-                denuncia.setLongitude(longitude);
-                Geocoder geocoder = new Geocoder(this);
-                try {
-                    List<Address> local = geocoder.getFromLocation(latitude, longitude, 1);
-                    denuncia.setCidade(local.get(0).getLocality());
-                    denuncia.setEstado(local.get(0).getAdminArea());
-                } catch (IOException e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+            localizacaoDenuncia.setText(place.getAddress());
+            denuncia.setLatitude(latitude);
+            denuncia.setLongitude(longitude);
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                List<Address> local = geocoder.getFromLocation(latitude, longitude, 1);
+                denuncia.setCidade(local.get(0).getLocality());
+                denuncia.setEstado(local.get(0).getAdminArea());
+            } catch (IOException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
