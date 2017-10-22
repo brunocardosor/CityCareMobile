@@ -5,9 +5,12 @@ import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Login;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -46,11 +49,21 @@ public interface Service {
                        @Header("X-Token") String token,
                        @Body Login login);
 
-
     @POST("denuncia/cadastrar")
     @Multipart
     Call<Void> denunciar(@Header("X-Token") String token,
-                         @Part("denuncia") Denuncia denuncia,
-                         @Part MultipartBody.Part foto);
+                         @Part MultipartBody.Part foto,
+                         @Part("denuncia") RequestBody denuncia);
+
+    @POST("verificar/email")
+    @Headers("content-type:application/json")
+    Call<Void> verificarEmail(@Header("X-Token") String token,
+                         @Field("email") String email);
+
+    @POST("verificar/login")
+    @Headers("content-type:application/json")
+    @FormUrlEncoded
+    Call<Void> verificarLogin(@Header("X-Token") String token,
+                              @Field("login") String login);
 
 }

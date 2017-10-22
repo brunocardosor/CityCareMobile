@@ -25,41 +25,22 @@ public class Empresa implements Parcelable {
     private String estado;
     @SerializedName("fk_empresa_login")
     private Login loginEmpresa;
+    @SerializedName("dir_foto_usuario")
+    private String dirFotoUsuario;
 
-    public Empresa(int idEmpresa, String cnpj,
-                   String razaoSocial, String nome_fantasia,
-                   String cidade, String estado,
-                   Login loginEmpresa) {
+    public Empresa() {
+    }
+
+    public Empresa(int idEmpresa, String cnpj, String razaoSocial, String nomeFantasia, String cidade, String estado, Login loginEmpresa, String dirFotoUsuario) {
         this.idEmpresa = idEmpresa;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
-        this.nomeFantasia = nome_fantasia;
+        this.nomeFantasia = nomeFantasia;
         this.cidade = cidade;
         this.estado = estado;
         this.loginEmpresa = loginEmpresa;
+        this.dirFotoUsuario = dirFotoUsuario;
     }
-
-    protected Empresa(Parcel in) {
-        idEmpresa = in.readInt();
-        cnpj = in.readString();
-        razaoSocial = in.readString();
-        nomeFantasia = in.readString();
-        cidade = in.readString();
-        estado = in.readString();
-        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
-    }
-
-    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
-        @Override
-        public Empresa createFromParcel(Parcel in) {
-            return new Empresa(in);
-        }
-
-        @Override
-        public Empresa[] newArray(int size) {
-            return new Empresa[size];
-        }
-    };
 
     public int getIdEmpresa() {
         return idEmpresa;
@@ -93,14 +74,6 @@ public class Empresa implements Parcelable {
         this.nomeFantasia = nomeFantasia;
     }
 
-    public Login getLoginEmpresa() {
-        return loginEmpresa;
-    }
-
-    public void setLoginEmpresa(Login loginEmpresa) {
-        this.loginEmpresa = loginEmpresa;
-    }
-
     public String getCidade() {
         return cidade;
     }
@@ -117,9 +90,35 @@ public class Empresa implements Parcelable {
         this.estado = estado;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public Login getLoginEmpresa() {
+        return loginEmpresa;
+    }
+
+    public void setLoginEmpresa(Login loginEmpresa) {
+        this.loginEmpresa = loginEmpresa;
+    }
+
+    public String getDirFotoUsuario() {
+        return dirFotoUsuario;
+    }
+
+    public void setDirFotoUsuario(String dirFotoUsuario) {
+        this.dirFotoUsuario = dirFotoUsuario;
+    }
+
+    public static Creator<Empresa> getCREATOR() {
+        return CREATOR;
+    }
+
+    protected Empresa(Parcel in) {
+        idEmpresa = in.readInt();
+        cnpj = in.readString();
+        razaoSocial = in.readString();
+        nomeFantasia = in.readString();
+        cidade = in.readString();
+        estado = in.readString();
+        loginEmpresa = in.readParcelable(Login.class.getClassLoader());
+        dirFotoUsuario = in.readString();
     }
 
     @Override
@@ -131,5 +130,23 @@ public class Empresa implements Parcelable {
         dest.writeString(cidade);
         dest.writeString(estado);
         dest.writeParcelable(loginEmpresa, flags);
+        dest.writeString(dirFotoUsuario);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Empresa> CREATOR = new Creator<Empresa>() {
+        @Override
+        public Empresa createFromParcel(Parcel in) {
+            return new Empresa(in);
+        }
+
+        @Override
+        public Empresa[] newArray(int size) {
+            return new Empresa[size];
+        }
+    };
 }

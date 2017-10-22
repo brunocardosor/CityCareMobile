@@ -1,6 +1,7 @@
 package com.example.administrador.citycaremobile.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -36,6 +37,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.gson.Gson;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.joda.time.DateTime;
@@ -49,7 +51,9 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -60,7 +64,7 @@ public class DenunciaActivity extends AppCompatActivity {
     private CircleImageView profilePicDenuncia;
     private TextView profileNomeDenuncia, localizacaoDenuncia;
     private EditText edtDescricaoDenuncia;
-    private ImageButton btGetFromCamera, btGetFromGalery, btGetLocation;
+    private ImageButton btGetFromCamera, btGetLocation;
     private FloatingActionButton fabCloseImage;
     private ImageView picDenuncia;
     private Denuncia denuncia;
@@ -84,7 +88,6 @@ public class DenunciaActivity extends AppCompatActivity {
         picDenuncia = (ImageView) findViewById(R.id.foto_denuncia);
         fabCloseImage = (FloatingActionButton) findViewById(R.id.fab_drop_picture);
         btGetFromCamera = (ImageButton) findViewById(R.id.open_camera);
-        btGetFromGalery = (ImageButton) findViewById(R.id.open_galery);
         btGetLocation = (ImageButton) findViewById(R.id.open_placepicker);
         localizacaoDenuncia = (TextView) findViewById(R.id.localizacao_denuncia);
         publicar = (Button) findViewById(R.id.bt_publicar);
@@ -106,16 +109,6 @@ public class DenunciaActivity extends AppCompatActivity {
             }
         });
 
-        btGetFromGalery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(Intent
-                        .createChooser(new Intent(Intent.ACTION_PICK,
-                                        MediaStore.Images.Media.INTERNAL_CONTENT_URI),
-                                "Selecionar foto"), 124);
-            }
-        });
-
         btGetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,7 +126,8 @@ public class DenunciaActivity extends AppCompatActivity {
         fabCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                picDenuncia.setImageBitmap(null);
+                picDenuncia.setImageURI(null);
+                imgDenuncia = null;
                 fabCloseImage.setVisibility(View.GONE);
             }
         });
@@ -148,7 +142,7 @@ public class DenunciaActivity extends AppCompatActivity {
 
                     }
                     if (TextUtils.isEmpty(edtDescricaoDenuncia.getText())) {
-
+                        edtDescricaoDenuncia.setError("Precisamos da sua descrição do problema");
                     }
                     if (TextUtils.isEmpty(localizacaoDenuncia.getText())) {
 
@@ -167,50 +161,104 @@ public class DenunciaActivity extends AppCompatActivity {
                     denuncia.setDataDenuncia(DateTime.now().toString());
                     denuncia.setStatusDenuncia(false);
 
-                    try{
-                        String path = "file:" + imgDenuncia.getPath();
+                    RequestBody jsonDenuncia = RequestBody.create(MediaType.parse("application/json"),new Gson().toJson(denuncia));
+
+                    try {
+                        String path = imgDenuncia.toString();
                         file = new File(new URI(path));
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
 
-                    RequestBody requestFile = RequestBody.create(
-                            MediaType.parse("multipart/form-data"),
-                            file
-                    );
+                        RequestBody requestFile = RequestBody.create(
+                                MediaType.parse("multipart/form-data"),
+                                file
+                        );
 
-                    MultipartBody.Part imgBody = MultipartBody.Part.createFormData("fotoDenuncia", file.getName(),requestFile);
+                        MultipartBody.Part imgBody = MultipartBody.Part.createFormData("fotoDenuncia", file.getName(), requestFile);
 
-                    Service service = CallService.createService(Service.class);
-                    Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
-                            denuncia,
-                            imgBody);
-                    denunciar.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                            if(response.isSuccessful()){
-                                if(response.code() != 204)
-                                Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
-                            } else {
-                                APIError error = ErrorUtils.parseError(response);
-                                Log.e("ErrorDenunciar", error.getMessage());
-                                Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                                imgBody,
+                                jsonDenuncia);
+                        denunciar.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() != 204)
+                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("ErrorDenunciar", error.getMessage());
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
 
                             }
 
-                        }
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
 
-                        }
-                    });
+                            }
+                        });
+                    } catch (NullPointerException e){
+                        e.printStackTrace();
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                                null,
+                                jsonDenuncia);
+                        denunciar.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() != 204)
+                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("ErrorDenunciar", error.getMessage());
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                                null,
+                                jsonDenuncia);
+                        denunciar.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() != 204)
+                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("ErrorDenunciar", error.getMessage());
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 }
             }
         });
 
-
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
                 finish();
@@ -221,8 +269,17 @@ public class DenunciaActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
-            imgDenuncia = CropImage.getPickImageResultUri(this,data);
+            imgDenuncia = CropImage.getPickImageResultUri(this, data);
+            CropImage.activity(imgDenuncia)
+                    .setOutputCompressQuality(70)
+                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            imgDenuncia = result.getUri();
             picDenuncia.setImageURI(imgDenuncia);
+            fabCloseImage.setVisibility(View.VISIBLE);
         }
         if (requestCode == 125) {
             Place place = PlacePicker.getPlace(this, data);

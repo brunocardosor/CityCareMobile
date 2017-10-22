@@ -127,14 +127,26 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <EditText
-                            android:id="@+id/edt_cadastro_email"
-                            android:textColor="@android:color/black"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="E-mail"
-                            android:inputType="textEmailAddress"
-                            android:maxLines="1" />
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <ProgressBar
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignRight="@+id/edt_cadastro_email"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="8dp"
+                                android:visibility="gone"
+                                android:id="@+id/progress_bar_email"/>
+                            <EditText
+                                android:id="@+id/edt_cadastro_email"
+                                android:textColor="@android:color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="E-mail"
+                                android:inputType="textEmailAddress"
+                                android:maxLines="1" />
+                        </RelativeLayout>
                     </android.support.design.widget.TextInputLayout>
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
