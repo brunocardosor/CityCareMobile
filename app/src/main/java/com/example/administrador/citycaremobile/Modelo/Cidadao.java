@@ -22,7 +22,7 @@ public class Cidadao implements Parcelable {
     @SerializedName("estado")
     private String estado;
     @SerializedName("dir_foto_usuario")
-    private String dir_foto_usuario;
+    private String dirFotoUsuario;
     @SerializedName("sexo")
     private String sexo;
     @SerializedName("fk_login_cidadao")
@@ -37,7 +37,7 @@ public class Cidadao implements Parcelable {
         this.sobrenome = sobrenome;
         this.cidade = cidade;
         this.estado = estado;
-        this.dir_foto_usuario = dir_foto_usuario;
+        this.dirFotoUsuario = dir_foto_usuario;
         this.sexo = sexo;
         this.loginCidadao = loginCidadao;
     }
@@ -51,7 +51,7 @@ public class Cidadao implements Parcelable {
         sobrenome = in.readString();
         cidade = in.readString();
         estado = in.readString();
-        dir_foto_usuario = in.readString();
+        dirFotoUsuario = in.readString();
         sexo = in.readString();
         loginCidadao = in.readParcelable(Login.class.getClassLoader());
     }
@@ -62,7 +62,7 @@ public class Cidadao implements Parcelable {
         dest.writeString(sobrenome);
         dest.writeString(cidade);
         dest.writeString(estado);
-        dest.writeString(dir_foto_usuario);
+        dest.writeString(dirFotoUsuario);
         dest.writeString(sexo);
         dest.writeParcelable(loginCidadao, flags);
     }
@@ -125,11 +125,11 @@ public class Cidadao implements Parcelable {
     }
 
     public String getDir_foto_usuario() {
-        return dir_foto_usuario;
+        return dirFotoUsuario;
     }
 
     public void setDir_foto_usuario(String dir_foto_usuario) {
-        this.dir_foto_usuario = dir_foto_usuario;
+        this.dirFotoUsuario = dir_foto_usuario;
     }
 
     public String getSexo() {

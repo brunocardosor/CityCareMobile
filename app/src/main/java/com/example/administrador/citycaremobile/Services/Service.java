@@ -34,6 +34,7 @@ public interface Service {
     @PUT("cidadao/put")
     Call<Cidadao> putUsuario(@Header("X-Token") String token,
                              @Body Cidadao cidadao);
+
     @Headers("content-type:application/json")
     @DELETE
     Call<Void> deleteCidadao(@Header("X-Token") String token,
@@ -58,12 +59,11 @@ public interface Service {
     @POST("verificar/email")
     @Headers("content-type:application/json")
     Call<Void> verificarEmail(@Header("X-Token") String token,
-                         @Field("email") String email);
+                              @Body Login email);
 
     @POST("verificar/login")
     @Headers("content-type:application/json")
-    @FormUrlEncoded
     Call<Void> verificarLogin(@Header("X-Token") String token,
-                              @Field("login") String login);
+                              @Body Login login);
 
 }

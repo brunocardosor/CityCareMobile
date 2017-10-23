@@ -1,11 +1,13 @@
 package com.example.administrador.citycaremobile.Activities;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -51,16 +54,14 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 public class DenunciaActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private Spinner spinCategoria;
+    private Spinner spinnerCategoria;
     private CircleImageView profilePicDenuncia;
     private TextView profileNomeDenuncia, localizacaoDenuncia;
     private EditText edtDescricaoDenuncia;
@@ -81,7 +82,7 @@ public class DenunciaActivity extends AppCompatActivity {
         denuncia = new Denuncia();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_edt_denuncia);
-        spinCategoria = (Spinner) findViewById(R.id.spinner_categoria);
+        spinnerCategoria = (Spinner) findViewById(R.id.spinner_categoria);
         profilePicDenuncia = (CircleImageView) findViewById(R.id.pic_profile_denuncia);
         profileNomeDenuncia = (TextView) findViewById(R.id.txt_username);
         edtDescricaoDenuncia = (EditText) findViewById(R.id.descricao_denuncia);
@@ -92,15 +93,22 @@ public class DenunciaActivity extends AppCompatActivity {
         localizacaoDenuncia = (TextView) findViewById(R.id.localizacao_denuncia);
         publicar = (Button) findViewById(R.id.bt_publicar);
 
-        if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao)
+        if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
             profileNomeDenuncia.setText(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getNome());
-        else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa)
+            Glide.with(this)
+                    .load(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getDir_foto_usuario())
+                    .into(profilePicDenuncia);
+        } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
             profileNomeDenuncia.setText(((Empresa) UsuarioApplication.getInstance().getUsuario()).getNomeFantasia());
+            Glide.with(this)
+                    .load(((Empresa) UsuarioApplication.getInstance().getUsuario()).getDirFotoUsuario())
+                    .into(profilePicDenuncia);
+        }
 
         DadosUtils dadosUtils = new DadosUtils(this);
         List<String> categorias = dadosUtils.listarCategoria();
         ArrayAdapter<String> categoriasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categorias);
-        spinCategoria.setAdapter(categoriasAdapter);
+        spinnerCategoria.setAdapter(categoriasAdapter);
 
         btGetFromCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,24 +141,40 @@ public class DenunciaActivity extends AppCompatActivity {
         });
 
         publicar.setOnClickListener(new View.OnClickListener() {
+
+            ProgressDialog dialog = new ProgressDialog(DenunciaActivity.this);
+
             @Override
             public void onClick(View v) {
-                if (spinCategoria.getSelectedItemPosition() == 0 ||
+                dialog.setMessage("Enviando denuncia...");
+                dialog.setIndeterminate(false);
+                dialog.show();
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.dismiss();
+                    }
+                });
+                if (spinnerCategoria.getSelectedItemPosition() == 0 ||
                         TextUtils.isEmpty(edtDescricaoDenuncia.getText()) ||
                         TextUtils.isEmpty(localizacaoDenuncia.getText())) {
-                    if (spinCategoria.getSelectedItemPosition() == 0) {
-
+                    if (spinnerCategoria.getSelectedItemPosition() == 0) {
+                        TextView erroSpinCidade = (TextView) spinnerCategoria.getSelectedView();
+                        erroSpinCidade.setError(getString(R.string.campo_incorreto));
+                        erroSpinCidade.setTextColor(Color.RED);
+                        erroSpinCidade.setText(getString(R.string.campo_incorreto));
+                        dialog.dismiss();
                     }
                     if (TextUtils.isEmpty(edtDescricaoDenuncia.getText())) {
                         edtDescricaoDenuncia.setError("Precisamos da sua descrição do problema");
                     }
                     if (TextUtils.isEmpty(localizacaoDenuncia.getText())) {
-
+                        localizacaoDenuncia.setError("Precisamos da localização do problema");
                     }
 
                 } else {
                     denuncia.setDescricaoDenuncia(edtDescricaoDenuncia.getText().toString());
-                    Categoria categoria = new Categoria(spinCategoria.getSelectedItemPosition(), spinCategoria.getSelectedItem().toString());
+                    Categoria categoria = new Categoria(spinnerCategoria.getSelectedItemPosition(), spinnerCategoria.getSelectedItem().toString());
                     denuncia.setCategoriaDenuncia(categoria);
                     if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
                         denuncia.setLogin(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao());
@@ -161,7 +185,7 @@ public class DenunciaActivity extends AppCompatActivity {
                     denuncia.setDataDenuncia(DateTime.now().toString());
                     denuncia.setStatusDenuncia(false);
 
-                    RequestBody jsonDenuncia = RequestBody.create(MediaType.parse("application/json"),new Gson().toJson(denuncia));
+                    RequestBody jsonDenuncia = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(denuncia));
 
                     try {
                         String path = imgDenuncia.toString();
@@ -172,7 +196,7 @@ public class DenunciaActivity extends AppCompatActivity {
                                 file
                         );
 
-                        MultipartBody.Part imgBody = MultipartBody.Part.createFormData("fotoDenuncia", file.getName(), requestFile);
+                        MultipartBody.Part imgBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
                         Service service = CallService.createService(Service.class);
                         Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
@@ -183,22 +207,25 @@ public class DenunciaActivity extends AppCompatActivity {
                             public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
                                 } else {
+                                    dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
                                     Log.e("ErrorDenunciar", error.getMessage());
-                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
 
                                 }
-
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-
+                                dialog.dismiss();
+                                Log.e("ErroDenuncia", t.getLocalizedMessage());
+                                Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
-                    } catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                         Service service = CallService.createService(Service.class);
                         Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
@@ -209,11 +236,13 @@ public class DenunciaActivity extends AppCompatActivity {
                             public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
                                 } else {
+                                    dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
                                     Log.e("ErrorDenunciar", error.getMessage());
-                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
 
                                 }
 
@@ -221,7 +250,9 @@ public class DenunciaActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-
+                                dialog.dismiss();
+                                Log.e("ErroDenuncia", t.getLocalizedMessage());
+                                Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
                     } catch (URISyntaxException e) {
@@ -235,11 +266,13 @@ public class DenunciaActivity extends AppCompatActivity {
                             public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
                                 } else {
+                                    dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
                                     Log.e("ErrorDenunciar", error.getMessage());
-                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
 
                                 }
 
@@ -247,7 +280,9 @@ public class DenunciaActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
-
+                                dialog.dismiss();
+                                Log.e("ErroDenuncia", t.getLocalizedMessage());
+                                Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
                     }

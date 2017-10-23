@@ -85,6 +85,10 @@ public class CadastroFragment extends Fragment {
     private ProgressBar pbLogin, pbEmail;
     private Drawable iconUncheck;
     private Drawable iconCheck;
+    private Login login;
+
+    private Boolean emailValido = null;
+    private Boolean loginValido = null;
 
     private PatternUtils patternUtils = new PatternUtils();
 
@@ -103,10 +107,13 @@ public class CadastroFragment extends Fragment {
         toolbar = (Toolbar) view.findViewById(R.id.toolbar_transparente);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
+        login = new Login();
+
         iconUncheck = getResources().getDrawable(R.drawable.ic_uncheck_black, null);
         iconCheck = getResources().getDrawable(R.drawable.ic_check_black, null);
 
         pbEmail = (ProgressBar) view.findViewById(R.id.progress_bar_email);
+        pbLogin = (ProgressBar) view.findViewById(R.id.progress_bar_login);
 
         profileImage = (CircleImageView) view.findViewById(R.id.pic_profile);
         fabGetPicture = (FloatingActionButton) view.findViewById(R.id.fab_get_picture);
@@ -156,12 +163,49 @@ public class CadastroFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                pbLogin.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                login.setLogin(s.toString());
+                if (s.toString() != null) {
+                    Service service = CallService.createService(Service.class);
+                    Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), login);
+                    callLogin.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            switch (response.code()) {
+                                case 202:
+                                    pbLogin.setVisibility(View.GONE);
+                                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
+                                    edtLogin.setError("Este login já está em uso");
+                                    loginValido = false;
+                                    return;
+                                case 204:
+                                    pbLogin.setVisibility(View.GONE);
+                                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
+                                    loginValido = true;
+                                    return;
+                                default:
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("Erro na conexão", t.getMessage());
+                            if (!new SystemUtils().verificaConexao(getContext())) {
+                                Toasty.error(getContext(), "Sem conexão com a internet", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                } else {
+                    pbLogin.setVisibility(View.GONE);
+                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                }
             }
         });
         edtEmail = (EditText) view.findViewById(R.id.edt_cadastro_email);
@@ -172,41 +216,49 @@ public class CadastroFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edtEmail.setCompoundDrawables(null, null, null, null);
+                edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbEmail.setVisibility(View.VISIBLE);
-                Service service = CallService.createService(Service.class);
-                Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), s.toString());
-                callLogin.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        switch (response.code()) {
-                            case 202:
-                                pbEmail.setVisibility(View.GONE);
-                                edtLogin.setCompoundDrawables(null, null, iconUncheck, null);
-                                edtLogin.setError("Este e-mail já tem uma conta vinculada");
-                                return;
-                            case 204:
-                                pbEmail.setVisibility(View.GONE);
-                                edtLogin.setCompoundDrawables(null, null, iconCheck, null);
-                                return;
-                            default:
-                                APIError error = ErrorUtils.parseError(response);
-                                Toasty.error(getContext(),error.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Log.e("Erro na conexão",t.getMessage());
-                        if (new SystemUtils().verificaConexao(getContext())){
-                            Toasty.error(getContext(),"Sem conexão com a internet", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                login.setEmail(s.toString());
+                if (s.toString() != null) {
+                    Service service = CallService.createService(Service.class);
+                    Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken().getToken(), login);
+                    callLogin.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            switch (response.code()) {
+                                case 202:
+                                    pbEmail.setVisibility(View.GONE);
+                                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
+                                    edtEmail.setError("Este e-mail já tem uma conta vinculada");
+                                    emailValido = false;
+                                    return;
+                                case 204:
+                                    pbEmail.setVisibility(View.GONE);
+                                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
+                                    emailValido = true;
+                                    return;
+                                default:
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("Erro na conexão", t.getMessage());
+                            if (!new SystemUtils().verificaConexao(getContext())) {
+                                Toasty.error(getContext(), "Sem conexão com a internet", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                } else {
+                    pbEmail.setVisibility(View.GONE);
+                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                }
 
             }
         });
@@ -225,12 +277,7 @@ public class CadastroFragment extends Fragment {
                 dialog.setMessage("Cadastrando...");
                 dialog.setIndeterminate(false);
                 dialog.show();
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        dialog.dismiss();
-                    }
-                });
+
 
                 if (TextUtils.isEmpty(edtNome.getText())) {
                     edtNome.setError(getString(R.string.campo_incorreto));
@@ -271,129 +318,135 @@ public class CadastroFragment extends Fragment {
                     edtSenha.setError("A senha deve ter 8 ou mais dígitos");
                     dialog.dismiss();
                 }
+                if (!emailValido) {
+                    edtEmail.setError("Este e-mail já tem uma conta vinculada");
+                }
+                if (!loginValido) {
+                    edtLogin.setError("Este login já está em uso");
+                }
                 if (!new SystemUtils().verificaConexao(getContext())) {
                     Toasty.error(getContext(), "Sem conexão com a internet").show();
                     dialog.dismiss();
-                }
-                if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
-                        && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
-                        && patternUtils.emailValido(edtEmail.getText().toString())
-                        && !TextUtils.isEmpty(edtLogin.getText()) && !TextUtils.isEmpty(edtEmail.getText())
-                        && !TextUtils.isEmpty(edtSenha.getText()) && edtSenha.getText().length() >= 8
-                        && new SystemUtils().verificaConexao(getContext())) {
-                    //Instancia de Login
-                    Login login = new Login();
-                    login.setLogin(edtLogin.getText().toString());
-                    login.setEmail(edtEmail.getText().toString());
-                    login.setSenha(edtSenha.getText().toString());
-                    login.setStatus_login(true);
-                    login.setAdministrador(false);
 
-                    //Instancia de Cidadao
-                    final Cidadao cidadao = new Cidadao();
-                    cidadao.setNome(edtNome.getText().toString());
-                    if (!TextUtils.isEmpty(edtSobrenome.getText())) {
-                        cidadao.setSobrenome(edtSobrenome.getText().toString());
-                    }
-                    if (rbMasculino.isChecked()) {
-                        cidadao.setSexo("Masculino");
-                    } else {
-                        cidadao.setSexo("Feminino");
-                    }
+                    if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
+                            && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
+                            && patternUtils.emailValido(edtEmail.getText().toString())
+                            && !TextUtils.isEmpty(edtLogin.getText()) && !TextUtils.isEmpty(edtEmail.getText())
+                            && !TextUtils.isEmpty(edtSenha.getText()) && edtSenha.getText().length() >= 8
+                            && emailValido && loginValido && new SystemUtils().verificaConexao(getContext())) {
+                        //Instancia de Login
+                        login.setLogin(edtLogin.getText().toString());
+                        login.setEmail(edtEmail.getText().toString());
+                        login.setSenha(edtSenha.getText().toString());
+                        login.setStatus_login(true);
+                        login.setAdministrador(false);
 
-                    cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
-                    cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
-                    cidadao.setLoginCidadao(login);
-                    try {
-                        String path = imageUri.toString();
-                        file = new File(new URI(path));
-                        RequestBody requestFile = RequestBody.create(
-                                MediaType.parse("multipart/form-data"),
-                                file
-                        );
+                        //Instancia de Cidadao
+                        final Cidadao cidadao = new Cidadao();
+                        cidadao.setNome(edtNome.getText().toString());
+                        if (!TextUtils.isEmpty(edtSobrenome.getText())) {
+                            cidadao.setSobrenome(edtSobrenome.getText().toString());
+                        }
+                        if (rbMasculino.isChecked()) {
+                            cidadao.setSexo("Masculino");
+                        } else {
+                            cidadao.setSexo("Feminino");
+                        }
 
-                        MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
+                        cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
+                        cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
+                        cidadao.setLoginCidadao(login);
+                        try {
+                            String path = imageUri.toString();
+                            file = new File(new URI(path));
+                            RequestBody requestFile = RequestBody.create(
+                                    MediaType.parse("multipart/form-data"),
+                                    file
+                            );
 
-                        Service service = CallService.createService(Service.class);
-                        Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                cidadao,
-                                fotoBody);
-                        cadastrarCidadao.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() == 201) {
-                                        dialog.dismiss();
-                                        FragmentManager fm = getFragmentManager();
-                                        fm.popBackStack();
+                            MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
+
+                            Service service = CallService.createService(Service.class);
+                            Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                    cidadao,
+                                    fotoBody);
+                            cadastrarCidadao.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.code() == 201) {
+                                            dialog.dismiss();
+                                            FragmentManager fm = getFragmentManager();
+                                            fm.popBackStack();
+                                        }
+                                    } else {
+                                        APIError error = ErrorUtils.parseError(response);
+                                        new Throwable(error.getMessage());
                                     }
-                                } else {
-                                    APIError error = ErrorUtils.parseError(response);
-                                    new Throwable(error.getMessage());
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                Toasty.error(getContext(), "Erro na conexão").show();
-                            }
-                        });
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                        cidadao.setDir_foto_usuario("link de foto genérica");
-                        Service service = CallService.createService(Service.class);
-                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                cidadao, null);
-                        callCadastro.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() == 201) {
-                                        dialog.dismiss();
-                                        FragmentManager fm = getFragmentManager();
-                                        fm.popBackStack();
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                    Toasty.error(getContext(), "Erro na conexão").show();
+                                }
+                            });
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            cidadao.setDir_foto_usuario("link de foto genérica");
+                            Service service = CallService.createService(Service.class);
+                            Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                    cidadao, null);
+                            callCadastro.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.code() == 201) {
+                                            dialog.dismiss();
+                                            FragmentManager fm = getFragmentManager();
+                                            fm.popBackStack();
+                                        }
+                                    } else {
+                                        APIError error = ErrorUtils.parseError(response);
+                                        Log.e("Erro ao Cadastrar", error.getMessage());
                                     }
-                                } else {
-                                    APIError error = ErrorUtils.parseError(response);
-                                    Log.e("Erro ao Cadastrar", error.getMessage());
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                Toasty.error(getContext(), "Erro na conexão").show();
-                            }
-                        });
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                        cidadao.setDir_foto_usuario("link de foto genérica");
-                        Service service = CallService.createService(Service.class);
-                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                cidadao, null);
-                        callCadastro.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() == 201) {
-                                        dialog.dismiss();
-                                        FragmentManager fm = getFragmentManager();
-                                        fm.popBackStack();
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                    Toasty.error(getContext(), "Erro na conexão").show();
+                                }
+                            });
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            cidadao.setDir_foto_usuario("link de foto genérica");
+                            Service service = CallService.createService(Service.class);
+                            Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                    cidadao, null);
+                            callCadastro.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.code() == 201) {
+                                            dialog.dismiss();
+                                            FragmentManager fm = getFragmentManager();
+                                            fm.popBackStack();
+                                        }
+                                    } else {
+                                        APIError error = ErrorUtils.parseError(response);
+                                        Log.e("Erro ao Cadastrar", error.getMessage());
+                                        Toasty.error(getContext(), "Erro", Toast.LENGTH_LONG).show();
                                     }
-                                } else {
-                                    APIError error = ErrorUtils.parseError(response);
-                                    Log.e("Erro ao Cadastrar", error.getMessage());
-                                    Toasty.error(getContext(), "Erro", Toast.LENGTH_LONG).show();
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                Toasty.error(getContext(), "Erro na conexão").show();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                    Toasty.error(getContext(), "Erro na conexão").show();
+                                }
+                            });
+                        }
                     }
                 }
             }
