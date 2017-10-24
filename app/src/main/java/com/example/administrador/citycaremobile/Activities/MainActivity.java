@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DrawerLayout drawerLayout;
     private NavigationView navDrawer;
-
+    private TextView nomeNavView;
+    private CircleImageView picProfileNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +44,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
-        navDrawer.setVisibility(View.GONE);
         navDrawer.setClickable(false);
 
         btEntrar = (TextView) findViewById(R.id.move_to_login);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         View headerView = navDrawer.getHeaderView(0);
         Menu menuView = navDrawer.getMenu();
 
-        TextView nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
-        CircleImageView picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
+        nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
+        picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
 
         if (UsuarioApplication.getInstance().getUsuario() != null) {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
-            drawerLayout.setVisibility(View.VISIBLE);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             toolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -143,29 +144,37 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         if(UsuarioApplication.getInstance().getUsuario() == null){
             btEntrar.setVisibility(View.VISIBLE);
             btEntrar.setClickable(true);
-            drawerLayout.setVisibility(View.GONE);
             navDrawer.setClickable(false);
             toolbar.setNavigationIcon(null);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
             navDrawer.setClickable(true);
-            drawerLayout.setVisibility(View.VISIBLE);
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
             });
+            if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
+                Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
+                nomeNavView.setText(empresa.getNomeFantasia());
+                Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
+            } else {
+                Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
+                nomeNavView.setText(cidadao.getNome() + cidadao.getSobrenome());
+                Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
+            }
         }
     }
 
