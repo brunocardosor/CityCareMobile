@@ -96,7 +96,7 @@ public class DenunciaActivity extends AppCompatActivity {
         if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
             profileNomeDenuncia.setText(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getNome());
             Glide.with(this)
-                    .load(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getDir_foto_usuario())
+                    .load(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getDirFotoUsuario())
                     .into(profilePicDenuncia);
         } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
             profileNomeDenuncia.setText(((Empresa) UsuarioApplication.getInstance().getUsuario()).getNomeFantasia());
@@ -303,35 +303,37 @@ public class DenunciaActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
-            imgDenuncia = CropImage.getPickImageResultUri(this, data);
-            CropImage.activity(imgDenuncia)
-                    .setOutputCompressQuality(70)
-                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                    .start(this);
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            imgDenuncia = result.getUri();
-            picDenuncia.setImageURI(imgDenuncia);
-            fabCloseImage.setVisibility(View.VISIBLE);
-        }
-        if (requestCode == 125) {
-            Place place = PlacePicker.getPlace(this, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+                imgDenuncia = CropImage.getPickImageResultUri(this, data);
+                CropImage.activity(imgDenuncia)
+                        .setOutputCompressQuality(70)
+                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                        .start(this);
+            }
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                imgDenuncia = result.getUri();
+                picDenuncia.setImageURI(imgDenuncia);
+                fabCloseImage.setVisibility(View.VISIBLE);
+            }
+            if (requestCode == 125) {
+                Place place = PlacePicker.getPlace(this, data);
 
-            double latitude = place.getLatLng().latitude;
-            double longitude = place.getLatLng().longitude;
+                double latitude = place.getLatLng().latitude;
+                double longitude = place.getLatLng().longitude;
 
-            localizacaoDenuncia.setText(place.getAddress());
-            denuncia.setLatitude(latitude);
-            denuncia.setLongitude(longitude);
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                List<Address> local = geocoder.getFromLocation(latitude, longitude, 1);
-                denuncia.setCidade(local.get(0).getLocality());
-                denuncia.setEstado(local.get(0).getAdminArea());
-            } catch (IOException e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                localizacaoDenuncia.setText(place.getAddress());
+                denuncia.setLatitude(latitude);
+                denuncia.setLongitude(longitude);
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    List<Address> local = geocoder.getFromLocation(latitude, longitude, 1);
+                    denuncia.setCidade(local.get(0).getLocality());
+                    denuncia.setEstado(local.get(0).getAdminArea());
+                } catch (IOException e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

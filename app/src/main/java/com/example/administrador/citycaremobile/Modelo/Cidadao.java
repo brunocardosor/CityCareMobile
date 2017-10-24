@@ -124,11 +124,11 @@ public class Cidadao implements Parcelable {
         this.estado = estado;
     }
 
-    public String getDir_foto_usuario() {
+    public String getDirFotoUsuario() {
         return dirFotoUsuario;
     }
 
-    public void setDir_foto_usuario(String dir_foto_usuario) {
+    public void setDirFotoUsuario(String dir_foto_usuario) {
         this.dirFotoUsuario = dir_foto_usuario;
     }
 

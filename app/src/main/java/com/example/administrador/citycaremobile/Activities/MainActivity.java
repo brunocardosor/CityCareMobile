@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Adapters.TabAdapter;
 
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         navDrawer.setVisibility(View.GONE);
         navDrawer.setClickable(false);
 
+        btEntrar = (TextView) findViewById(R.id.move_to_login);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         View headerView = navDrawer.getHeaderView(0);
         Menu menuView = navDrawer.getMenu();
 
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if (UsuarioApplication.getInstance().getUsuario() != null) {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
-            navDrawer.setVisibility(View.VISIBLE);
+            drawerLayout.setVisibility(View.VISIBLE);
             toolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -66,16 +70,13 @@ public class MainActivity extends AppCompatActivity {
             if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
-                picProfileNav.setImageURI(null);
+                Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(cidadao.getNome() + cidadao.getSobrenome());
-                picProfileNav.setImageURI(null);
+                Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
         }
-
-        btEntrar = (TextView) findViewById(R.id.move_to_login);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         menuView.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -149,14 +150,14 @@ public class MainActivity extends AppCompatActivity {
         if(UsuarioApplication.getInstance().getUsuario() == null){
             btEntrar.setVisibility(View.VISIBLE);
             btEntrar.setClickable(true);
-            navDrawer.setVisibility(View.GONE);
+            drawerLayout.setVisibility(View.GONE);
             navDrawer.setClickable(false);
             toolbar.setNavigationIcon(null);
         } else {
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
             navDrawer.setClickable(true);
-            navDrawer.setVisibility(View.VISIBLE);
+            drawerLayout.setVisibility(View.VISIBLE);
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

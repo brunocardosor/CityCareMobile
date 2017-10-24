@@ -1,6 +1,7 @@
 package com.example.administrador.citycaremobile.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -170,7 +171,7 @@ public class CadastroFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 login.setLogin(s.toString());
-                if (s.toString() != null) {
+                if (s.toString() != "") {
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
@@ -223,7 +224,7 @@ public class CadastroFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 login.setEmail(s.toString());
-                if (s.toString() != null) {
+                if (s.toString() != "") {
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
@@ -328,129 +329,130 @@ public class CadastroFragment extends Fragment {
                     Toasty.error(getContext(), "Sem conexão com a internet").show();
                     dialog.dismiss();
 
-                    if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
-                            && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
-                            && patternUtils.emailValido(edtEmail.getText().toString())
-                            && !TextUtils.isEmpty(edtLogin.getText()) && !TextUtils.isEmpty(edtEmail.getText())
-                            && !TextUtils.isEmpty(edtSenha.getText()) && edtSenha.getText().length() >= 8
-                            && emailValido && loginValido && new SystemUtils().verificaConexao(getContext())) {
-                        //Instancia de Login
-                        login.setLogin(edtLogin.getText().toString());
-                        login.setEmail(edtEmail.getText().toString());
-                        login.setSenha(edtSenha.getText().toString());
-                        login.setStatus_login(true);
-                        login.setAdministrador(false);
+                }
+                if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
+                        && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
+                        && patternUtils.emailValido(edtEmail.getText().toString())
+                        && !TextUtils.isEmpty(edtLogin.getText()) && !TextUtils.isEmpty(edtEmail.getText())
+                        && !TextUtils.isEmpty(edtSenha.getText()) && edtSenha.getText().length() >= 8
+                        && emailValido && loginValido && new SystemUtils().verificaConexao(getContext())) {
+                    //Instancia de Login
+                    login.setLogin(edtLogin.getText().toString());
+                    login.setEmail(edtEmail.getText().toString());
+                    login.setSenha(edtSenha.getText().toString());
+                    login.setStatus_login(true);
+                    login.setAdministrador(false);
 
-                        //Instancia de Cidadao
-                        final Cidadao cidadao = new Cidadao();
-                        cidadao.setNome(edtNome.getText().toString());
-                        if (!TextUtils.isEmpty(edtSobrenome.getText())) {
-                            cidadao.setSobrenome(edtSobrenome.getText().toString());
-                        }
-                        if (rbMasculino.isChecked()) {
-                            cidadao.setSexo("Masculino");
-                        } else {
-                            cidadao.setSexo("Feminino");
-                        }
+                    //Instancia de Cidadao
+                    final Cidadao cidadao = new Cidadao();
+                    cidadao.setNome(edtNome.getText().toString());
+                    if (!TextUtils.isEmpty(edtSobrenome.getText())) {
+                        cidadao.setSobrenome(edtSobrenome.getText().toString());
+                    }
+                    if (rbMasculino.isChecked()) {
+                        cidadao.setSexo("Masculino");
+                    } else {
+                        cidadao.setSexo("Feminino");
+                    }
 
-                        cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
-                        cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
-                        cidadao.setLoginCidadao(login);
-                        try {
-                            String path = imageUri.toString();
-                            file = new File(new URI(path));
-                            RequestBody requestFile = RequestBody.create(
-                                    MediaType.parse("multipart/form-data"),
-                                    file
-                            );
+                    cidadao.setCidade(spinnerCidade.getSelectedItem().toString());
+                    cidadao.setEstado(spinnerEstado.getSelectedItem().toString());
+                    cidadao.setLoginCidadao(login);
+                    try {
+                        String path = imageUri.toString();
+                        file = new File(new URI(path));
+                        RequestBody requestFile = RequestBody.create(
+                                MediaType.parse("multipart/form-data"),
+                                file
+                        );
 
-                            MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
+                        MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
-                            Service service = CallService.createService(Service.class);
-                            Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                    cidadao,
-                                    fotoBody);
-                            cadastrarCidadao.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    if (response.isSuccessful()) {
-                                        if (response.code() == 201) {
-                                            dialog.dismiss();
-                                            FragmentManager fm = getFragmentManager();
-                                            fm.popBackStack();
-                                        }
-                                    } else {
-                                        APIError error = ErrorUtils.parseError(response);
-                                        new Throwable(error.getMessage());
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                cidadao,
+                                fotoBody);
+                        cadastrarCidadao.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() == 201) {
+                                        dialog.dismiss();
+                                        FragmentManager fm = getFragmentManager();
+                                        fm.popBackStack();
                                     }
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    new Throwable(error.getMessage());
                                 }
+                            }
 
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                    Toasty.error(getContext(), "Erro na conexão").show();
-                                }
-                            });
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                            cidadao.setDir_foto_usuario("link de foto genérica");
-                            Service service = CallService.createService(Service.class);
-                            Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                    cidadao, null);
-                            callCadastro.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    if (response.isSuccessful()) {
-                                        if (response.code() == 201) {
-                                            dialog.dismiss();
-                                            FragmentManager fm = getFragmentManager();
-                                            fm.popBackStack();
-                                        }
-                                    } else {
-                                        APIError error = ErrorUtils.parseError(response);
-                                        Log.e("Erro ao Cadastrar", error.getMessage());
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                Toasty.error(getContext(), "Erro na conexão").show();
+                            }
+                        });
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        cidadao.setDirFotoUsuario("link de foto genérica");
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                cidadao, null);
+                        callCadastro.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() == 201) {
+                                        dialog.dismiss();
+                                        FragmentManager fm = getFragmentManager();
+                                        fm.popBackStack();
                                     }
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("Erro ao Cadastrar", error.getMessage());
                                 }
+                            }
 
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                    Toasty.error(getContext(), "Erro na conexão").show();
-                                }
-                            });
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                            cidadao.setDir_foto_usuario("link de foto genérica");
-                            Service service = CallService.createService(Service.class);
-                            Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
-                                    cidadao, null);
-                            callCadastro.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    if (response.isSuccessful()) {
-                                        if (response.code() == 201) {
-                                            dialog.dismiss();
-                                            FragmentManager fm = getFragmentManager();
-                                            fm.popBackStack();
-                                        }
-                                    } else {
-                                        APIError error = ErrorUtils.parseError(response);
-                                        Log.e("Erro ao Cadastrar", error.getMessage());
-                                        Toasty.error(getContext(), "Erro", Toast.LENGTH_LONG).show();
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                Toasty.error(getContext(), "Erro na conexão").show();
+                            }
+                        });
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        cidadao.setDirFotoUsuario("link de foto genérica");
+                        Service service = CallService.createService(Service.class);
+                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                                cidadao, null);
+                        callCadastro.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.code() == 201) {
+                                        dialog.dismiss();
+                                        FragmentManager fm = getFragmentManager();
+                                        fm.popBackStack();
                                     }
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("Erro ao Cadastrar", error.getMessage());
+                                    Toasty.error(getContext(), "Erro", Toast.LENGTH_LONG).show();
                                 }
+                            }
 
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    Log.e("ErrorCadastro", t.getLocalizedMessage());
-                                    Toasty.error(getContext(), "Erro na conexão").show();
-                                }
-                            });
-                        }
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("ErrorCadastro", t.getLocalizedMessage());
+                                Toasty.error(getContext(), "Erro na conexão").show();
+                            }
+                        });
                     }
                 }
             }
         });
+
         edtNome.requestFocus();
         return view;
     }
@@ -462,7 +464,7 @@ public class CadastroFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         fm.popBackStack();
     }
-
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.crop_image_menu, menu);
@@ -479,27 +481,30 @@ public class CadastroFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
-            Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
-            CropImage.activity(imageUri)
-                    .setAspectRatio(1, 1)
-                    .setRequestedSize(1024, 1024)
-                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                    .start(getContext(), this);
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            imageUri = result.getUri();
-            profileImage.setImageURI(imageUri);
-        }
-        if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Exception error = result.getError();
-            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE) {
+                Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
+                CropImage.activity(imageUri)
+                        .setAspectRatio(1, 1)
+                        .setRequestedSize(1024, 1024)
+                        .setOutputCompressQuality(70)
+                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                        .start(getContext(), this);
+            }
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                imageUri = result.getUri();
+                profileImage.setImageURI(imageUri);
+            }
+            if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                Exception error = result.getError();
+                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
