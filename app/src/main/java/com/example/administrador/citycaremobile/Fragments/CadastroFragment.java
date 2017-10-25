@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -175,12 +176,14 @@ public class CadastroFragment extends Fragment {
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             switch (response.code()) {
                                 case 202:
                                     pbLogin.setVisibility(View.GONE);
                                     edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
+                                    edtLogin.setCompoundDrawableTintList(ColorStateList.valueOf(Color.RED));
                                     edtLogin.setError("Este login já está em uso");
                                     loginValido = false;
                                     return;
@@ -228,6 +231,7 @@ public class CadastroFragment extends Fragment {
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             switch (response.code()) {
@@ -235,6 +239,7 @@ public class CadastroFragment extends Fragment {
                                     pbEmail.setVisibility(View.GONE);
                                     edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
                                     edtEmail.setError("Este e-mail já tem uma conta vinculada");
+                                    edtLogin.setCompoundDrawableTintList(ColorStateList.valueOf(Color.RED));
                                     emailValido = false;
                                     return;
                                 case 204:
