@@ -89,8 +89,8 @@ public class CadastroFragment extends Fragment {
     private Drawable iconCheck;
     private Login login;
 
-    private Boolean emailValido = null;
-    private Boolean loginValido = null;
+    private boolean emailValido = false;
+    private boolean loginValido = false;
 
     private PatternUtils patternUtils = new PatternUtils();
 

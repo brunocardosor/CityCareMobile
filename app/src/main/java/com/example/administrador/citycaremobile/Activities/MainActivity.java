@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView picProfileNav;
     private View headerView;
     private Menu menuView;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +66,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //TAB LAYOUT
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Home"));
         tabLayout.addTab(tabLayout.newTab().setText("Mapa"));
-        tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
+        if(UsuarioApplication.getInstance().getUsuario() != null){
+            tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
+        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //VIEW PAGER
@@ -121,8 +124,10 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.edit_profile){
                     Intent i = new Intent(MainActivity.this,EditProfileActivity.class);
                     startActivity(i);
+                    return true;
                 }
-                return true;
+                return false;
+
             }
         });
 
@@ -133,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
                     UsuarioApplication.getInstance().logout();
                     toolbar.setNavigationIcon(null);
                     btEntrar.setVisibility(View.VISIBLE);
+                    btEntrar.setClickable(true);
                     drawerLayout.closeDrawer(Gravity.START);
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
 
@@ -172,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
+            tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
