@@ -1,5 +1,6 @@
 package com.example.administrador.citycaremobile.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -69,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Home"));
         tabLayout.addTab(tabLayout.newTab().setText("Mapa"));
-        if(UsuarioApplication.getInstance().getUsuario() != null){
-            tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
-        }
+        tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //VIEW PAGER
@@ -135,11 +134,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.bt_logout){
+                    ProgressDialog dialog = ProgressDialog.show(MainActivity.this,"","Saindo...");
                     UsuarioApplication.getInstance().logout();
                     toolbar.setNavigationIcon(null);
                     btEntrar.setVisibility(View.VISIBLE);
                     btEntrar.setClickable(true);
                     drawerLayout.closeDrawer(Gravity.START);
+                    dialog.dismiss();
                     return true;
                 }
                 return false;
@@ -179,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
-            tabLayout.addTab(tabLayout.newTab().setText("Perfil"));
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
