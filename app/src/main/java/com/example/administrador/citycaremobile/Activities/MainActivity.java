@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navDrawer;
     private TextView nomeNavView;
     private CircleImageView picProfileNav;
+    private View headerView;
+    private Menu menuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +51,18 @@ public class MainActivity extends AppCompatActivity {
         btEntrar = (TextView) findViewById(R.id.move_to_login);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        View headerView = navDrawer.getHeaderView(0);
-        Menu menuView = navDrawer.getMenu();
+        headerView = navDrawer.getHeaderView(0);
+        menuView = navDrawer.getMenu();
 
         nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
         picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 
         //TAB LAYOUT
         TabLayout tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
@@ -93,19 +102,13 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             toolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawerLayout.openDrawer(Gravity.START);
-                }
-            });
             if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
-                nomeNavView.setText(cidadao.getNome() + cidadao.getSobrenome());
+                nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
         } else {
@@ -136,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         btEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
         if(UsuarioApplication.getInstance().getUsuario() == null){
             btEntrar.setVisibility(View.VISIBLE);
             btEntrar.setClickable(true);
@@ -161,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             navDrawer.setClickable(true);
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -175,14 +185,9 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
-                nomeNavView.setText(cidadao.getNome() + cidadao.getSobrenome());
+                nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
         }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 }

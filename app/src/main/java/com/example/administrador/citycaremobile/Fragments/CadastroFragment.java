@@ -111,7 +111,6 @@ public class CadastroFragment extends Fragment {
 
         login = new Login();
 
-        iconUncheck = getResources().getDrawable(R.drawable.ic_uncheck_black, null);
         iconCheck = getResources().getDrawable(R.drawable.ic_check_black, null);
 
         pbEmail = (ProgressBar) view.findViewById(R.id.progress_bar_email);
@@ -136,16 +135,13 @@ public class CadastroFragment extends Fragment {
         spinnerEstado = (Spinner) view.findViewById(R.id.spin_estado);
         spinnerCidade = (Spinner) view.findViewById(R.id.spin_cidade);
 
-        final DadosUtils dadosUtils = new DadosUtils(getContext());
-        List<String> estados = dadosUtils.listarEstados();
-        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, estados);
+        ArrayAdapter<String> estadoAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, new DadosUtils(getContext()).listarEstados());
         spinnerEstado.setAdapter(estadoAdapter);
         spinnerEstado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
-                    List<String> cidades = dadosUtils.listarCidades(position);
-                    ArrayAdapter<String> cidadeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, cidades);
+                    ArrayAdapter<String> cidadeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, new DadosUtils(getContext()).listarCidades(position));
                     spinnerCidade.setAdapter(cidadeAdapter);
                     spinnerCidade.setClickable(true);
                 }
@@ -167,12 +163,11 @@ public class CadastroFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbLogin.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                login.setLogin(s.toString());
-                if (s.toString() != "") {
+                if (TextUtils.isEmpty(s.toString())) {
+                    pbLogin.setVisibility(View.GONE);
+                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                } else {
+                    login.setLogin(s.toString());
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
@@ -182,8 +177,6 @@ public class CadastroFragment extends Fragment {
                             switch (response.code()) {
                                 case 202:
                                     pbLogin.setVisibility(View.GONE);
-                                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
-                                    edtLogin.setCompoundDrawableTintList(ColorStateList.valueOf(Color.RED));
                                     edtLogin.setError("Este login já está em uso");
                                     loginValido = false;
                                     return;
@@ -206,10 +199,12 @@ public class CadastroFragment extends Fragment {
                             }
                         }
                     });
-                } else {
-                    pbLogin.setVisibility(View.GONE);
-                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         edtEmail = (EditText) view.findViewById(R.id.edt_cadastro_email);
@@ -222,34 +217,33 @@ public class CadastroFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbEmail.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                login.setEmail(s.toString());
-                if (s.toString() != "") {
+                if (TextUtils.isEmpty(s.toString())) {
+                    pbEmail.setVisibility(View.GONE);
+                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                } else {
+                    login.setEmail(s.toString());
                     Service service = CallService.createService(Service.class);
                     Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
-                            switch (response.code()) {
-                                case 202:
-                                    pbEmail.setVisibility(View.GONE);
-                                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconUncheck, null);
-                                    edtEmail.setError("Este e-mail já tem uma conta vinculada");
-                                    edtLogin.setCompoundDrawableTintList(ColorStateList.valueOf(Color.RED));
-                                    emailValido = false;
-                                    return;
-                                case 204:
-                                    pbEmail.setVisibility(View.GONE);
-                                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
-                                    emailValido = true;
-                                    return;
-                                default:
-                                    APIError error = ErrorUtils.parseError(response);
-                                    Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                            if(response.isSuccessful()){
+                                switch (response.code()) {
+                                    case 202:
+                                        pbEmail.setVisibility(View.GONE);
+                                        edtEmail.setError("Este e-mail já tem uma conta vinculada");
+                                        emailValido = false;
+                                        return;
+                                    case 204:
+                                        pbEmail.setVisibility(View.GONE);
+                                        edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
+                                        emailValido = true;
+                                        return;
+                                    default:
+                                        APIError error = ErrorUtils.parseError(response);
+                                        Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
 
@@ -261,11 +255,11 @@ public class CadastroFragment extends Fragment {
                             }
                         }
                     });
-                } else {
-                    pbEmail.setVisibility(View.GONE);
-                    edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 }
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
         edtSenha = (EditText) view.findViewById(R.id.edt_cadastro_senha);
