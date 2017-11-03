@@ -11,4 +11,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_maps_fragment">Map</string>
     <string name="crop_image_menu_crop">Cortar</string>
+    <string name="crop_image_menu_rotate_left">Girar para a esquerda</string>
+    <string name="crop_image_menu_rotate_right">Girar para a direita</string>
 </resources>

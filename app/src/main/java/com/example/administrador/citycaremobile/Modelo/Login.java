@@ -25,6 +25,20 @@ public class Login implements Parcelable {
 
     public Login(){}
 
+    public Login(Integer idLogin, String email, String login, String senha, boolean status_login, boolean administrador) {
+        this.idLogin = idLogin;
+        this.email = email;
+        this.login = login;
+        this.senha = senha;
+        this.status_login = status_login;
+        this.administrador = administrador;
+    }
+
+    public Login(Integer idLogin){
+        this.idLogin = idLogin;
+    }
+
+
     protected Login(Parcel in) {
         email = in.readString();
         login = in.readString();

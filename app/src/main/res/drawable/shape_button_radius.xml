@@ -3,11 +3,11 @@
     <item>
         <shape android:shape="rectangle">
             <!-- background -->
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@color/colorAccent"/>
             <!-- Widht-->
             <width android:layout_width="8dp"/>
             <!-- corner roundness -->
-            <corners android:radius="4dp" />
+            <corners android:radius="20dp" />
         </shape>
     </item>
 </selector>

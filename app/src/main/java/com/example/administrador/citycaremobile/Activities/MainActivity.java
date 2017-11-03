@@ -59,13 +59,6 @@ public class MainActivity extends AppCompatActivity {
         nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
         picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-
         //TAB LAYOUT
         tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Home"));
@@ -154,19 +147,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(UsuarioApplication.getInstance().getUsuario() == null){
             btEntrar.setVisibility(View.VISIBLE);
             btEntrar.setClickable(true);
@@ -180,13 +171,6 @@ public class MainActivity extends AppCompatActivity {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
-
             if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
@@ -197,5 +181,11 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
     }
 }

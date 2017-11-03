@@ -131,6 +131,20 @@ public class DenunciaActivity extends AppCompatActivity {
             }
         });
 
+        localizacaoDenuncia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(DenunciaActivity.this), 125);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         fabCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +213,7 @@ public class DenunciaActivity extends AppCompatActivity {
                         MultipartBody.Part imgBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 imgBody,
                                 jsonDenuncia);
                         denunciar.enqueue(new Callback<Void>() {
@@ -228,7 +242,7 @@ public class DenunciaActivity extends AppCompatActivity {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 null,
                                 jsonDenuncia);
                         denunciar.enqueue(new Callback<Void>() {
@@ -258,7 +272,7 @@ public class DenunciaActivity extends AppCompatActivity {
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 null,
                                 jsonDenuncia);
                         denunciar.enqueue(new Callback<Void>() {

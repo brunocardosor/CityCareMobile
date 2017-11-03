@@ -17,15 +17,14 @@
 
         <Button
             android:id="@+id/bt_publicar"
-            style="?attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
-            android:layout_margin="15dp"
-            android:background="@drawable/shape_button_radius"
+            android:background="@android:color/transparent"
             android:text="Publicar"
+            android:textSize="15dp"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@android:color/white" />
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
@@ -45,8 +44,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/pic_profile_denuncia"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp" />
+                    android:layout_width="65dp"
+                    android:layout_height="65dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,15 +59,16 @@
                         android:id="@+id/txt_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:textSize="17dp"
+                        android:text="Bruno Cardoso"
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
-
                     <Spinner
                         android:id="@+id/spinner_categoria"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp" />
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </RelativeLayout>
 
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layout_info"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/shape_button_radius"
+                android:background="@android:color/white"
                 android:hint="Fale a respeito do problema..."
                 android:textColor="@android:color/black" />
 
@@ -123,21 +123,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_camera_gray" />
-
-            <ImageButton
-                android:id="@+id/open_galery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_galery_gray" />
+                android:src="@drawable/ic_add_picture"
+                android:tint="@color/colorAscend"/>
 
             <ImageButton
                 android:id="@+id/open_placepicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_place"
@@ -150,7 +143,8 @@
                 android:layout_marginRight="15dp"
                 android:gravity="center_vertical"
                 android:hint="Localização..."
-                android:textSize="10dp" />
+                android:textSize="15dp"
+                android:maxLines="1"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>

@@ -1,12 +1,221 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.administrador.citycaremobile.Fragments.EditProfileCidadaoFragment">
+    android:fitsSystemWindows="true"
+    tools:context="com.example.administrador.citycaremobile.Fragments.CadastroFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/framePicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
+                <!--  <android.support.design.widget.AppBarLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="?attr/actionBarSize">
+
+                  </android.support.design.widget.AppBarLayout> -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:background="@android:color/black" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/pic_edt_profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="65dp"
+                    android:src="@android:color/black"
+                    app:civ_border_color="@android:color/white"
+                    app:civ_border_width="4dp" />
+
+                    <!--FloatingButton para adicionar ou alterar a foto do usuário-->
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fab_get_edt_picture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@color/colorPrimary"
+                        android:elevation="4dp"
+                        android:layout_alignRight="@id/pic_edt_profile"
+                        android:layout_alignTop="@+id/pic_edt_profile"
+                        android:src="@drawable/ic_add_picture" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pic_edt_profile"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/field_edt_nome"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nome"
+                            android:inputType="textPersonName"
+                            android:maxLines="1"
+                            android:textColor="@android:color/black" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/field_edt_sobrenome"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Sobrenome"
+                            android:inputType="textPersonName"
+                            android:maxLines="1"
+                            android:textColor="@android:color/black" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/radial_edt_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Sexo:"
+                        android:textSize="9pt" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_edt_masculino"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Masculino" />
+
+                        <RadioButton
+                            android:id="@+id/radio_edt_feminino"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Feminino" />
+                    </RadioGroup>
+
+                    <Spinner
+                        android:id="@+id/spin_edt_estado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:id="@+id/spin_edt_cidade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar_edt_email"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignRight="@+id/input_layout_email"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="8dp"
+                            android:visibility="gone" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/input_layout_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/field_cadastro_edt_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="E-mail"
+                                android:inputType="textEmailAddress"
+                                android:maxLines="1"
+                                android:drawableTint="@android:color/holo_green_light"
+                                android:textColor="@android:color/black" />
+                        </android.support.design.widget.TextInputLayout>
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar_edt_login"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignRight="@+id/input_layout_login"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="8dp"
+                            android:visibility="gone" />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/input_layout_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/field_cadastro_edt_login"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:hint="Login"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:drawableTint="@android:color/holo_green_light"
+                                android:textColor="@android:color/black" />
+                        </android.support.design.widget.TextInputLayout>
+                    </RelativeLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/field_cadastro_edt_senha"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Senha"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:textColor="@android:color/black" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/bt_edt_cadastrar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_button_cadastrar"
+                        android:text="Cadastrar-se"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

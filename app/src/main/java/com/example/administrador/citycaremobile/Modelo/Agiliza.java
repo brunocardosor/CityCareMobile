@@ -11,9 +11,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Agiliza implements Parcelable {
 
-    @SerializedName("fk_agiliza_login")
+    @SerializedName("fk_login_agiliza")
     private Login login;
-    @SerializedName("usuario_denuncia")
+    @SerializedName("fk_denuncia_agiliza")
     private Denuncia usuarioDenuncia;
     @SerializedName("interacao")
     private boolean interacao;

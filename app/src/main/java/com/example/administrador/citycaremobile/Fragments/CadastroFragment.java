@@ -169,7 +169,7 @@ public class CadastroFragment extends Fragment {
                 } else {
                     login.setLogin(s.toString());
                     Service service = CallService.createService(Service.class);
-                    Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken().getToken(), login);
+                    Call<Void> callLogin = service.verificarLogin(UsuarioApplication.getInstance().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
@@ -223,7 +223,7 @@ public class CadastroFragment extends Fragment {
                 } else {
                     login.setEmail(s.toString());
                     Service service = CallService.createService(Service.class);
-                    Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken().getToken(), login);
+                    Call<Void> callLogin = service.verificarEmail(UsuarioApplication.getInstance().getToken(), login);
                     callLogin.enqueue(new Callback<Void>() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
@@ -368,7 +368,7 @@ public class CadastroFragment extends Fragment {
                         MultipartBody.Part fotoBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
                         Service service = CallService.createService(Service.class);
-                        Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> cadastrarCidadao = service.postCidadao(UsuarioApplication.getInstance().getToken(),
                                 cidadao,
                                 fotoBody);
                         cadastrarCidadao.enqueue(new Callback<Void>() {
@@ -396,7 +396,7 @@ public class CadastroFragment extends Fragment {
                         e.printStackTrace();
                         cidadao.setDirFotoUsuario("link de foto genérica");
                         Service service = CallService.createService(Service.class);
-                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken(),
                                 cidadao, null);
                         callCadastro.enqueue(new Callback<Void>() {
                             @Override
@@ -423,7 +423,7 @@ public class CadastroFragment extends Fragment {
                         e.printStackTrace();
                         cidadao.setDirFotoUsuario("link de foto genérica");
                         Service service = CallService.createService(Service.class);
-                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken().getToken(),
+                        Call<Void> callCadastro = service.postCidadao(UsuarioApplication.getInstance().getToken(),
                                 cidadao, null);
                         callCadastro.enqueue(new Callback<Void>() {
                             @Override

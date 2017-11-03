@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/com_facebook_button_login_silver_background_color_pressed"
-    android:elevation="0dp"
-    android:orientation="vertical">
+    android:background="@color/com_facebook_button_login_silver_background_color_pressed">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/denuncia_recyler"
@@ -20,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="15dp"
-        android:elevation="4dp"
+        android:elevation="6dp"
         android:src="@drawable/ic_action_create"
         app:backgroundTint="@color/colorPrimaryDark" />
 </FrameLayout>

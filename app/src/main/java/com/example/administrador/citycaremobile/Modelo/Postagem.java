@@ -13,20 +13,17 @@ import java.util.List;
 
 public class Postagem implements Parcelable {
 
-    @SerializedName("fk_postagem_cidadao")
-    private Cidadao cidadao;
-    @SerializedName("fk_postagem_denuncia")
+    @SerializedName("denuncia")
     private Denuncia denuncia;
-    @SerializedName("postagem_agiliza")
+    @SerializedName("agiliza")
     private List<Agiliza> agilizas;
-    @SerializedName("postagem_comentario")
+    @SerializedName("comentario")
     private List<Comentario> comentarios;
 
     public Postagem(Denuncia denuncia, List<Agiliza> agilizas, List<Comentario> comentarios, Cidadao cidadao) {
         this.denuncia = denuncia;
         this.agilizas = agilizas;
         this.comentarios = comentarios;
-        this.cidadao = cidadao;
     }
 
     public Postagem() {
@@ -36,7 +33,6 @@ public class Postagem implements Parcelable {
         denuncia = in.readParcelable(Denuncia.class.getClassLoader());
         agilizas = in.createTypedArrayList(Agiliza.CREATOR);
         comentarios = in.createTypedArrayList(Comentario.CREATOR);
-        cidadao = in.readParcelable(Cidadao.class.getClassLoader());
     }
 
     @Override
@@ -44,7 +40,6 @@ public class Postagem implements Parcelable {
         dest.writeParcelable(denuncia, flags);
         dest.writeTypedList(agilizas);
         dest.writeTypedList(comentarios);
-        dest.writeParcelable(cidadao,flags);
     }
 
     @Override
@@ -86,13 +81,5 @@ public class Postagem implements Parcelable {
 
     public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
-    }
-
-    public Cidadao getCidadao(){
-        return cidadao;
-    }
-
-    public void setCidadao(Cidadao cidadao){
-        this.cidadao = cidadao;
     }
 }

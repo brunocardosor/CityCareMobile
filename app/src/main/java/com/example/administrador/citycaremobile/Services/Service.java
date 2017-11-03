@@ -3,9 +3,14 @@ package com.example.administrador.citycaremobile.Services;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Login;
+import com.example.administrador.citycaremobile.Modelo.Postagem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -65,5 +70,12 @@ public interface Service {
     @Headers("content-type:application/json")
     Call<Void> verificarLogin(@Header("X-Token") String token,
                               @Body Login login);
+    @GET("denuncia/all")
+    Call<ArrayList<Postagem>> getPostagens(@Header("X-Token") String token);
+
+    @POST("retorno")
+    @Headers("content-type:application/json")
+    Call<Object> getUsuario(@Header("X-Token") String token,
+                            @Body Login login);
 
 }

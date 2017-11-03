@@ -10,12 +10,12 @@ import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Services.Token;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,12 +30,7 @@ public class UsuarioApplication extends Application {
     private Cidadao cidadao;
     private Empresa empresa;
     private static UsuarioApplication instance = null;
-    private static String usuario = "root";
-    private static String senha = "carecity";
-    private Token token = null;
-    private static DateTimeZone timeZone;
-
-
+    private static String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoicm9vdCIsInNlbmhhIjoiY2FyZWNpdHkiLCJpcCI6IjE3Ny4xMjkuNjAuMTA1In0.4gAD8--mlchHdjsSs-0lQlQZkxI6UbqHM0TYmfv2xdA";
 
     public Object getUsuario() {
         if (cidadao != null && empresa == null) {
@@ -73,47 +68,14 @@ public class UsuarioApplication extends Application {
         return instance;
     }
 
-    public Token getToken() {
+    public static String getToken() {
         return token;
-    }
-
-    public void setToken(Token token){
-        this.token = token;
-    }
-
-    public DateTimeZone getTimeZone(){
-        return timeZone;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-
-        timeZone = DateTimeZone.getDefault();
-        Log.i("TimeZone","Time Zone: " + timeZone);
-
-        Service service = CallService.createService(Service.class,usuario,senha);
-        Call<Token> call = service.autentication();
-        call.enqueue(new Callback<Token>() {
-            @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
-                if (response.isSuccessful()) {
-                    Token token = response.body();
-                    UsuarioApplication.getInstance().setToken(token);
-                } else {
-                    APIError error = ErrorUtils.parseError(response);
-                    Log.e("AuthError", error.getMessage());
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Token> call, Throwable t) {
-                Log.e("ConnectionError", t.getMessage());
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
 
