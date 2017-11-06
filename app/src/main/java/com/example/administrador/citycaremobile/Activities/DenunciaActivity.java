@@ -25,11 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.administrador.citycaremobile.Adapters.FeedDenunciaAdapter;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Comentario;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
+import com.example.administrador.citycaremobile.Modelo.Postagem;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
@@ -49,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -221,8 +226,10 @@ public class DenunciaActivity extends AppCompatActivity {
                             public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
+                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(
+                                                denuncia, new ArrayList<Agiliza>(), new ArrayList<Comentario>()));
                                         dialog.dismiss();
-                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
+                                        finish();
                                 } else {
                                     dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);

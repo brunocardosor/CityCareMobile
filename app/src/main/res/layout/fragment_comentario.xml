@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.administrador.citycaremobile.Fragments.ComentarioFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comentario_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/cardview_comentarios" />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        app:elevation="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v4.widget.CircleImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginRight="7dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/pic_profile_novo_comentario"/>
+
+            <EditText
+                android:id="@+id/edt_novo_comentario"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Comentário"
+                android:layout_toRightOf="@id/pic_profile_novo_comentario"
+                android:layout_toLeftOf="@id/button_enviar_comentario"/>
+
+            <Button
+                android:layout_alignBottom="@+id/edt_novo_comentario"
+                android:id="@+id/button_enviar_comentario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="Enviar"
+                android:textAllCaps="false"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/colorAscend" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+</RelativeLayout>

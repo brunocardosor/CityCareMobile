@@ -18,6 +18,15 @@ public class Agiliza implements Parcelable {
     @SerializedName("interacao")
     private boolean interacao;
 
+    public Agiliza() {
+    }
+
+    public Agiliza(Login login, Denuncia usuarioDenuncia, boolean interacao) {
+        this.login = login;
+        this.usuarioDenuncia = usuarioDenuncia;
+        this.interacao = interacao;
+    }
+
     protected Agiliza(Parcel in) {
         login = in.readParcelable(Login.class.getClassLoader());
         usuarioDenuncia = in.readParcelable(Denuncia.class.getClassLoader());

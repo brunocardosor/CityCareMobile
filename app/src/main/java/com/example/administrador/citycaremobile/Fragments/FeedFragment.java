@@ -39,7 +39,7 @@ public class FeedFragment extends Fragment {
 
     private FloatingActionButton bt_denunciar;
     private RecyclerView recyclerView;
-    private FeedDenunciaAdapter feedAdapter;
+    private FeedDenunciaAdapter feedAdapter = UsuarioApplication.getFeedDenuncia();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,13 +74,13 @@ public class FeedFragment extends Fragment {
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        feedAdapter = new FeedDenunciaAdapter(getActivity());
         recyclerView.setAdapter(feedAdapter);
         Service service = CallService.createService(Service.class);
         Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
         listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
             @Override
             public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
+                feedAdapter.setContext(getContext());
                 for (Postagem p : response.body()){
                     feedAdapter.inserirPostagem(p);
                 }

@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
-                app:elevation="0dp"
+                app:elevation="6dp"
                 app:title=" ">
 
                 <ImageView
@@ -37,7 +37,8 @@
                     android:background="@android:color/transparent"
                     android:text="Entrar"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    app:elevation="2dp"/>
 
             </android.support.v7.widget.Toolbar>
 

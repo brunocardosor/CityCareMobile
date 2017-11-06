@@ -160,7 +160,7 @@ public class CadastroFragment extends Fragment {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbLogin.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(s.toString())) {
@@ -181,10 +181,15 @@ public class CadastroFragment extends Fragment {
                                     loginValido = false;
                                     return;
                                 case 204:
-                                    pbLogin.setVisibility(View.GONE);
-                                    edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
-                                    loginValido = true;
-                                    return;
+                                    if(TextUtils.isEmpty(s.toString())){
+                                        edtLogin.setError(getString(R.string.campo_incorreto));
+                                        pbLogin.setVisibility(View.GONE);
+                                    } else {
+                                        pbLogin.setVisibility(View.GONE);
+                                        edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
+                                        loginValido = true;
+                                        return;
+                                    }
                                 default:
                                     APIError error = ErrorUtils.parseError(response);
                                     Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
@@ -214,7 +219,7 @@ public class CadastroFragment extends Fragment {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbEmail.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(s.toString())) {
@@ -236,10 +241,16 @@ public class CadastroFragment extends Fragment {
                                         emailValido = false;
                                         return;
                                     case 204:
-                                        pbEmail.setVisibility(View.GONE);
-                                        edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
-                                        emailValido = true;
-                                        return;
+                                        if(TextUtils.isEmpty(s.toString())){
+                                            edtEmail.setError(getString(R.string.campo_incorreto));
+                                            pbEmail.setVisibility(View.GONE);
+                                            return;
+                                        } else {
+                                            pbEmail.setVisibility(View.GONE);
+                                            edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);
+                                            emailValido = true;
+                                            return;
+                                        }
                                     default:
                                         APIError error = ErrorUtils.parseError(response);
                                         Toasty.error(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
@@ -327,7 +338,6 @@ public class CadastroFragment extends Fragment {
                 if (!new SystemUtils().verificaConexao(getContext())) {
                     Toasty.error(getContext(), "Sem conexão com a internet").show();
                     dialog.dismiss();
-
                 }
                 if (!TextUtils.isEmpty(edtNome.getText()) && (rbFeminino.isChecked() || rbMasculino.isChecked())
                         && spinnerEstado.getSelectedItemPosition() != 0 && spinnerCidade.getSelectedItemPosition() != 0
@@ -463,24 +473,7 @@ public class CadastroFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         fm.popBackStack();
     }
-/*
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.crop_image_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

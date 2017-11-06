@@ -97,6 +97,7 @@ public class LoginFragment extends Fragment {
                                     if (cidadao.getLoginCidadao().isStatus_login()) {
                                         try {
                                             UsuarioApplication.getInstance().setUsuario(cidadao);
+                                            UsuarioApplication.getFeedDenuncia().notifyDataSetChanged();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }

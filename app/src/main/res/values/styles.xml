@@ -14,7 +14,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAscend</item>
         <item name="android:textColorPrimary">@color/cardview_light_background</item>
-        <item name="android:actionMenuTextColor">@android:color/darker_gray</item>
+        <item name="android:actionMenuTextColor">@android:color/black</item>
     </style>
 
     <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog">

@@ -20,7 +20,7 @@ public class Postagem implements Parcelable {
     @SerializedName("comentario")
     private List<Comentario> comentarios;
 
-    public Postagem(Denuncia denuncia, List<Agiliza> agilizas, List<Comentario> comentarios, Cidadao cidadao) {
+    public Postagem(Denuncia denuncia, List<Agiliza> agilizas, List<Comentario> comentarios) {
         this.denuncia = denuncia;
         this.agilizas = agilizas;
         this.comentarios = comentarios;

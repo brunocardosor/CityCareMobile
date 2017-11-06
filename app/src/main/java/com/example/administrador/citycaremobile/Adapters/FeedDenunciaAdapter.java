@@ -1,8 +1,15 @@
 package com.example.administrador.citycaremobile.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,18 +17,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 
+import com.example.administrador.citycaremobile.Activities.AcessoActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
-import com.example.administrador.citycaremobile.Modelo.Login;
 import com.example.administrador.citycaremobile.Modelo.Postagem;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
@@ -53,14 +61,15 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     private Context context;
     private Cidadao cidadao;
     private Empresa empresa;
+    private Drawable ic_agilizaSelected, ic_agilizaUnselected;
 
     public FeedDenunciaAdapter(Context context) {
         this.postagens = new ArrayList<>();
         this.context = context;
     }
 
-    public void setPostagens(ArrayList<Postagem> postagens) {
-        this.postagens = postagens;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public void inserirPostagem(Postagem post) {
@@ -80,9 +89,12 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         notifyItemRangeChanged(position, postagens.size());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public FeedDenunciaAdapter.FeedDenunciaHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_denuncia, parent, false);
+        ic_agilizaSelected = context.getResources().getDrawable(R.drawable.ic_action_agiliza_orange, null);
+        ic_agilizaUnselected = context.getResources().getDrawable(R.drawable.ic_action_agiliza, null);
         return new FeedDenunciaHolder(view);
     }
 
@@ -92,11 +104,12 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     }
 
     @Override
-    public void onBindViewHolder(final FeedDenunciaHolder holder, int position) {
-        Postagem post = postagens.get(position);
+    public void onBindViewHolder(final FeedDenunciaHolder holder, final int position) {
+        final Postagem post = postagens.get(position);
+        final boolean[] agilizado = {false};
 
         //Serviço para pegar dados de quem criou a denúncia e Binda-los
-        Service service = CallService.createService(Service.class);
+        final Service service = CallService.createService(Service.class);
         Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getInstance().getToken(), post.getDenuncia().getLogin());
         callUsuario.enqueue(new Callback<Object>() {
 
@@ -139,34 +152,98 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         //Geocoder para endereço
         Geocoder geo = new Geocoder(context);
         try {
-            List<Address> addresses = geo.getFromLocation(post.getDenuncia().getLatitude(), post.getDenuncia().getLongitude(),1);
+            List<Address> addresses = geo.getFromLocation(post.getDenuncia().getLatitude(), post.getDenuncia().getLongitude(), 1);
             holder.localizacaoPost.setText(addresses.get(0).getAddressLine(0));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //INSERIR LOGICA PARA VERIFICAR SE O USUÁRIO JÀ AGILIZOU A POSTAGEM
-        if(UsuarioApplication.getInstance().getUsuario() != null){
-            for (int i = 0; i < post.getAgilizas().size(); i++) {
-                if (post.getAgilizas().get(i).getLogin().getIdLogin() == ((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()) {
+        atualizarStatus(holder,post,agilizado[0]);
+
+        if (post.getComentarios().size() > 2) {
+            holder.comentariosPostQnd.setText(post.getComentarios().size() + " comentários");
+        } else if (post.getComentarios().size() == 1) {
+            holder.comentariosPostQnd.setText("1 comentário");
+        } else {
+            holder.comentariosPostQnd.setText("Nenhum comentário");
+        }
+
+        //evento do agilizar
+        holder.agilizarPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(agilizado[0]){
+
+                } else {
 
                 }
             }
+        });
 
-        }
-
-        if (post.getAgilizas().size() > 2) {
-            holder.statusPost.setText(post.getAgilizas().size() + "pessoas agilizaram esta denúncia");
-        } else if (post.getAgilizas().size() == 1) {
-            holder.statusPost.setText("Uma pessoa agilizou esta denúncia");
-        } else {
-            holder.statusPost.setText("Nenhuma pessoa agilizou esta denúncia");
-        }
+        holder.toolbarPostMenu.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.editar_denuncia:
+                        break;
+                    case R.id.deletar_denuncia:
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
+    public void atualizarStatus(final FeedDenunciaHolder holder, Postagem post, boolean agilizado) {
+        if (UsuarioApplication.getInstance().getUsuario() == null) {
+            holder.toolbarPostMenu.setVisibility(View.GONE);
+            if (post.getAgilizas().size() >= 2) {
+                holder.statusPostQnd.setText(post.getAgilizas().size() + " pessoas agilizaram");
+            } else if (post.getAgilizas().size() == 1) {
+                holder.statusPostQnd.setText("1 pessoa agilizou");
+            } else {
+                holder.statusPostQnd.setText("Nenhum agiliza");
+            }
+        } else {
+            if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
+                if (((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin() ==
+                        post.getDenuncia().getLogin().getIdLogin()) {
+                    holder.toolbarPostMenu.setVisibility(View.VISIBLE);
+                }
+                for (Agiliza a : post.getAgilizas()) {
+                    if (a.getLogin().getIdLogin() == ((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()) {
+                        agilizado = true;
+                        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
+                        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
+                        if (post.getAgilizas().size() >= 2) {
+                            if (post.getAgilizas().size() == 2) {
+                                holder.statusPostQnd.setText("Você e mais 1 pessoa agilizaram");
+                            } else {
+                                holder.statusPostQnd.setText("Você e mais " + (post.getAgilizas().size() - 1) + " agilizaram");
+                            }
+                        } else {
+                            if (post.getAgilizas().size() == 1) {
+                                holder.statusPostQnd.setText("Você agilizou");
+                            }
+                        }
+                        return;
+                    }
+                    if (!agilizado) {
+                        if (post.getAgilizas().size() >= 2) {
+                            holder.statusPostQnd.setText(post.getAgilizas().size() + " pessoas agilizaram");
+                        } else if (post.getAgilizas().size() == 1) {
+                            holder.statusPostQnd.setText("1 pessoa agilizou");
+                        } else {
+                            holder.statusPostQnd.setText("Nenhum agiliza");
+                        }
+                    }
+                }
+            } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa &&
+                    ((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin() ==
+                            post.getDenuncia().getLogin().getIdLogin()) {
+                holder.toolbarPostMenu.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -176,12 +253,11 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
 
     class FeedDenunciaHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView profilePicPost, profilePicComentario;
-        TextView nameProfilePost, timePost, descricaoPost, localizacaoPost, categoriaPost, statusPost;
+        CircleImageView profilePicPost;
+        TextView nameProfilePost, timePost, descricaoPost, localizacaoPost, categoriaPost, statusPostQnd, comentariosPostQnd;
         Toolbar toolbarPostMenu;
-        EditText edtComentario;
-        ImageButton agilizarPost, sharePost, enviarComentario;
         ImageView denunciaPicPost;
+        Button comentarPost, sharePost, agilizarPost;
 
         public FeedDenunciaHolder(View view) {
             super(view);
@@ -193,35 +269,12 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             localizacaoPost = (TextView) view.findViewById(R.id.localizacao_post);
             categoriaPost = (TextView) view.findViewById(R.id.categoria_post);
             denunciaPicPost = (ImageView) view.findViewById(R.id.denuncia_picture_post);
-            statusPost = (TextView) view.findViewById(R.id.status_post);
-            agilizarPost = (ImageButton) view.findViewById(R.id.bt_agilizar_post);
-            sharePost = (ImageButton) view.findViewById(R.id.bt_share_post);
-            profilePicComentario = (CircleImageView) view.findViewById(R.id.pic_profile_comentario);
-            edtComentario = (EditText) view.findViewById(R.id.edt_comentario);
-            enviarComentario = (ImageButton) view.findViewById(R.id.bt_enviar_comentario);
+            agilizarPost = (Button) view.findViewById(R.id.bt_agilizar_post);
+            sharePost = (Button) view.findViewById(R.id.bt_share_post);
+            comentarPost = (Button) view.findViewById(R.id.bt_comentar_post);
+            statusPostQnd = (TextView) view.findViewById(R.id.tv_status_post_qtd);
+            comentariosPostQnd = (TextView) view.findViewById(R.id.tv_comentarios_post_qtd);
 
-            //menu
-            toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
-
-            toolbarPostMenu.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.editar_denuncia:
-                            break;
-                        case R.id.deletar_denuncia:
-                            break;
-                    }
-                    return true;
-                }
-            });
-
-            agilizarPost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
 
             sharePost.setOnClickListener(new View.OnClickListener() {
                                              @Override
@@ -231,12 +284,14 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                                          }
             );
 
-            enviarComentario.setOnClickListener(new View.OnClickListener() {
+            comentarPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                 }
             });
+
+            toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
         }
     }
 
@@ -274,17 +329,5 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             }
         }
         return null;
-    }
-
-    public Object getUsuario(Login login) {
-
-
-        if (cidadao != null) {
-            return cidadao;
-        } else if (empresa != null) {
-            return empresa;
-        } else {
-            return null;
-        }
     }
 }

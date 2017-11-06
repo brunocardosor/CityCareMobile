@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/com_facebook_button_login_silver_background_color_pressed">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/denuncia_recyler"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/cardview_denuncia" />
+        android:layout_height="wrap_content"
+        android:id="@+id/swipe_feed">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/denuncia_recyler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/cardview_denuncia" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/swipe_feed"
+        android:layout_centerHorizontal="true"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_create_denuncia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="15dp"
         android:elevation="6dp"
         android:src="@drawable/ic_action_create"
         app:backgroundTint="@color/colorPrimaryDark" />
-</FrameLayout>
+</RelativeLayout>

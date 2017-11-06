@@ -1,5 +1,6 @@
 package com.example.administrador.citycaremobile.Services;
 
+import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Login;
@@ -77,5 +78,10 @@ public interface Service {
     @Headers("content-type:application/json")
     Call<Object> getUsuario(@Header("X-Token") String token,
                             @Body Login login);
+
+    @POST("agiliza/cadastrar")
+    @Headers("content-type:application/json")
+    Call<Void> agilizar(@Header("X-Token") String token,
+                        @Body Agiliza agiliza);
 
 }

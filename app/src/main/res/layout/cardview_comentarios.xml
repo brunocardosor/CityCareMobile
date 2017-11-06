@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_margin="5dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/pic_profile_comentario"
+            android:src="@mipmap/ic_launcher_round"/>
+        <TextView
+            android:id="@+id/nome_profile_comentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bruno Cardoso"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="17dp"
+            android:layout_toRightOf="@id/pic_profile_comentario"
+            android:layout_alignTop="@id/pic_profile_comentario"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nome_profile_comentario"
+            android:layout_toRightOf="@id/pic_profile_comentario"
+            android:text="que merda ein"
+            android:textSize="15dp"
+            android:textColor="@android:color/black"/>
+    </RelativeLayout>
+    <android.support.v7.widget.Toolbar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>
