@@ -1,110 +1,82 @@
 package com.example.administrador.citycaremobile.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.bumptech.glide.Glide;
+import com.example.administrador.citycaremobile.Adapters.ComentariosAdapter;
+import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Comentario;
+import com.example.administrador.citycaremobile.Modelo.Empresa;
+import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
 import com.example.administrador.citycaremobile.R;
 
+import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ComentarioFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ComentarioFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ComentarioFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ComentarioFragment extends DialogFragment {
 
-    private OnFragmentInteractionListener mListener;
+    private static ArrayList<Comentario> comentariosList;
+    private RecyclerView recyclerView;
+    private CircleImageView picProfileComentario;
+    private EditText edtComentario;
+    private Button btEnviar;
+    private Toolbar toolbar;
 
     public ComentarioFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ComentarioFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ComentarioFragment newInstance(String param1, String param2) {
-        ComentarioFragment fragment = new ComentarioFragment();
+    public static ComentarioFragment newInstance(ArrayList<Comentario> comentarios) {
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        comentariosList = comentarios;
+        ComentarioFragment fragment = new ComentarioFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comentario, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        View view = inflater.inflate(R.layout.fragment_comentario, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.comentario_recycler);
+        picProfileComentario = (CircleImageView) view.findViewById(R.id.pic_profile_novo_comentario);
+        edtComentario = (EditText) view.findViewById(R.id.edt_novo_comentario);
+        btEnviar = (Button) view.findViewById(R.id.button_enviar_comentario);
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar_fragment_comentar);
+        if(UsuarioApplication.getInstance().getUsuario()!= null){
+            if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao){
+                Glide.with(getContext()).load(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getDirFotoUsuario()).into(picProfileComentario);
+                edtComentario.requestFocus();
+            } else {
+                Glide.with(getContext()).load(((Empresa) UsuarioApplication.getInstance().getUsuario()).getDirFotoUsuario()).into(picProfileComentario);
+                edtComentario.requestFocus();
+            }
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            toolbar.setVisibility(View.GONE);
+            btEnviar.setClickable(false);
+            edtComentario.setClickable(false);
         }
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
+        ComentariosAdapter adapter = new ComentariosAdapter(getContext(),comentariosList);
+        recyclerView.setAdapter(adapter);
+        return view;
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

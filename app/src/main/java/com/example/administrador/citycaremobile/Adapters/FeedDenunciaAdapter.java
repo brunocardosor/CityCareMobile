@@ -1,6 +1,9 @@
 package com.example.administrador.citycaremobile.Adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,6 +31,7 @@ import com.bumptech.glide.Glide;
 
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
@@ -86,7 +91,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     public void deletarPostagem(int position) {
         postagens.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, postagens.size());
+        notifyItemRangeChanged(position, getItemCount());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -177,6 +182,15 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                 } else {
 
                 }
+            }
+        });
+
+        holder.comentarPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
+                ComentarioFragment cf =  ComentarioFragment.newInstance(post.getComentarios());
+                cf.show(fm,"comentarios");
             }
         });
 
@@ -283,13 +297,6 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                                              }
                                          }
             );
-
-            comentarPost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
 
             toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
         }

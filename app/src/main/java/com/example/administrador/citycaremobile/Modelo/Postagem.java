@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,9 @@ public class Postagem implements Parcelable {
     @SerializedName("agiliza")
     private List<Agiliza> agilizas;
     @SerializedName("comentario")
-    private List<Comentario> comentarios;
+    private ArrayList<Comentario> comentarios;
 
-    public Postagem(Denuncia denuncia, List<Agiliza> agilizas, List<Comentario> comentarios) {
+    public Postagem(Denuncia denuncia, List<Agiliza> agilizas, ArrayList<Comentario> comentarios) {
         this.denuncia = denuncia;
         this.agilizas = agilizas;
         this.comentarios = comentarios;
@@ -75,11 +76,11 @@ public class Postagem implements Parcelable {
         this.agilizas = agilizas;
     }
 
-    public List<Comentario> getComentarios() {
+    public ArrayList<Comentario> getComentarios() {
         return comentarios;
     }
 
-    public void setComentarios(List<Comentario> comentarios) {
+    public void setComentarios(ArrayList<Comentario> comentarios) {
         this.comentarios = comentarios;
     }
 }

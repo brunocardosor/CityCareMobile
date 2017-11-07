@@ -30,10 +30,6 @@ public class TabAdapter extends FragmentStatePagerAdapter {
             case 1:
                 MapsFragment tab2 = new MapsFragment();
                 return tab2;
-
-            case 2:
-                ProfileFragment tab3 = new ProfileFragment();
-                return tab3;
             default:
                 return null;
         }

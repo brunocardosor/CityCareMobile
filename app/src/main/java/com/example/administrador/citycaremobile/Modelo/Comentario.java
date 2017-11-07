@@ -15,7 +15,7 @@ public class Comentario implements Parcelable {
     private int idComentario;
     @SerializedName("descricao_comentario")
     private String descricaoComentario;
-    @SerializedName("fk_comentario_login")
+    @SerializedName("fk_login_comentario")
     private Login login;
     @SerializedName("denuncia_comentario")
     private Denuncia denunciaComentario;
