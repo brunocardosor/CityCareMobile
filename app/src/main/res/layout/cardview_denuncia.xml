@@ -1,211 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
-    android:elevation="2dp">
+    android:layout_marginTop="15dp">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_post_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dp"
-        app:itemTextColor="@android:color/black" />
-
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="15dp"
+        android:id="@+id/cardview_denuncia"
+        >
 
-        <RelativeLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_post_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            app:itemTextColor="@android:color/black" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp">
-
-            <LinearLayout
-                android:id="@+id/linear_profile_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <!--Foto de perfil do usuário-->
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/pic_profile_post"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-                    <!--Nome do usuário que fez a denúncia-->
-                    <TextView
-                        android:id="@+id/name_profile_post"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="7pt" />
-                    <!--Tempo no qual a postagem foi enviada-->
-                    <TextView
-                        android:id="@+id/time_post"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </LinearLayout>
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/layout_categoria"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/linear_profile_post"
-                android:layout_marginTop="10dp">
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp">
 
-                <ImageButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignRight="@+id/categoria_post"
-                    android:layout_centerInParent="true"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/shape_button_radius"
-                    android:elevation="1dp"
-                    android:src="@drawable/ic_access_time" />
-                <!--Categoria da denúncia-->
-                <TextView
-                    android:id="@+id/categoria_post"
+                <LinearLayout
+                    android:id="@+id/linear_profile_post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/shape_button_entrar"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:orientation="horizontal">
+                    <!--Foto de perfil do usuário-->
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/pic_profile_post"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical" />
 
-            <!--Descricao da denúncia-->
-            <TextView
-                android:id="@+id/descricao_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_categoria"
-                android:layout_marginTop="10dp"
-                android:textColor="@android:color/black"
-                android:textSize="17dp" />
-            <!--ImageView da foto da denúncia-->
-            <ImageView
-                android:id="@+id/denuncia_picture_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/descricao_post"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+                        <!--Nome do usuário que fez a denúncia-->
+                        <TextView
+                            android:id="@+id/name_profile_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="7pt" />
+                        <!--Tempo no qual a postagem foi enviada-->
+                        <TextView
+                            android:id="@+id/time_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/denuncia_picture_post"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/ic_place"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignTop="@id/localizacao_post"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_toLeftOf="@id/localizacao_post"
-                    android:src="@drawable/ic_place" />
-                <!--Texto com o endereço da denúncia-->
-
-                <TextView
-                    android:id="@+id/localizacao_post"
+                <RelativeLayout
+                    android:id="@+id/layout_categoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/denuncia_picture_post" />
-            </LinearLayout>
+                    android:layout_below="@id/linear_profile_post"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp">
 
-            <TextView
-                android:id="@+id/tv_status_post_qtd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@id/layout_location"
-                android:layout_marginTop="10dp"
-                android:textSize="12dp" />
+                    <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignRight="@+id/categoria_post"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape_button_radius"
+                        android:elevation="1dp"
+                        android:src="@drawable/ic_access_time" />
+                    <!--Categoria da denúncia-->
+                    <TextView
+                        android:id="@+id/categoria_post"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/shape_button_entrar"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="17dp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_comentarios_post_qtd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/layout_location"
-                android:layout_marginTop="10dp"
-                android:textSize="12dp" />
+                <!--Descricao da denúncia-->
+                <TextView
+                    android:id="@+id/descricao_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/layout_categoria"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="17dp" />
+                <!--ImageView da foto da denúncia-->
+                <ImageView
+                    android:id="@+id/denuncia_picture_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/descricao_post"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop" />
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/layout_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/denuncia_picture_post"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp">
-            <!--Botão de compartilhamento de denúncia-->
+                    <ImageView
+                        android:id="@+id/ic_place"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignTop="@id/localizacao_post"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_toLeftOf="@id/localizacao_post"
+                        android:src="@drawable/ic_place" />
+                    <!--Texto com o endereço da denúncia-->
 
-            <!-- Botão para ação do agiliza-->
-            <Button
-                android:layout_marginRight="25dp"
-                android:layout_centerVertical="true"
-                android:id="@+id/bt_agilizar_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_action_agiliza"
-                android:drawablePadding="-8dp"
-                android:text="Agilizar"
-                android:textAllCaps="false"
-                android:textColor="@color/com_facebook_button_background_color_focused_disabled"
-                android:layout_toLeftOf="@id/bt_comentar_post"/>
+                    <TextView
+                        android:id="@+id/localizacao_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/denuncia_picture_post" />
+                </LinearLayout>
 
-            <!--Botão para ação de Share-->
-            <Button
-                android:id="@+id/bt_comentar_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_centerHorizontal="true"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_action_comentar"
-                android:drawablePadding="10dp"
-                android:text="Comentar"
-                android:textAllCaps="false"
-                android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
+                <TextView
+                    android:id="@+id/tv_status_post_qtd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/layout_location"
+                    android:textSize="12dp" />
 
-            <Button
-                android:layout_marginLeft="25dp"
-                android:id="@+id/bt_share_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/bt_comentar_post"
-                android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_action_share"
-                android:drawablePadding="9dp"
-                android:text="Compartilhar"
-                android:textAllCaps="false"
-                android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
-        </RelativeLayout>
-</LinearLayout></android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/tv_comentarios_post_qtd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/layout_location"
+                    android:text="qntDenuncia"
+                    android:textSize="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_comentarios_post_qtd"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:weightSum="2">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/bt_agilizar_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+
+                            android:background="@android:color/transparent"
+                            android:drawableLeft="@drawable/ic_action_agiliza"
+                            android:drawablePadding="-8dp"
+                            android:text="Agilizar"
+                            android:textAllCaps="false"
+                            android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/bt_comentar_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:drawableLeft="@drawable/ic_action_comentar"
+                            android:drawablePadding="10dp"
+                            android:text="Comentar"
+                            android:textAllCaps="false"
+                            android:textColor="@color/com_facebook_button_background_color_focused_disabled" />
+                    </FrameLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/cardview_denuncia"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:id="@+id/progress_bar_denuncia"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Isso é tudo por hoje."
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="#aaa"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/cardview_denuncia"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        android:id="@+id/sem_postagens"/>
+    </RelativeLayout>

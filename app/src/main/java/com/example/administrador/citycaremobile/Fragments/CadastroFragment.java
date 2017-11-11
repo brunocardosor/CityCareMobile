@@ -85,7 +85,6 @@ public class CadastroFragment extends Fragment {
     private Uri imageUri;
     private File file;
     private ProgressBar pbLogin, pbEmail;
-    private Drawable iconUncheck;
     private Drawable iconCheck;
     private Login login;
 
@@ -184,6 +183,7 @@ public class CadastroFragment extends Fragment {
                                     if(TextUtils.isEmpty(s.toString())){
                                         edtLogin.setError(getString(R.string.campo_incorreto));
                                         pbLogin.setVisibility(View.GONE);
+                                        return;
                                     } else {
                                         pbLogin.setVisibility(View.GONE);
                                         edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, iconCheck, null);

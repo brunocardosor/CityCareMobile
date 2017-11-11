@@ -2,6 +2,7 @@ package com.example.administrador.citycaremobile.Services;
 
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Comentario;
 import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Login;
 import com.example.administrador.citycaremobile.Modelo.Postagem;
@@ -58,7 +59,7 @@ public interface Service {
 
     @POST("denuncia/cadastrar")
     @Multipart
-    Call<Void> denunciar(@Header("X-Token") String token,
+    Call<Denuncia> denunciar(@Header("X-Token") String token,
                          @Part MultipartBody.Part foto,
                          @Part("denuncia") RequestBody denuncia);
 
@@ -84,4 +85,22 @@ public interface Service {
     Call<Void> agilizar(@Header("X-Token") String token,
                         @Body Agiliza agiliza);
 
+    @POST("comentario/cadastrar")
+    @Headers("content-type:application/json")
+    Call<Comentario> enviarComentario(@Header("X-Token") String token,
+                                @Body Comentario comentario);
+
+    @POST("comentario/deletar")
+    @Headers("content-type:application/json")
+    Call<Void> deletarComentario(@Header("X-Token") String token,
+                                @Body Comentario comentario);
+
+    @POST("denuncia/feedSecundario")
+    @Headers("content-type:application/json")
+    Call<ArrayList<Postagem>> carregarPostagem(@Header("X-Token") String token,
+                                @Body Denuncia denuncia);
+    @POST("denuncia/excluir")
+    @Headers("content-type:application/json")
+    Call<Void> excluirPostagem(@Header("X-Token") String token,
+                               @Body Denuncia denuncia);
 }

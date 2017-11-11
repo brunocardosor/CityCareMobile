@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     btEntrar.setVisibility(View.VISIBLE);
                     btEntrar.setClickable(true);
                     drawerLayout.closeDrawer(Gravity.START);
+                    UsuarioApplication.getFeedDenuncia().notifyDataSetChanged();
                     dialog.dismiss();
                     return true;
                 }

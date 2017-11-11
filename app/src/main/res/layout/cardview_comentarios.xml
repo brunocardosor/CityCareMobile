@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp">
+        android:layout_margin="10dp">
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_margin="5dp"
             android:layout_width="50dp"
@@ -25,19 +26,22 @@
             android:layout_alignTop="@id/pic_profile_comentario"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_comentario"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/nome_profile_comentario"
             android:layout_toRightOf="@id/pic_profile_comentario"
+            android:layout_toLeftOf="@id/toolbar_edt_comentario"
+            android:layout_marginRight="10dp"
             android:text="que merda ein"
             android:textSize="15dp"
             android:textColor="@android:color/black"/>
+        <android.support.v7.widget.Toolbar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_alignParentRight="true"
+            android:id="@+id/toolbar_edt_comentario"
+            app:itemTextColor="@android:color/black"/>
     </RelativeLayout>
-    <android.support.v7.widget.Toolbar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:id="@+id/toolbar_edt_comentario"/>
 </RelativeLayout>

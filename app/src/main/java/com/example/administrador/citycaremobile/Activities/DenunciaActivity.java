@@ -25,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.administrador.citycaremobile.Adapters.FeedDenunciaAdapter;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
@@ -62,6 +64,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DenunciaActivity extends AppCompatActivity {
 
@@ -77,7 +80,6 @@ public class DenunciaActivity extends AppCompatActivity {
     private Button publicar;
     private Uri imgDenuncia;
     private File file;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +141,7 @@ public class DenunciaActivity extends AppCompatActivity {
         localizacaoDenuncia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
                     startActivityForResult(builder.build(DenunciaActivity.this), 125);
@@ -202,7 +205,7 @@ public class DenunciaActivity extends AppCompatActivity {
                     }
                     denuncia.setCategoriaDenuncia(categoria);
                     denuncia.setDataDenuncia(DateTime.now().toString());
-                    denuncia.setStatusDenuncia(false);
+                    denuncia.setStatusDenuncia(1);
 
                     RequestBody jsonDenuncia = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(denuncia));
 
@@ -218,18 +221,19 @@ public class DenunciaActivity extends AppCompatActivity {
                         MultipartBody.Part imgBody = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
 
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
+                        Call<Denuncia> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 imgBody,
                                 jsonDenuncia);
-                        denunciar.enqueue(new Callback<Void>() {
+                        denunciar.enqueue(new Callback<Denuncia>() {
                             @Override
-                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                            public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(
-                                                denuncia, new ArrayList<Agiliza>(), new ArrayList<Comentario>()));
-                                        dialog.dismiss();
-                                        finish();
+                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
+                                                new ArrayList<Agiliza>(0),
+                                                new ArrayList<Comentario>(0)));
+                                    dialog.dismiss();
+                                    finish();
                                 } else {
                                     dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
@@ -240,7 +244,7 @@ public class DenunciaActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
+                            public void onFailure(Call<Denuncia> call, Throwable t) {
                                 dialog.dismiss();
                                 Log.e("ErroDenuncia", t.getLocalizedMessage());
                                 Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
@@ -249,16 +253,19 @@ public class DenunciaActivity extends AppCompatActivity {
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
+                        Call<Denuncia> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 null,
                                 jsonDenuncia);
-                        denunciar.enqueue(new Callback<Void>() {
+                        denunciar.enqueue(new Callback<Denuncia>() {
                             @Override
-                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                            public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        dialog.dismiss();
-                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
+                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
+                                                new ArrayList<Agiliza>(0),
+                                                new ArrayList<Comentario>(0)));
+                                    dialog.dismiss();
+                                    finish();
                                 } else {
                                     dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
@@ -270,7 +277,7 @@ public class DenunciaActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
+                            public void onFailure(Call<Denuncia> call, Throwable t) {
                                 dialog.dismiss();
                                 Log.e("ErroDenuncia", t.getLocalizedMessage());
                                 Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
@@ -279,16 +286,19 @@ public class DenunciaActivity extends AppCompatActivity {
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                         Service service = CallService.createService(Service.class);
-                        Call<Void> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
+                        Call<Denuncia> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
                                 null,
                                 jsonDenuncia);
-                        denunciar.enqueue(new Callback<Void>() {
+                        denunciar.enqueue(new Callback<Denuncia>() {
                             @Override
-                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                            public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
                                 if (response.isSuccessful()) {
                                     if (response.code() != 204)
-                                        dialog.dismiss();
-                                    Toast.makeText(DenunciaActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
+                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
+                                                new ArrayList<Agiliza>(0),
+                                                new ArrayList<Comentario>(0)));
+                                    dialog.dismiss();
+                                    finish();
                                 } else {
                                     dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
@@ -300,7 +310,7 @@ public class DenunciaActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
+                            public void onFailure(Call<Denuncia> call, Throwable t) {
                                 dialog.dismiss();
                                 Log.e("ErroDenuncia", t.getLocalizedMessage());
                                 Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();

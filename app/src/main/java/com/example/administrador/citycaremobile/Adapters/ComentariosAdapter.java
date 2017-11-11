@@ -1,10 +1,12 @@
 package com.example.administrador.citycaremobile.Adapters;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
+import com.example.administrador.citycaremobile.Fragments.FeedFragment;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Comentario;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
@@ -38,10 +42,14 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
 
     private ArrayList<Comentario> comentarios;
     private Context context;
+    private Integer idLoginDenuncia;
+    private ComentarioFragment cf;
 
-    public ComentariosAdapter(final Context context, ArrayList<Comentario> comentarios) {
+    public ComentariosAdapter(final Context context, ArrayList<Comentario> comentarios, ComentarioFragment comentarioFragment, Integer idLoginDenuncia) {
         this.comentarios = comentarios;
         this.context = context;
+        this.idLoginDenuncia = idLoginDenuncia;
+        this.cf = comentarioFragment;
     }
 
     @Override
@@ -52,40 +60,122 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
 
     @Override
     public void onBindViewHolder(final ComentarioHolder holder, final int position) {
-        final Comentario comentario = comentarios.get(position);
-        Service service = CallService.createService(Service.class);
-        Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getToken(), comentario.getUsuarioComentario());
-        callUsuario.enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                if (response.isSuccessful()) {
-                    Gson gson = new Gson();
-                    if (response.code() == 222) {
-                        Object o = response.body();
-                        String jsonCidadao = gson.toJson(o);
-                        Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
-                        Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.picProfileComentario);
-                        holder.tvPorfileComentario.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
-                        holder.descricaoComentario.setText(comentario.getDescricaoComentario());
-                    } else if (response.code() == 223) {
-                        Object o = response.body();
-                        String jsonEmpresa = gson.toJson(o);
-                        Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
-                        Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.picProfileComentario);
-                        holder.tvPorfileComentario.setText(empresa.getNomeFantasia());
-                        holder.descricaoComentario.setText(comentario.getDescricaoComentario());
+        if(UsuarioApplication.getInstance().getUsuario() == null){
+            cf.viewButtonLogin(View.VISIBLE, true);
+        }
+        if (comentarios.isEmpty()) {
+            cf.viewSemComentarios(View.VISIBLE, true);
+        } else {
+            Comentario comentario = comentarios.get(position);
+            holder.descricaoComentario.setText(comentario.getDescricao());
+            Service service = CallService.createService(Service.class);
+            Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getToken(), comentario.getLogin());
+            callUsuario.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        if (response.code() == 222) {
+                            Object o = response.body();
+                            String jsonCidadao = gson.toJson(o);
+                            Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
+                            Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.picProfileComentario);
+                            holder.tvPorfileComentario.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
+                        } else if (response.code() == 223) {
+                            Object o = response.body();
+                            String jsonEmpresa = gson.toJson(o);
+                            Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
+                            Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.picProfileComentario);
+                            holder.tvPorfileComentario.setText(empresa.getNomeFantasia());
+                        }
+                    } else if (response.code() == 404) {
+                        holder.tvPorfileComentario.setText("Desativado");
+                    } else {
+                        APIError error = ErrorUtils.parseError(response);
+                        Toasty.error(context, "Erro na Conexão", Toast.LENGTH_LONG).show();
+                        Log.e("CallUsuario", error.getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    Toasty.error(context, "Erro na Conexão", Toast.LENGTH_LONG).show();
+                    Log.e("CallUsuario", t.getMessage());
+                }
+            });
+
+            if (UsuarioApplication.getInstance().getUsuario() != null) {
+                if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
+                    if (comentario.getLogin().getIdLogin()
+                            == ((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()) {
+                        holder.toolbar.setVisibility(View.VISIBLE);
+                        holder.toolbar.setClickable(true);
+                    } else if (((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()
+                            == idLoginDenuncia) {
+                        holder.toolbar.setVisibility(View.VISIBLE);
+                        holder.toolbar.setClickable(true);
+                    } else {
+                        holder.toolbar.setVisibility(View.INVISIBLE);
+                        holder.toolbar.setClickable(false);
+                    }
+                } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
+                    if (comentario.getLogin().getIdLogin()
+                            == ((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin()) {
+                        holder.toolbar.setVisibility(View.VISIBLE);
+                        holder.toolbar.setClickable(true);
+                    } else {
+                        holder.toolbar.setVisibility(View.INVISIBLE);
+                        holder.toolbar.setClickable(false);
+                    }
+                    if (((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin()
+                            == idLoginDenuncia) {
+                        holder.toolbar.setVisibility(View.VISIBLE);
+                        holder.toolbar.setClickable(true);
+                    } else {
+                        holder.toolbar.setVisibility(View.INVISIBLE);
+                        holder.toolbar.setClickable(false);
                     }
                 } else {
-                    APIError error = ErrorUtils.parseError(response);
-                    Toasty.error(context, "Erro na Conexão", Toast.LENGTH_LONG).show();
-                    Log.e("CallUsuario", error.getMessage());
+                    holder.toolbar.setVisibility(View.INVISIBLE);
+                    holder.toolbar.setClickable(false);
                 }
+            } else {
+                holder.toolbar.setVisibility(View.INVISIBLE);
+                holder.toolbar.setClickable(false);
             }
+        }
 
+        holder.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Toasty.error(context, "Erro na Conexão", Toast.LENGTH_LONG).show();
-                Log.e("CallUsuario", t.getMessage());
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.excluir_comentario:
+                        Service service = CallService.createService(Service.class);
+                        final Call<Void> deletarComentario = service.deletarComentario(UsuarioApplication.getToken(),
+                                comentarios.get(position));
+                        deletarComentario.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if(response.isSuccessful()){
+                                    removerComentario(position);
+                                    if (comentarios.isEmpty()){
+                                        cf.viewSemComentarios(View.VISIBLE,true);
+                                    }
+                                } else {
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("deletarComentario", error.getMessage());
+                                    Toasty.error(context,"Erro na conexão", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("deletarComentario", t.getMessage());
+                                Toasty.error(context,"Erro na conexão", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                }
+                return false;
             }
         });
     }
@@ -105,7 +195,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
             super(itemView);
             picProfileComentario = (CircleImageView) itemView.findViewById(R.id.pic_profile_comentario);
             tvPorfileComentario = (TextView) itemView.findViewById(R.id.nome_profile_comentario);
-            descricaoComentario = (TextView) itemView.findViewById(R.id.descricao_denuncia);
+            descricaoComentario = (TextView) itemView.findViewById(R.id.tv_comentario);
             toolbar = (Toolbar) itemView.findViewById(R.id.toolbar_edt_comentario);
 
             toolbar.inflateMenu(R.menu.menu_comentarios);
@@ -115,12 +205,13 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
     public void inserirComentario(Comentario comentario) {
         comentarios.add(comentario);
         notifyItemInserted(getItemCount());
+        cf.viewSemComentarios(View.INVISIBLE, false);
     }
 
     public void removerComentario(int position) {
         comentarios.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
+        cf.atualizarPostagem();
     }
-
 }

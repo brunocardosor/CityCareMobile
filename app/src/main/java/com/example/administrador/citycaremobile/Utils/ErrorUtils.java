@@ -21,11 +21,15 @@ public class ErrorUtils {
         Converter<ResponseBody, APIError> converter = CallService.getRetrofit().responseBodyConverter(APIError.class, new Annotation[0]);
         APIError error;
         try{
-            error = converter.convert(response.errorBody());
+            if (response.errorBody() != null){
+                error = converter.convert(response.errorBody());
+            } else {
+                error = new APIError();
+                error.setMessage("Erro desconhecido");
+            }
         } catch (IOException e){
             return new APIError();
         }
-
         return error;
     }
 }

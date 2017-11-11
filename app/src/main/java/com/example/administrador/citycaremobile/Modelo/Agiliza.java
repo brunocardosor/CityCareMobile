@@ -2,6 +2,7 @@ package com.example.administrador.citycaremobile.Modelo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Administrador on 01/09/2017.
  */
 
-public class Agiliza implements Parcelable {
+public class Agiliza implements Parcelable, Comparable<Agiliza> {
 
     @SerializedName("fk_login_agiliza")
     private Login login;
@@ -79,5 +80,15 @@ public class Agiliza implements Parcelable {
 
     public void setInteracao(boolean interacao) {
         this.interacao = interacao;
+    }
+
+    @Override
+    public int compareTo(@NonNull Agiliza o) {
+        if (login.getIdLogin() == o.getLogin().getIdLogin() &&
+                usuarioDenuncia.getIdDenuncia() == o.getUsuarioDenuncia().getIdDenuncia()){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

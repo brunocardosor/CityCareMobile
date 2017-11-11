@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 
 import com.example.administrador.citycaremobile.R;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 public class MapsFragment extends Fragment  {
 
@@ -29,6 +29,7 @@ public class MapsFragment extends Fragment  {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(),R.raw.map_style));
             }
         });
         return view;

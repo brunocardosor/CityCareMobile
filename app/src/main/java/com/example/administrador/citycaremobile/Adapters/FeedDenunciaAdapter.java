@@ -1,13 +1,9 @@
 package com.example.administrador.citycaremobile.Adapters;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,9 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 
@@ -34,6 +30,8 @@ import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Comentario;
+import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.Postagem;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
@@ -73,27 +71,6 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         this.context = context;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    public void inserirPostagem(Postagem post) {
-        postagens.add(post);
-        notifyItemInserted(getItemCount());
-    }
-
-    public void atualizarPostagem(int position, Postagem post) {
-        Postagem postAtualizado = postagens.get(position);
-        postAtualizado = post;
-        notifyItemChanged(position);
-    }
-
-    public void deletarPostagem(int position) {
-        postagens.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public FeedDenunciaAdapter.FeedDenunciaHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -104,14 +81,11 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     }
 
     @Override
-    public void onViewRecycled(FeedDenunciaHolder holder) {
-        super.onViewRecycled(holder);
-    }
-
-    @Override
     public void onBindViewHolder(final FeedDenunciaHolder holder, final int position) {
         final Postagem post = postagens.get(position);
-        final boolean[] agilizado = {false};
+        final Boolean[] agilizado = {false};
+        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
 
         //Serviço para pegar dados de quem criou a denúncia e Binda-los
         final Service service = CallService.createService(Service.class);
@@ -163,9 +137,9 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             e.printStackTrace();
         }
 
-        atualizarStatus(holder,post,agilizado[0]);
+        agilizado[0] = atualizarStatus(holder, post);
 
-        if (post.getComentarios().size() > 2) {
+        if (post.getComentarios().size() >= 2) {
             holder.comentariosPostQnd.setText(post.getComentarios().size() + " comentários");
         } else if (post.getComentarios().size() == 1) {
             holder.comentariosPostQnd.setText("1 comentário");
@@ -177,20 +151,127 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.agilizarPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(agilizado[0]){
-
+                if (UsuarioApplication.getInstance().getUsuario() == null) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialog);
+                    dialog.setMessage("Você não está logado ao CityCare para agilizar uma denúncia.")
+                            .setTitle("Oooops!")
+                            .setPositiveButton("Acessar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(context, AcessoActivity.class);
+                                    context.startActivity(i);
+                                }
+                            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
                 } else {
+                    final Agiliza agiliza;
+                    if (agilizado[0]) {
+                        agilizado[0] = false;
+                        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+                        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+                        if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
+                            agiliza = new Agiliza(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao(),
+                                    post.getDenuncia(), false);
+                        } else {
+                            agiliza = new Agiliza(((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa(),
+                                    post.getDenuncia(), false);
+                        }
+                        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+                        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+                        Call<Void> agilizar = service.agilizar(UsuarioApplication.getToken(), agiliza);
+                        agilizar.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    for (Agiliza a : post.getAgilizas()) {
+                                        if (a.compareTo(agiliza) == 1) {
+                                            post.getAgilizas().remove(a);
+                                            atualizarStatus(holder, post);
+                                            return;
+                                        }
+                                    }
+                                } else {
+                                    agilizado[0] = true;
+                                    holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
+                                    holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("agilizaTrue", error.getMessage());
+                                    Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                agilizado[0] = true;
+                                holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
+                                holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
+                                Log.e("agilizaTrue", t.getMessage());
+                                Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        agilizado[0] = true;
+                        if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
+                            agiliza = new Agiliza(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao(),
+                                    post.getDenuncia(), true);
+                        } else {
+                            agiliza = new Agiliza(((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa(),
+                                    post.getDenuncia(), true);
+                        }
+                        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
+                        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
+                        Call<Void> agilizar = service.agilizar(UsuarioApplication.getToken(), agiliza);
+                        agilizar.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    post.getAgilizas().add(agiliza);
+                                    atualizarStatus(holder, post);
+                                    return;
+                                } else {
+                                    agilizado[0] = false;
+                                    holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+                                    holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+                                    APIError error = ErrorUtils.parseError(response);
+                                    Log.e("agilizaTrue", error.getMessage());
+                                    Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                agilizado[0] = false;
+                                holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+                                holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+                                Log.e("agilizaTrue", t.getMessage());
+                                Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }
         });
-
+        //evento do comentar
         holder.comentarPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.support.v4.app.FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
-                ComentarioFragment cf =  ComentarioFragment.newInstance(post.getComentarios());
-                cf.show(fm,"comentarios");
+                android.support.v4.app.FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+                if (post.getComentarios() == null) {
+                    ComentarioFragment cf = ComentarioFragment.newInstance(new ArrayList<Comentario>(0),
+                            post.getDenuncia().getIdDenuncia(),
+                            post.getDenuncia().getLogin().getIdLogin(), position);
+                    cf.show(fm, "comentarios");
+                } else {
+                    ComentarioFragment cf = ComentarioFragment.newInstance(post.getComentarios(),
+                            post.getDenuncia().getIdDenuncia(),
+                            post.getDenuncia().getLogin().getIdLogin(), position);
+                    cf.show(fm, "comentarios");
+
+                }
             }
         });
 
@@ -201,14 +282,82 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                     case R.id.editar_denuncia:
                         break;
                     case R.id.deletar_denuncia:
-                        break;
+                        servicoDeletarDenuncia(position);
                 }
                 return true;
             }
         });
+
+        if (position == postagens.size() - 1) {
+            carregarPostagens(post.getDenuncia().getIdDenuncia(), position, holder);
+        }
     }
 
-    public void atualizarStatus(final FeedDenunciaHolder holder, Postagem post, boolean agilizado) {
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public void inserirPostagem(Postagem post) {
+        postagens.add(0, post);
+        notifyItemInserted(getItemCount());
+        notifyItemRangeChanged(0, getItemCount());
+    }
+
+    public void inserirData(ArrayList<Postagem> postagens) {
+        this.postagens = postagens;
+        notifyDataSetChanged();
+    }
+
+    public void carregarPostagens(final int idDenuncia, final int position, final FeedDenunciaHolder holder) {
+        holder.progressBar.setVisibility(View.VISIBLE);
+        Service service = CallService.createService(Service.class);
+        Call<ArrayList<Postagem>> carregarPostagem = service.carregarPostagem(UsuarioApplication.getToken(),
+                new Denuncia(idDenuncia));
+        carregarPostagem.enqueue(new Callback<ArrayList<Postagem>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
+                if (response.isSuccessful()) {
+                    if(response.body().isEmpty()){
+                        holder.progressBar.setVisibility(View.GONE);
+                        holder.semPostagens.setVisibility(View.VISIBLE);
+                        return;
+                    } else {
+                        postagens.addAll(response.body());
+                        holder.progressBar.setVisibility(View.GONE);
+                        notifyItemRangeInserted(position + 1, response.body().size());
+                        return;
+                    }
+                } else {
+                    APIError error = ErrorUtils.parseError(response);
+                    Log.e("carregarPostagens", error.getMessage());
+                    Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
+                Log.e("carregarPostagens", t.getMessage());
+                Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void atualizarPostagem(int position, Postagem post) {
+        Postagem postAtualizado = postagens.get(position);
+        postAtualizado = post;
+        notifyItemChanged(position);
+    }
+
+    public void deletarPostagem(int position) {
+        postagens.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
+    }
+
+
+    public boolean atualizarStatus(final FeedDenunciaHolder holder, Postagem post) {
+
         if (UsuarioApplication.getInstance().getUsuario() == null) {
             holder.toolbarPostMenu.setVisibility(View.GONE);
             if (post.getAgilizas().size() >= 2) {
@@ -226,80 +375,74 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                 }
                 for (Agiliza a : post.getAgilizas()) {
                     if (a.getLogin().getIdLogin() == ((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()) {
-                        agilizado = true;
                         holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
                         holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
                         if (post.getAgilizas().size() >= 2) {
                             if (post.getAgilizas().size() == 2) {
                                 holder.statusPostQnd.setText("Você e mais 1 pessoa agilizaram");
+                                return true;
                             } else {
                                 holder.statusPostQnd.setText("Você e mais " + (post.getAgilizas().size() - 1) + " agilizaram");
+                                return true;
                             }
                         } else {
                             if (post.getAgilizas().size() == 1) {
                                 holder.statusPostQnd.setText("Você agilizou");
+                                return true;
                             }
-                        }
-                        return;
-                    }
-                    if (!agilizado) {
-                        if (post.getAgilizas().size() >= 2) {
-                            holder.statusPostQnd.setText(post.getAgilizas().size() + " pessoas agilizaram");
-                        } else if (post.getAgilizas().size() == 1) {
-                            holder.statusPostQnd.setText("1 pessoa agilizou");
-                        } else {
-                            holder.statusPostQnd.setText("Nenhum agiliza");
                         }
                     }
                 }
-            } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa &&
-                    ((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin() ==
-                            post.getDenuncia().getLogin().getIdLogin()) {
-                holder.toolbarPostMenu.setVisibility(View.VISIBLE);
+                holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
+                holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+                if (post.getAgilizas().size() >= 2) {
+                    holder.statusPostQnd.setText(post.getAgilizas().size() + " pessoas agilizaram");
+                    return false;
+                } else if (post.getAgilizas().size() == 1) {
+                    holder.statusPostQnd.setText("1 pessoa agilizou");
+                    return false;
+                } else {
+                    holder.statusPostQnd.setText("Nenhum agiliza");
+                    return false;
+                }
+            } else if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
+                if (((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin() ==
+                        post.getDenuncia().getLogin().getIdLogin()) {
+                    holder.toolbarPostMenu.setVisibility(View.VISIBLE);
+                }
+                for (Agiliza a : post.getAgilizas()) {
+                    if (a.getLogin().getIdLogin() == ((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin()) {
+                        holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaSelected, null, null, null);
+                        holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.colorAscend));
+                        if (post.getAgilizas().size() >= 2) {
+                            if (post.getAgilizas().size() == 2) {
+                                holder.statusPostQnd.setText("Você e mais 1 pessoa agilizaram");
+                                return true;
+                            } else {
+                                holder.statusPostQnd.setText("Você e mais " + (post.getAgilizas().size() - 1) + " agilizaram");
+                                return true;
+                            }
+                        } else {
+                            if (post.getAgilizas().size() == 1) {
+                                holder.statusPostQnd.setText("Você agilizou");
+                                return true;
+                            }
+                        }
+                    }
+                    if (post.getAgilizas().size() >= 2) {
+                        holder.statusPostQnd.setText(post.getAgilizas().size() + " pessoas agilizaram");
+                        return false;
+                    } else if (post.getAgilizas().size() == 1) {
+                        holder.statusPostQnd.setText("1 pessoa agilizou");
+                        return false;
+                    } else {
+                        holder.statusPostQnd.setText("Nenhum agiliza");
+                        return false;
+                    }
+                }
             }
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return postagens.size();
-    }
-
-    class FeedDenunciaHolder extends RecyclerView.ViewHolder {
-
-        CircleImageView profilePicPost;
-        TextView nameProfilePost, timePost, descricaoPost, localizacaoPost, categoriaPost, statusPostQnd, comentariosPostQnd;
-        Toolbar toolbarPostMenu;
-        ImageView denunciaPicPost;
-        Button comentarPost, sharePost, agilizarPost;
-
-        public FeedDenunciaHolder(View view) {
-            super(view);
-            profilePicPost = (CircleImageView) view.findViewById(R.id.pic_profile_post);
-            nameProfilePost = (TextView) view.findViewById(R.id.name_profile_post);
-            timePost = (TextView) view.findViewById(R.id.time_post);
-            toolbarPostMenu = (Toolbar) view.findViewById(R.id.toolbar_post_menu);
-            descricaoPost = (TextView) view.findViewById(R.id.descricao_post);
-            localizacaoPost = (TextView) view.findViewById(R.id.localizacao_post);
-            categoriaPost = (TextView) view.findViewById(R.id.categoria_post);
-            denunciaPicPost = (ImageView) view.findViewById(R.id.denuncia_picture_post);
-            agilizarPost = (Button) view.findViewById(R.id.bt_agilizar_post);
-            sharePost = (Button) view.findViewById(R.id.bt_share_post);
-            comentarPost = (Button) view.findViewById(R.id.bt_comentar_post);
-            statusPostQnd = (TextView) view.findViewById(R.id.tv_status_post_qtd);
-            comentariosPostQnd = (TextView) view.findViewById(R.id.tv_comentarios_post_qtd);
-
-
-            sharePost.setOnClickListener(new View.OnClickListener() {
-                                             @Override
-                                             public void onClick(View v) {
-
-                                             }
-                                         }
-            );
-
-            toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
-        }
+        return false;
     }
 
     private String getPeriodo(DateTime inicio) {
@@ -336,5 +479,65 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             }
         }
         return null;
+    }
+
+    public void servicoDeletarDenuncia(final int position) {
+        Service service = CallService.createService(Service.class);
+        final Call<Void> deletarDenuncia = service.excluirPostagem(UsuarioApplication.getToken(),
+                new Denuncia(postagens.get(position).getDenuncia().getIdDenuncia()));
+        deletarDenuncia.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    deletarPostagem(position);
+                } else {
+                    APIError error = ErrorUtils.parseError(response);
+                    Log.e("deletarDenuncia", error.getMessage());
+                    Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("deletarDenuncia", t.getMessage());
+                Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return postagens.size();
+    }
+
+    class FeedDenunciaHolder extends RecyclerView.ViewHolder {
+
+        CircleImageView profilePicPost;
+        TextView nameProfilePost, timePost, descricaoPost, semPostagens,
+                localizacaoPost, categoriaPost, statusPostQnd, comentariosPostQnd;
+        Toolbar toolbarPostMenu;
+        ImageView denunciaPicPost;
+        Button comentarPost, agilizarPost;
+        ProgressBar progressBar;
+
+        public FeedDenunciaHolder(View view) {
+            super(view);
+            profilePicPost = (CircleImageView) view.findViewById(R.id.pic_profile_post);
+            nameProfilePost = (TextView) view.findViewById(R.id.name_profile_post);
+            timePost = (TextView) view.findViewById(R.id.time_post);
+            toolbarPostMenu = (Toolbar) view.findViewById(R.id.toolbar_post_menu);
+            descricaoPost = (TextView) view.findViewById(R.id.descricao_post);
+            localizacaoPost = (TextView) view.findViewById(R.id.localizacao_post);
+            categoriaPost = (TextView) view.findViewById(R.id.categoria_post);
+            denunciaPicPost = (ImageView) view.findViewById(R.id.denuncia_picture_post);
+            agilizarPost = (Button) view.findViewById(R.id.bt_agilizar_post);
+            comentarPost = (Button) view.findViewById(R.id.bt_comentar_post);
+            statusPostQnd = (TextView) view.findViewById(R.id.tv_status_post_qtd);
+            comentariosPostQnd = (TextView) view.findViewById(R.id.tv_comentarios_post_qtd);
+            progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_denuncia);
+            semPostagens = (TextView) view.findViewById(R.id.sem_postagens);
+
+            toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
+        }
     }
 }

@@ -30,7 +30,7 @@ public class Denuncia implements Parcelable {
     @SerializedName("data_denuncia")
     private String dataDenuncia;
     @SerializedName("status_denuncia")
-    private boolean statusDenuncia;
+    private Integer statusDenuncia;
     @SerializedName("fk_solucao_denuncia")
     private Solucao solucaoDenuncia;
     @SerializedName("fk_categoria_denuncia")
@@ -41,7 +41,11 @@ public class Denuncia implements Parcelable {
     public Denuncia() {
     }
 
-    public Denuncia(int idDenuncia, String descricaoDenuncia, String dirFotoDenuncia, double latitude, double longitude, String cidade, String estado, String dataDenuncia, boolean statusDenuncia, Solucao solucaoDenuncia, Categoria categoriaDenuncia, Login login) {
+    public Denuncia(Integer idDenuncia){
+        this.idDenuncia = idDenuncia;
+    }
+
+    public Denuncia(int idDenuncia, String descricaoDenuncia, String dirFotoDenuncia, double latitude, double longitude, String cidade, String estado, String dataDenuncia, Integer statusDenuncia, Solucao solucaoDenuncia, Categoria categoriaDenuncia, Login login) {
         this.idDenuncia = idDenuncia;
         this.descricaoDenuncia = descricaoDenuncia;
         this.dirFotoDenuncia = dirFotoDenuncia;
@@ -65,7 +69,7 @@ public class Denuncia implements Parcelable {
         cidade = in.readString();
         estado = in.readString();
         dataDenuncia = in.readString();
-        statusDenuncia = in.readByte() != 0;
+        statusDenuncia = in.readInt();
         solucaoDenuncia = in.readParcelable(Solucao.class.getClassLoader());
         categoriaDenuncia = in.readParcelable(Categoria.class.getClassLoader());
         login = in.readParcelable(Login.class.getClassLoader());
@@ -81,7 +85,7 @@ public class Denuncia implements Parcelable {
         dest.writeString(cidade);
         dest.writeString(estado);
         dest.writeString(dataDenuncia);
-        dest.writeByte((byte) (statusDenuncia ? 1 : 0));
+        dest.writeInt(statusDenuncia);
         dest.writeParcelable(solucaoDenuncia, flags);
         dest.writeParcelable(categoriaDenuncia, flags);
         dest.writeParcelable(login, flags);
@@ -168,11 +172,11 @@ public class Denuncia implements Parcelable {
         this.dataDenuncia = dataDenuncia;
     }
 
-    public boolean isStatusDenuncia() {
+    public Integer isStatusDenuncia() {
         return statusDenuncia;
     }
 
-    public void setStatusDenuncia(boolean statusDenuncia) {
+    public void setStatusDenuncia(Integer statusDenuncia) {
         this.statusDenuncia = statusDenuncia;
     }
 

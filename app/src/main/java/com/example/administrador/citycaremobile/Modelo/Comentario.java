@@ -2,6 +2,7 @@ package com.example.administrador.citycaremobile.Modelo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,28 +10,48 @@ import com.google.gson.annotations.SerializedName;
  * Created by Administrador on 01/09/2017.
  */
 
-public class Comentario implements Parcelable {
+public class Comentario implements Parcelable, Comparable<Login> {
 
     @SerializedName("id_comentario")
-    private int idComentario;
+    private Integer idComentario;
     @SerializedName("descricao_comentario")
-    private String descricaoComentario;
+    private String descricao;
     @SerializedName("fk_login_comentario")
     private Login login;
-    @SerializedName("denuncia_comentario")
+    @SerializedName("fk_denuncia_comentario")
     private Denuncia denunciaComentario;
 
+    public Comentario(){
+
+    }
+
+    public Comentario(Integer idComentario, String descricao, Login login, Denuncia denunciaComentario) {
+        this.idComentario = idComentario;
+        this.descricao = descricao;
+        this.login = login;
+        this.denunciaComentario = denunciaComentario;
+    }
+
     protected Comentario(Parcel in) {
-        idComentario = in.readInt();
-        descricaoComentario = in.readString();
+        if (in.readByte() == 0) {
+            idComentario = null;
+        } else {
+            idComentario = in.readInt();
+        }
+        descricao = in.readString();
         login = in.readParcelable(Login.class.getClassLoader());
         denunciaComentario = in.readParcelable(Denuncia.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(idComentario);
-        dest.writeString(descricaoComentario);
+        if (idComentario == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(idComentario);
+        }
+        dest.writeString(descricao);
         dest.writeParcelable(login, flags);
         dest.writeParcelable(denunciaComentario, flags);
     }
@@ -52,27 +73,27 @@ public class Comentario implements Parcelable {
         }
     };
 
-    public int getIdComentario() {
+    public Integer getIdComentario() {
         return idComentario;
     }
 
-    public void setIdComentario(int idComentario) {
+    public void setIdComentario(Integer idComentario) {
         this.idComentario = idComentario;
     }
 
-    public String getDescricaoComentario() {
-        return descricaoComentario;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricaoComentario(String descricaoComentario) {
-        this.descricaoComentario = descricaoComentario;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public Login getUsuarioComentario() {
+    public Login getLogin() {
         return login;
     }
 
-    public void setUsuarioComentario(Login login) {
+    public void setLogin(Login login) {
         this.login = login;
     }
 
@@ -82,5 +103,14 @@ public class Comentario implements Parcelable {
 
     public void setDenunciaComentario(Denuncia denunciaComentario) {
         this.denunciaComentario = denunciaComentario;
+    }
+
+    @Override
+    public int compareTo(@NonNull Login o) {
+        if(idComentario == o.getIdLogin()){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

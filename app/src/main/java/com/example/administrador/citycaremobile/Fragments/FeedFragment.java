@@ -3,11 +3,13 @@ package com.example.administrador.citycaremobile.Fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,6 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
@@ -40,6 +45,7 @@ public class FeedFragment extends Fragment {
     private FloatingActionButton bt_denunciar;
     private RecyclerView recyclerView;
     private FeedDenunciaAdapter feedAdapter = UsuarioApplication.getFeedDenuncia();
+    private SwipeRefreshLayout swipe;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,17 +79,28 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
+        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_feed);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateFeed(feedAdapter);
+            }
+        });
+        adicionarFeed(feedAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(feedAdapter);
+        return view;
+    }
+
+    public void updateFeed(final FeedDenunciaAdapter feedAdapter){
         Service service = CallService.createService(Service.class);
         Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
         listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
             @Override
             public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
                 feedAdapter.setContext(getContext());
-                for (Postagem p : response.body()){
-                    feedAdapter.inserirPostagem(p);
-                }
+                feedAdapter.inserirData(response.body());
+                swipe.setRefreshing(false);
             }
 
             @Override
@@ -92,6 +109,23 @@ public class FeedFragment extends Fragment {
                 Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
-        return view;
+    }
+
+    public void adicionarFeed(final FeedDenunciaAdapter feedAdapter){
+        Service service = CallService.createService(Service.class);
+        Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
+        listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
+                feedAdapter.setContext(getContext());
+                feedAdapter.inserirData(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
+                Log.e("PostRequest", t.getLocalizedMessage());
+                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
