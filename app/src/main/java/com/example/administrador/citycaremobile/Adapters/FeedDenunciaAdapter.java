@@ -84,6 +84,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     public void onBindViewHolder(final FeedDenunciaHolder holder, final int position) {
         final Postagem post = postagens.get(position);
         final Boolean[] agilizado = {false};
+        holder.semPostagens.setVisibility(View.GONE);
         holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
         holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
 
@@ -332,6 +333,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                     APIError error = ErrorUtils.parseError(response);
                     Log.e("carregarPostagens", error.getMessage());
                     Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                    carregarPostagens(idDenuncia, position, holder);
                 }
             }
 
@@ -339,6 +341,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
                 Log.e("carregarPostagens", t.getMessage());
                 Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
+                carregarPostagens(idDenuncia, position, holder);
             }
         });
     }

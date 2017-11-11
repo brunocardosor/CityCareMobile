@@ -2,7 +2,9 @@ package com.example.administrador.citycaremobile.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -39,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private Menu menuView;
     private TabLayout tabLayout;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        toolbar.setElevation(8);
         setSupportActionBar(toolbar);
 
         navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
@@ -61,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         //TAB LAYOUT
         tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("Mapa"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home_screen));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_maps_screen));
+        tabLayout.setElevation(4);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //VIEW PAGER
@@ -105,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                 nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    drawerLayout.openDrawer(Gravity.START);
+                }
+            });
         } else {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
@@ -132,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     btEntrar.setVisibility(View.VISIBLE);
                     btEntrar.setClickable(true);
                     drawerLayout.closeDrawer(Gravity.START);
+                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                     UsuarioApplication.getFeedDenuncia().notifyDataSetChanged();
                     dialog.dismiss();
                     return true;
@@ -145,12 +157,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, AcessoActivity.class);
                 startActivity(i);
-            }
-        });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
     }
@@ -180,12 +186,12 @@ public class MainActivity extends AppCompatActivity {
                 nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    drawerLayout.openDrawer(Gravity.START);
+                }
+            });
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
     }
 }

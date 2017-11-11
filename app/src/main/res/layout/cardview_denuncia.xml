@@ -6,11 +6,10 @@
     android:layout_marginTop="15dp">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardview_denuncia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:id="@+id/cardview_denuncia"
-        >
+        android:elevation="3dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_post_menu"
@@ -215,24 +214,26 @@
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
+
     <ProgressBar
+        android:id="@+id/progress_bar_denuncia"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@id/cardview_denuncia"
         android:layout_centerInParent="true"
         android:layout_margin="20dp"
-        android:id="@+id/progress_bar_denuncia"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <TextView
+        android:id="@+id/sem_postagens"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Isso é tudo por hoje."
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:textColor="#aaa"
-        android:layout_centerInParent="true"
         android:layout_below="@id/cardview_denuncia"
+        android:layout_centerInParent="true"
         android:layout_margin="20dp"
-        android:visibility="gone"
-        android:id="@+id/sem_postagens"/>
-    </RelativeLayout>
+        android:text="Isso é tudo por hoje."
+        android:textColor="#aaa"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</RelativeLayout>
