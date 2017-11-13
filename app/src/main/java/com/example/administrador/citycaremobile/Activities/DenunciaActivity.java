@@ -1,5 +1,7 @@
 package com.example.administrador.citycaremobile.Activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.administrador.citycaremobile.Adapters.FeedDenunciaAdapter;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Fragments.FeedFragment;
+import com.example.administrador.citycaremobile.Fragments.MapsFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Categoria;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
@@ -228,12 +232,16 @@ public class DenunciaActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
                                 if (response.isSuccessful()) {
-                                    if (response.code() != 204)
-                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
+                                    if (response.code() != 204){
+                                        Postagem post = new Postagem(response.body(),
                                                 new ArrayList<Agiliza>(0),
-                                                new ArrayList<Comentario>(0)));
-                                    dialog.dismiss();
-                                    finish();
+                                                new ArrayList<Comentario>(0));
+                                        FeedFragment.getFeedAdapter().inserirPostagem(post);
+                                        MapsFragment mp = MapsFragment.getInstance();
+                                        mp.addDenuncia(post);
+                                        dialog.dismiss();
+                                        finish();
+                                    }
                                 } else {
                                     dialog.dismiss();
                                     APIError error = ErrorUtils.parseError(response);
@@ -252,70 +260,30 @@ public class DenunciaActivity extends AppCompatActivity {
                         });
                     } catch (NullPointerException e) {
                         e.printStackTrace();
-                        Service service = CallService.createService(Service.class);
-                        Call<Denuncia> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
-                                null,
-                                jsonDenuncia);
-                        denunciar.enqueue(new Callback<Denuncia>() {
+                        dialog.dismiss();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(DenunciaActivity.this,R.style.AlertDialog);
+                        dialog.setTitle("Ops!")
+                                .setMessage("É necessária uma imagem para prosseguir com a Denúncia")
+                                .setNegativeButton("Entendi", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() != 204)
-                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
-                                                new ArrayList<Agiliza>(0),
-                                                new ArrayList<Comentario>(0)));
-                                    dialog.dismiss();
-                                    finish();
-                                } else {
-                                    dialog.dismiss();
-                                    APIError error = ErrorUtils.parseError(response);
-                                    Log.e("ErrorDenunciar", error.getMessage());
-                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<Denuncia> call, Throwable t) {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Log.e("ErroDenuncia", t.getLocalizedMessage());
-                                Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                btGetFromCamera.callOnClick();
                             }
-                        });
+                        }).show();
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
-                        Service service = CallService.createService(Service.class);
-                        Call<Denuncia> denunciar = service.denunciar(UsuarioApplication.getInstance().getToken(),
-                                null,
-                                jsonDenuncia);
-                        denunciar.enqueue(new Callback<Denuncia>() {
-                            @Override
-                            public void onResponse(Call<Denuncia> call, Response<Denuncia> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.code() != 204)
-                                        UsuarioApplication.getFeedDenuncia().inserirPostagem(new Postagem(response.body(),
-                                                new ArrayList<Agiliza>(0),
-                                                new ArrayList<Comentario>(0)));
-                                    dialog.dismiss();
-                                    finish();
-                                } else {
-                                    dialog.dismiss();
-                                    APIError error = ErrorUtils.parseError(response);
-                                    Log.e("ErrorDenunciar", error.getMessage());
-                                    Toast.makeText(DenunciaActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<Denuncia> call, Throwable t) {
-                                dialog.dismiss();
-                                Log.e("ErroDenuncia", t.getLocalizedMessage());
-                                Toast.makeText(DenunciaActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        dialog.dismiss();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(DenunciaActivity.this, R.style.AlertDialog);
+                        dialog.setTitle("Ops!")
+                                .setMessage("É necessária uma imagem para prosseguir com a Denúncia")
+                                .setNegativeButton("Entendi", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        btGetFromCamera.callOnClick();
+                                    }
+                                }).show();
                     }
                 }
             }
@@ -339,6 +307,7 @@ public class DenunciaActivity extends AppCompatActivity {
                 imgDenuncia = CropImage.getPickImageResultUri(this, data);
                 CropImage.activity(imgDenuncia)
                         .setOutputCompressQuality(70)
+                        .setAspectRatio(1,1)
                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                         .start(this);
             }

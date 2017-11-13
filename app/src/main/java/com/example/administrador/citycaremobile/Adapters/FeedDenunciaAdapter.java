@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
+import com.example.administrador.citycaremobile.Fragments.MapsFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Comentario;
@@ -60,7 +61,7 @@ import retrofit2.Response;
 
 public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapter.FeedDenunciaHolder> {
 
-    private ArrayList<Postagem> postagens;
+    private ArrayList<Postagem> postagens = new ArrayList<>();
     private Context context;
     private Cidadao cidadao;
     private Empresa empresa;
@@ -68,6 +69,11 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
 
     public FeedDenunciaAdapter(Context context) {
         this.postagens = new ArrayList<>();
+        this.context = context;
+    }
+
+    public FeedDenunciaAdapter(Context context, ArrayList<Postagem> postagens){
+        this.postagens = postagens;
         this.context = context;
     }
 
@@ -493,6 +499,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     deletarPostagem(position);
+                    MapsFragment.getInstance().removeMarker(postagens.get(position));
                 } else {
                     APIError error = ErrorUtils.parseError(response);
                     Log.e("deletarDenuncia", error.getMessage());

@@ -1,6 +1,8 @@
 package com.example.administrador.citycaremobile.Fragments;
 
 import android.app.AlertDialog;
+import android.app.UiAutomation;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,10 +34,12 @@ import com.example.administrador.citycaremobile.R;
 import com.example.administrador.citycaremobile.Services.CallService;
 import com.example.administrador.citycaremobile.Services.Service;
 import com.example.administrador.citycaremobile.Utils.ErrorUtils;
+import com.example.administrador.citycaremobile.Utils.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +48,16 @@ public class FeedFragment extends Fragment {
 
     private FloatingActionButton bt_denunciar;
     private RecyclerView recyclerView;
-    private FeedDenunciaAdapter feedAdapter = UsuarioApplication.getFeedDenuncia();
+    private static FeedDenunciaAdapter feedAdapter;
     private SwipeRefreshLayout swipe;
+
+    public static FeedDenunciaAdapter getFeedAdapter() {
+        return feedAdapter;
+    }
+
+    public static void setFeedAdapter(FeedDenunciaAdapter feedAdapter) {
+        FeedFragment.feedAdapter = feedAdapter;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,13 +98,14 @@ public class FeedFragment extends Fragment {
                 updateFeed(feedAdapter);
             }
         });
-        adicionarFeed(feedAdapter);
+        feedAdapter = new FeedDenunciaAdapter(getContext());
+        insertData();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(feedAdapter);
         return view;
     }
 
-    public void updateFeed(final FeedDenunciaAdapter feedAdapter){
+    private void updateFeed(final FeedDenunciaAdapter feedAdapter) {
         Service service = CallService.createService(Service.class);
         Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
         listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
@@ -111,20 +124,29 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    public void adicionarFeed(final FeedDenunciaAdapter feedAdapter){
+    private void insertData() {
         Service service = CallService.createService(Service.class);
-        Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
-        listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
+        Call<ArrayList<Postagem>> getFeedData = service.getPostagens(UsuarioApplication.getToken());
+        getFeedData.enqueue(new Callback<ArrayList<Postagem>>() {
             @Override
             public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
-                feedAdapter.setContext(getContext());
-                feedAdapter.inserirData(response.body());
+                if (response.isSuccessful()) {
+                    feedAdapter.inserirData(response.body());
+                    feedAdapter.notifyDataSetChanged();
+                    return;
+                } else if (response.code() == 401) {
+                    new SystemUtils().authenticateToken(getContext());
+                } else {
+                    APIError error = ErrorUtils.parseError(response);
+                    Log.e("getToken", error.getMessage());
+                    Toasty.error(getContext(), "Erro na conexão", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
-                Log.e("PostRequest", t.getLocalizedMessage());
-                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Log.e("getToken", t.getMessage());
+                Toasty.error(getContext(), "Erro na conexão", Toast.LENGTH_LONG).show();
             }
         });
     }

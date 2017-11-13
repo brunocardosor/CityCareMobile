@@ -126,7 +126,7 @@ public class ComentarioFragment extends DialogFragment {
                             if (response.isSuccessful()) {
                                 edtComentario.setText(null);
                                 adapter.inserirComentario(response.body());
-                                UsuarioApplication.getFeedDenuncia().notifyItemChanged(posicao);
+                                FeedFragment.getFeedAdapter().notifyItemChanged(posicao);
                                 return;
                             } else {
                                 APIError error = ErrorUtils.parseError(response);
@@ -195,6 +195,6 @@ public class ComentarioFragment extends DialogFragment {
     }
 
     public void atualizarPostagem(){
-        UsuarioApplication.getFeedDenuncia().notifyItemChanged(posicao);
+        FeedFragment.getFeedAdapter().notifyItemChanged(posicao);
     }
 }

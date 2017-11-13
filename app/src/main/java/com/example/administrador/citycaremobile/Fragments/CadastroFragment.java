@@ -160,7 +160,6 @@ public class CadastroFragment extends Fragment {
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                edtLogin.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbLogin.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(s.toString())) {
                     pbLogin.setVisibility(View.GONE);
@@ -220,7 +219,6 @@ public class CadastroFragment extends Fragment {
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                edtEmail.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 pbEmail.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(s.toString())) {
                     pbEmail.setVisibility(View.GONE);

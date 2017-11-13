@@ -103,4 +103,7 @@ public interface Service {
     @Headers("content-type:application/json")
     Call<Void> excluirPostagem(@Header("X-Token") String token,
                                @Body Denuncia denuncia);
+    @GET("denuncia/maps")
+    @Headers("content-type:application/json")
+    Call<ArrayList<Postagem>> mapsPostagens(@Header("X-Token") String token);
 }

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Adapters.TabAdapter;
 
+import com.example.administrador.citycaremobile.Fragments.FeedFragment;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DrawerLayout drawerLayout;
     private NavigationView navDrawer;
-    private TextView nomeNavView;
+    private TextView nomeNavView, cidadeNavView, estadoNavView;
     private CircleImageView picProfileNav;
     private View headerView;
     private Menu menuView;
@@ -61,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
         menuView = navDrawer.getMenu();
 
         nomeNavView = (TextView) headerView.findViewById(R.id.name_nav);
+        cidadeNavView = (TextView) headerView.findViewById(R.id.cidade_nav);
+        estadoNavView = (TextView) headerView.findViewById(R.id.estado_nav);
         picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
+        picProfileNav.setElevation(11);
 
         //TAB LAYOUT
         tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
@@ -104,10 +108,14 @@ public class MainActivity extends AppCompatActivity {
             if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
+                cidadeNavView.setText(empresa.getCidade());
+                estadoNavView.setText(empresa.getEstado());
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
+                cidadeNavView.setText(cidadao.getCidade());
+                estadoNavView.setText(cidadao.getEstado());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
             }
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -144,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     btEntrar.setClickable(true);
                     drawerLayout.closeDrawer(Gravity.START);
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                    UsuarioApplication.getFeedDenuncia().notifyDataSetChanged();
+                    FeedFragment.getFeedAdapter().notifyDataSetChanged();
                     dialog.dismiss();
                     return true;
                 }
