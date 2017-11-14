@@ -3,23 +3,53 @@
     android:layout_width="250dp"
     android:layout_height="200dp">
 
-    <ImageView
-        android:id="@+id/info_window_image_maps"
-        android:layout_width="170dp"
-        android:layout_height="140dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"/>
 
     <TextView
+        android:id="@+id/info_window_text_maps"
         android:layout_width="170dp"
         android:layout_height="40dp"
-        android:id="@+id/info_window_text_maps"
-        android:layout_alignBottom="@id/info_window_image_maps"
-        android:textStyle="bold"
+        android:layout_alignParentTop="true"
         android:background="@android:color/white"
-        android:textColor="@android:color/black"
-        android:text="Boeiro a céu aberto"
         android:gravity="center"
-        android:textSize="15dp"/>
+        android:text="Boeiro a céu aberto"
+        android:textColor="@android:color/black"
+        android:textSize="15dp"
+        android:textStyle="bold" />
 
+    <LinearLayout
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/info_window_text_maps"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_agilizas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="20dp"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/ic_action_agiliza"
+            android:drawableTint="@color/colorAscend"
+            android:gravity="center"
+            android:text="15"
+            android:textColor="@color/colorAscend"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_comentarios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/tv_agilizas"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/ic_action_comentar"
+            android:drawableTint="@color/colorPrimaryDark"
+            android:text="15"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </RelativeLayout>
