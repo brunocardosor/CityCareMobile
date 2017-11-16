@@ -80,7 +80,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     @Override
     public FeedDenunciaAdapter.FeedDenunciaHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_denuncia, parent, false);
-        ic_agilizaSelected = context.getResources().getDrawable(R.drawable.ic_action_agiliza_orange, null);
+        ic_agilizaSelected = context.getResources().getDrawable(R.drawable.ic_action_agiliza_blue, null);
         ic_agilizaUnselected = context.getResources().getDrawable(R.drawable.ic_action_agiliza, null);
         return new FeedDenunciaHolder(view);
     }
@@ -92,6 +92,11 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.semPostagens.setVisibility(View.GONE);
         holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
         holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
+
+        if (post.getDenuncia().getStatusDenuncia() == 0){
+            holder.statusButton.setBackground(context.getResources().getDrawable(R.drawable.shape_button_radius_green));
+            holder.statusButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_done));
+        }
 
         //Serviço para pegar dados de quem criou a denúncia e Binda-los
         final Service service = CallService.createService(Service.class);
@@ -275,6 +280,18 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                 }
             }
         });
+
+        holder.statusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(post.getDenuncia().getStatusDenuncia() == 0){
+
+                } else {
+
+                }
+            }
+        });
+
         //evento do comentar
         holder.comentarPost.setOnClickListener(new View.OnClickListener() {
             @Override

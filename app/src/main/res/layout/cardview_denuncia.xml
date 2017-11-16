@@ -81,7 +81,7 @@
                         android:layout_alignRight="@+id/categoria_post"
                         android:layout_centerInParent="true"
                         android:layout_marginRight="5dp"
-                        android:background="@drawable/shape_button_radius"
+                        android:background="@drawable/shape_button_radius_orange"
                         android:elevation="1dp"
                         android:src="@drawable/ic_access_time" />
                     <!--Categoria da denúncia-->

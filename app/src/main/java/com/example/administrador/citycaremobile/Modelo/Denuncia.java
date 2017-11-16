@@ -172,7 +172,7 @@ public class Denuncia implements Parcelable {
         this.dataDenuncia = dataDenuncia;
     }
 
-    public Integer isStatusDenuncia() {
+    public Integer getStatusDenuncia() {
         return statusDenuncia;
     }
 
