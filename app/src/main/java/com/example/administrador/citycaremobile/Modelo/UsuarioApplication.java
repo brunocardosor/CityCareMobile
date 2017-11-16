@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.administrador.citycaremobile.Adapters.FeedDenunciaAdapter;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Fragments.FeedFragment;
@@ -80,7 +81,7 @@ public class UsuarioApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
+        instance = this;;
     }
 }
 

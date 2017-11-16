@@ -26,6 +26,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.MediaStoreSignature;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
 import com.example.administrador.citycaremobile.Activities.DenunciaActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
@@ -146,7 +149,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.timePost.setText(getPeriodo(new DateTime(post.getDenuncia().getDataDenuncia())));
         holder.descricaoPost.setText(post.getDenuncia().getDescricaoDenuncia());
         holder.categoriaPost.setText(post.getDenuncia().getCategoriaDenuncia().toString());
-        Glide.with(holder.denunciaPicPost).load(post.getDenuncia().getDirFotoDenuncia()).into(holder.denunciaPicPost);
+        Glide.with(context).load(post.getDenuncia().getDirFotoDenuncia()).apply(new RequestOptions().skipMemoryCache(true)).into(holder.denunciaPicPost);
 
         //Geocoder para endereço
         Geocoder geo = new Geocoder(context);
@@ -541,6 +544,12 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                 Toasty.error(context, "Erro na conexão", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onViewRecycled(FeedDenunciaHolder holder) {
+        super.onViewRecycled(holder);
+        Glide.with(context).clear(holder.denunciaPicPost);
     }
 
     @Override
