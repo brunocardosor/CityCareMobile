@@ -248,6 +248,7 @@ public class CriarDenunciaFragment extends Fragment {
                                         FeedFragment.getFeedAdapter().inserirPostagem(post);
                                         MapsFragment mp = MapsFragment.getInstance();
                                         mp.addDenuncia(post);
+                                        FeedFragment.getInstance().updateFeed(FeedFragment.getFeedAdapter());
                                         dialog.dismiss();
                                         getActivity().finish();
                                     }

@@ -114,7 +114,7 @@ public class FeedFragment extends Fragment {
         return view;
     }
 
-    private void updateFeed(final FeedDenunciaAdapter feedAdapter) {
+    public void updateFeed(final FeedDenunciaAdapter feedAdapter) {
         Service service = CallService.createService(Service.class);
         Call<ArrayList<Postagem>> listPosts = service.getPostagens(UsuarioApplication.getToken());
         listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
@@ -129,6 +129,20 @@ public class FeedFragment extends Fragment {
             public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
                 Log.e("PostRequest", t.getLocalizedMessage());
                 Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Call<ArrayList<Postagem>> mapsList = service.mapsPostagens(UsuarioApplication.getToken());
+        mapsList.enqueue(new Callback<ArrayList<Postagem>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
+                MapsFragment.getInstance().setData(response.body());
+                swipe.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
+
             }
         });
     }

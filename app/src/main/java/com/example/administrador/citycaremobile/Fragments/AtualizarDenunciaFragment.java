@@ -1,6 +1,7 @@
 package com.example.administrador.citycaremobile.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -288,9 +289,33 @@ public class AtualizarDenunciaFragment extends Fragment {
                                     Toasty.error(getContext(), "Erro de Conexão", Toast.LENGTH_LONG).show();
                                 }
                             });
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            e.printStackTrace();
+                            dialog.dismiss();
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
+                            dialog.setTitle("Ops!")
+                                    .setMessage("É necessária uma imagem para prosseguir com a Denúncia")
+                                    .setNegativeButton("Entendi", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            btGetFromCamera.callOnClick();
+                                        }
+                                    }).show();
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
-                            Toasty.error(getContext(), "Erro.", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
+                            dialog.setTitle("Ops!")
+                                    .setMessage("É necessária uma imagem para prosseguir com a Denúncia")
+                                    .setNegativeButton("Entendi", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            btGetFromCamera.callOnClick();
+                                        }
+                                    }).show();
                         }
                     }
                 }

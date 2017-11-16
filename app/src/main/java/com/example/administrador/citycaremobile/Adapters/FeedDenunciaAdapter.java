@@ -1,7 +1,7 @@
 package com.example.administrador.citycaremobile.Adapters;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,13 +26,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.MediaStoreSignature;
-import com.bumptech.glide.signature.ObjectKey;
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
 import com.example.administrador.citycaremobile.Activities.DenunciaActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
-import com.example.administrador.citycaremobile.Fragments.AtualizarDenunciaFragment;
 import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
 import com.example.administrador.citycaremobile.Fragments.MapsFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
@@ -110,7 +106,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                             Object o = response.body();
                             String jsonCidadao = gson.toJson(o);
                             Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
-                            usuarios.put(position, cidadao);
+                            usuarios.put(post.getDenuncia().getIdDenuncia(), cidadao);
                             holder.nameProfilePost.setText(cidadao.getNome());
                             Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.profilePicPost);
                         } else if (response.code() == 223) {
@@ -119,7 +115,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                             Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
                             holder.nameProfilePost.setText(empresa.getNomeFantasia());
                             Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.profilePicPost);
-                            usuarios.put(position, empresa);
+                            usuarios.put(post.getDenuncia().getIdDenuncia(), empresa);
                         } else {
                             APIError error = ErrorUtils.parseError(response);
                             Log.e("Erro de parse", error.getMessage());
@@ -149,7 +145,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.timePost.setText(getPeriodo(new DateTime(post.getDenuncia().getDataDenuncia())));
         holder.descricaoPost.setText(post.getDenuncia().getDescricaoDenuncia());
         holder.categoriaPost.setText(post.getDenuncia().getCategoriaDenuncia().toString());
-        Glide.with(context).load(post.getDenuncia().getDirFotoDenuncia()).apply(new RequestOptions().skipMemoryCache(true)).into(holder.denunciaPicPost);
+        Glide.with(context).load(post.getDenuncia().getDirFotoDenuncia()).into(holder.denunciaPicPost);
 
         //Geocoder para endereço
         Geocoder geo = new Geocoder(context);
@@ -282,7 +278,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.comentarPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.support.v4.app.FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+                FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
                 if (post.getComentarios() == null) {
                     ComentarioFragment cf = ComentarioFragment.newInstance(new ArrayList<Comentario>(0),
                             post.getDenuncia().getIdDenuncia(),
@@ -375,7 +371,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
 
     public void atualizarPostagem(int position, Denuncia den) {
         postagens.get(position).setDenuncia(den);
-        notifyItemChanged(position);
+        notifyItemChanged(position,den);
     }
 
     public void deletarPostagem(int position) {
@@ -482,36 +478,31 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             } else {
                 return period.getYears() + " ano atrás";
             }
-        }
-        if (period.getWeeks() != 0) {
+        } else if (period.getWeeks() != 0) {
             if (period.getWeeks() > 1) {
                 return period.getWeeks() + " semanas atrás";
             } else {
                 return period.getWeeks() + " semana atrás";
             }
-        }
-        if (period.getDays() != 0) {
+        } else if (period.getDays() != 0) {
             if (period.getDays() > 1) {
                 return period.getDays() + " dias atrás";
             } else {
                 return period.getDays() + " dia atrás";
             }
-        }
-        if (period.getHours() != 0) {
+        } else if (period.getHours() != 0) {
             if (period.getHours() > 1) {
                 return period.getHours() + " horas atrás";
             } else {
                 return period.getHours() + " hora atrás";
             }
-        }
-        if (period.getMinutes() != 0) {
+        } else if (period.getMinutes() != 0) {
             if (period.getMinutes() > 1) {
-                return period.getSeconds() + " minutos atrás";
+                return period.getMinutes() + " minutos atrás";
             } else {
-                return period.getSeconds() + " minuto atrás";
+                return period.getMinutes() + " minuto atrás";
             }
-        }
-        if (period.getSeconds() != 0) {
+        } else if (period.getSeconds() != 0) {
             if (period.getSeconds() > 1) {
                 return period.getSeconds() + " segundos atrás";
             } else {

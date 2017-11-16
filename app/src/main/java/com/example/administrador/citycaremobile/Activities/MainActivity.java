@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
-        toolbar.setElevation(8);
+        toolbar.setElevation(6);
         setSupportActionBar(toolbar);
 
         navDrawer = (NavigationView) findViewById(R.id.nav_drawer);
@@ -65,13 +65,12 @@ public class MainActivity extends AppCompatActivity {
         cidadeNavView = (TextView) headerView.findViewById(R.id.cidade_nav);
         estadoNavView = (TextView) headerView.findViewById(R.id.estado_nav);
         picProfileNav = (CircleImageView) headerView.findViewById(R.id.pic_profile_drawer);
-        picProfileNav.setElevation(11);
 
         //TAB LAYOUT
         tabLayout = (TabLayout) findViewById(R.id.mTabLayout);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_home_screen));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_maps_screen));
-        tabLayout.setElevation(4);
+        tabLayout.setElevation(6);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //VIEW PAGER

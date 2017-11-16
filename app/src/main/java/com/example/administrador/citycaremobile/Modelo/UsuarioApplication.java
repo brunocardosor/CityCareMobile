@@ -81,7 +81,7 @@ public class UsuarioApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;;
+        instance = this;
     }
 }
 
