@@ -138,9 +138,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         Marker marker = gMap.addMarker(new MarkerOptions()
                 .position(new LatLng(postagem.getDenuncia().getLatitude(), postagem.getDenuncia().getLongitude())));
         marker.setTitle(postagem.getDenuncia().getCategoriaDenuncia().getDescricaoCategoria());
-        if (postagem.getDenuncia().isStatusDenuncia() == 1) {
+        if (postagem.getDenuncia().getStatusDenuncia() == 1) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_care));
-        } else if (postagem.getDenuncia().isStatusDenuncia() == 0) {
+        } else if (postagem.getDenuncia().getStatusDenuncia() == 0) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_done));
         }
         hashMap.put(postagem.getDenuncia().getIdDenuncia(), marker);
