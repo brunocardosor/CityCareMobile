@@ -49,6 +49,7 @@ public class FeedFragment extends Fragment {
     private FloatingActionButton bt_denunciar;
     private RecyclerView recyclerView;
     private static FeedDenunciaAdapter feedAdapter;
+    private static FeedFragment instance;
     private SwipeRefreshLayout swipe;
 
     public static FeedDenunciaAdapter getFeedAdapter() {
@@ -57,6 +58,14 @@ public class FeedFragment extends Fragment {
 
     public static void setFeedAdapter(FeedDenunciaAdapter feedAdapter) {
         FeedFragment.feedAdapter = feedAdapter;
+    }
+
+    public FeedFragment(){
+        instance = this;
+    }
+
+    public static FeedFragment getInstance() {
+        return instance;
     }
 
     @Override

@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
+import com.example.administrador.citycaremobile.Modelo.Denuncia;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.Postagem;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
@@ -47,7 +50,6 @@ import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.POST;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -118,12 +120,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         gMap.setInfoWindowAdapter(infoWindowMapsAdapter);
-        gMap.setMinZoomPreference(13);
+        gMap.setMinZoomPreference(14);
         getMapsData();
     }
 
     public void addDenuncia(Postagem postagem){
         addMarker(postagem);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void atualizarDenuncia(Denuncia den){
+        Marker marker = hashMap.get(den.getIdDenuncia());
+        infoWindowMapsAdapter.atualizarPostagem(marker, den);
     }
 
     private void addMarker(Postagem postagem) {
@@ -180,6 +188,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         public void addPostagem(Marker marker, Postagem post){
             mapPostagem.put(marker,post);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public void atualizarPostagem(Marker marker, Denuncia denuncia){
+            Postagem post = mapPostagem.get(marker);
+            post.setDenuncia(denuncia);
+            mapPostagem.replace(marker, post);
         }
 
         public void removePostagem(Marker marker){

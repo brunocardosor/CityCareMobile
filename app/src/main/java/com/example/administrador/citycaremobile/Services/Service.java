@@ -106,4 +106,10 @@ public interface Service {
     @GET("denuncia/maps")
     @Headers("content-type:application/json")
     Call<ArrayList<Postagem>> mapsPostagens(@Header("X-Token") String token);
+
+    @POST("denuncia/alterar")
+    @Multipart
+    Call<Denuncia> atualizarDenuncia(@Header("X-Token") String token,
+                                     @Part MultipartBody.Part file,
+                                     @Part ("denuncia") Denuncia denuncia);
 }

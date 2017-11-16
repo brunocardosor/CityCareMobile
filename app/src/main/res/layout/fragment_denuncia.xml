@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrador.citycaremobile.Activities.DenunciaActivity">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_edt_denuncia"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:navigationIcon="@drawable/ic_action_arrow_back"
+            app:title="Denuncia"
+            app:titleTextColor="@android:color/white">
+
+            <Button
+                android:id="@+id/bt_publicar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:background="@android:color/transparent"
+                android:text="Publicar"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="15dp" />
+        </android.support.v7.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar_edt_denuncia">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp">
+
+                <RelativeLayout
+                    android:id="@+id/layout_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/pic_profile_denuncia"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/pic_profile_denuncia"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:text="Bruno Cardoso"
+                            android:textColor="@android:color/black"
+                            android:textSize="17dp"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/spinner_categoria"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/descricao_denuncia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_info"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/white"
+                    android:hint="Fale a respeito do problema..."
+                    android:textColor="@android:color/black" />
+
+                <ImageView
+                    android:id="@+id/foto_denuncia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/descricao_denuncia"
+                    android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"
+                    android:clickable="false"
+                    android:scaleType="centerCrop" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_drop_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/foto_denuncia"
+                    android:layout_alignTop="@id/foto_denuncia"
+                    android:layout_margin="10dp"
+                    android:clickable="false"
+                    android:src="@drawable/ic_action_close"
+                    android:visibility="gone"
+                    app:backgroundTint="@color/colorPrimaryDark" />
+            </RelativeLayout>
+        </ScrollView>
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/open_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_add_picture"
+                    android:tint="@color/colorAscend" />
+
+                <ImageButton
+                    android:id="@+id/open_placepicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_place"
+                    android:tint="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/localizacao_denuncia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_vertical"
+                    android:hint="Localização..."
+                    android:maxLines="1"
+                    android:textSize="15dp" />
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+</RelativeLayout>

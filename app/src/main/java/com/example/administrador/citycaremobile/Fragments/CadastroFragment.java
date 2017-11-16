@@ -480,7 +480,6 @@ public class CadastroFragment extends Fragment {
                 Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
                 CropImage.activity(imageUri)
                         .setAspectRatio(1, 1)
-                        .setRequestedSize(1024, 1024)
                         .setOutputCompressQuality(70)
                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                         .start(getContext(), this);

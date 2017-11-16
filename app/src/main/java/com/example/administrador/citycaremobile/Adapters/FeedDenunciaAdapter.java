@@ -1,6 +1,7 @@
 package com.example.administrador.citycaremobile.Adapters;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,7 +27,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import com.example.administrador.citycaremobile.Activities.AcessoActivity;
+import com.example.administrador.citycaremobile.Activities.DenunciaActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
+import com.example.administrador.citycaremobile.Fragments.AtualizarDenunciaFragment;
 import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
 import com.example.administrador.citycaremobile.Fragments.MapsFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
@@ -47,6 +50,7 @@ import org.joda.time.Period;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -62,9 +66,8 @@ import retrofit2.Response;
 public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapter.FeedDenunciaHolder> {
 
     private ArrayList<Postagem> postagens = new ArrayList<>();
+    private HashMap<Integer, Object> usuarios = new HashMap<>();
     private Context context;
-    private Cidadao cidadao;
-    private Empresa empresa;
     private Drawable ic_agilizaSelected, ic_agilizaUnselected;
 
     public FeedDenunciaAdapter(Context context) {
@@ -72,10 +75,6 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         this.context = context;
     }
 
-    public FeedDenunciaAdapter(Context context, ArrayList<Postagem> postagens){
-        this.postagens = postagens;
-        this.context = context;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -97,43 +96,57 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         //Serviço para pegar dados de quem criou a denúncia e Binda-los
         final Service service = CallService.createService(Service.class);
         Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getInstance().getToken(), post.getDenuncia().getLogin());
-        callUsuario.enqueue(new Callback<Object>() {
+        if (usuarios.get(position) == null) {
+            callUsuario.enqueue(new Callback<Object>() {
 
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                if (response.isSuccessful()) {
-                    Gson gson = new Gson();
-                    if (response.code() == 222) {
-                        Object o = response.body();
-                        String jsonCidadao = gson.toJson(o);
-                        cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
-                        holder.nameProfilePost.setText(cidadao.getNome());
-                        Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.profilePicPost);
-                    } else if (response.code() == 223) {
-                        Object o = response.body();
-                        String jsonEmpresa = gson.toJson(o);
-                        empresa = gson.fromJson(jsonEmpresa, Empresa.class);
-                        holder.nameProfilePost.setText(empresa.getNomeFantasia());
-                        Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.profilePicPost);
-                    } else {
-                        APIError error = ErrorUtils.parseError(response);
-                        Log.e("Erro de parse", error.getMessage());
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    if (response.isSuccessful()) {
+                        Gson gson = new Gson();
+                        if (response.code() == 222) {
+                            Object o = response.body();
+                            String jsonCidadao = gson.toJson(o);
+                            Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
+                            usuarios.put(position, cidadao);
+                            holder.nameProfilePost.setText(cidadao.getNome());
+                            Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.profilePicPost);
+                        } else if (response.code() == 223) {
+                            Object o = response.body();
+                            String jsonEmpresa = gson.toJson(o);
+                            Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
+                            holder.nameProfilePost.setText(empresa.getNomeFantasia());
+                            Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.profilePicPost);
+                            usuarios.put(position, empresa);
+                        } else {
+                            APIError error = ErrorUtils.parseError(response);
+                            Log.e("Erro de parse", error.getMessage());
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                Log.e("Falha", t.getLocalizedMessage());
-                Toasty.error(context, "erro", Toast.LENGTH_LONG);
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    Log.e("Falha", t.getLocalizedMessage());
+                    Toasty.error(context, "erro", Toast.LENGTH_LONG);
+                }
+            });
+
+        } else {
+            if (usuarios.get(position) instanceof Cidadao) {
+                holder.nameProfilePost.setText(((Cidadao) usuarios.get(position)).getNome());
+                Glide.with(context).load(((Cidadao) usuarios.get(position)).getDirFotoUsuario()).into(holder.profilePicPost);
+            } else {
+                holder.nameProfilePost.setText(((Empresa) usuarios.get(position)).getNomeFantasia());
+                Glide.with(context).load(((Empresa) usuarios.get(position)).getDirFotoUsuario()).into(holder.profilePicPost);
+
             }
-        });
+        }
 
         //Bindando dados da postagem
         holder.timePost.setText(getPeriodo(new DateTime(post.getDenuncia().getDataDenuncia())));
         holder.descricaoPost.setText(post.getDenuncia().getDescricaoDenuncia());
         holder.categoriaPost.setText(post.getDenuncia().getCategoriaDenuncia().toString());
-        Glide.with(context).load(post.getDenuncia().getDirFotoDenuncia()).into(holder.denunciaPicPost);
+        Glide.with(holder.denunciaPicPost).load(post.getDenuncia().getDirFotoDenuncia()).into(holder.denunciaPicPost);
 
         //Geocoder para endereço
         Geocoder geo = new Geocoder(context);
@@ -287,9 +300,14 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.editar_denuncia:
+                        Intent i = new Intent(context, DenunciaActivity.class);
+                        i.putExtra("denuncia", post.getDenuncia());
+                        i.putExtra("posicao", position);
+                        context.startActivity(i);
                         break;
                     case R.id.deletar_denuncia:
                         servicoDeletarDenuncia(position);
+                        break;
                 }
                 return true;
             }
@@ -325,7 +343,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             @Override
             public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
                 if (response.isSuccessful()) {
-                    if(response.body().isEmpty()){
+                    if (response.body().isEmpty()) {
                         holder.progressBar.setVisibility(View.GONE);
                         holder.semPostagens.setVisibility(View.VISIBLE);
                         return;
@@ -352,9 +370,8 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         });
     }
 
-    public void atualizarPostagem(int position, Postagem post) {
-        Postagem postAtualizado = postagens.get(position);
-        postAtualizado = post;
+    public void atualizarPostagem(int position, Denuncia den) {
+        postagens.get(position).setDenuncia(den);
         notifyItemChanged(position);
     }
 
@@ -462,25 +479,36 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             } else {
                 return period.getYears() + " ano atrás";
             }
-        } else if (period.getWeeks() != 0) {
+        }
+        if (period.getWeeks() != 0) {
             if (period.getWeeks() > 1) {
                 return period.getWeeks() + " semanas atrás";
             } else {
                 return period.getWeeks() + " semana atrás";
             }
-        } else if (period.getDays() != 0) {
+        }
+        if (period.getDays() != 0) {
             if (period.getDays() > 1) {
                 return period.getDays() + " dias atrás";
             } else {
                 return period.getDays() + " dia atrás";
             }
-        } else if (period.getHours() != 0) {
+        }
+        if (period.getHours() != 0) {
             if (period.getHours() > 1) {
                 return period.getHours() + " horas atrás";
             } else {
                 return period.getHours() + " hora atrás";
             }
-        } else if (period.getSeconds() != 0) {
+        }
+        if (period.getMinutes() != 0) {
+            if (period.getMinutes() > 1) {
+                return period.getSeconds() + " minutos atrás";
+            } else {
+                return period.getSeconds() + " minuto atrás";
+            }
+        }
+        if (period.getSeconds() != 0) {
             if (period.getSeconds() > 1) {
                 return period.getSeconds() + " segundos atrás";
             } else {
@@ -498,8 +526,8 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    deletarPostagem(position);
                     MapsFragment.getInstance().removeMarker(postagens.get(position));
+                    deletarPostagem(position);
                 } else {
                     APIError error = ErrorUtils.parseError(response);
                     Log.e("deletarDenuncia", error.getMessage());

@@ -20,16 +20,13 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
         if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao){
-            fm = getSupportFragmentManager();
-            ft = fm.beginTransaction();
-            ft.add(new EditProfileCidadaoFragment(),"CidadaoFrag");
+            ft.add(R.id.frame_edit_profile, new EditProfileCidadaoFragment());
             ft.commit();
         } else if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
-            fm = getSupportFragmentManager();
-            ft = fm.beginTransaction();
-            ft.add(new EditProfileCidadaoFragment(),"EmpresaFrag");
+            ft.add(R.id.frame_edit_profile, new EditProfileCidadaoFragment());
             ft.commit();
         }
     }

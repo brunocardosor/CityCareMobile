@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/edt_profile_cidadao"
     tools:context="com.example.administrador.citycaremobile.Fragments.CadastroFragment">
 
     <ScrollView
