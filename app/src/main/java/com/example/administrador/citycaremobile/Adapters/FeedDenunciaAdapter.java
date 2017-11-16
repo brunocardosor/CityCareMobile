@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -557,6 +558,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         ImageView denunciaPicPost;
         Button comentarPost, agilizarPost;
         ProgressBar progressBar;
+        ImageButton statusButton;
 
         public FeedDenunciaHolder(View view) {
             super(view);
@@ -574,7 +576,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             comentariosPostQnd = (TextView) view.findViewById(R.id.tv_comentarios_post_qtd);
             progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_denuncia);
             semPostagens = (TextView) view.findViewById(R.id.sem_postagens);
-
+            statusButton = (ImageButton) view.findViewById(R.id.status_button);
             toolbarPostMenu.inflateMenu(R.menu.menu_denuncia);
         }
     }

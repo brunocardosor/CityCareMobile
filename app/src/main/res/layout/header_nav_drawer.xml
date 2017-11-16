@@ -38,7 +38,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Juazeiro do Norte"
                 android:textColor="@android:color/white"
                 android:textSize="15dp"
                 android:id="@+id/cidade_nav"
@@ -55,7 +54,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ceará"
                 android:textColor="@android:color/white"
                 android:textSize="15dp"
                 android:id="@+id/estado_nav"

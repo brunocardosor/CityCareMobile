@@ -188,10 +188,15 @@ public class MainActivity extends AppCompatActivity {
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
+                cidadeNavView.setText(empresa.getCidade());
+                estadoNavView.setText(empresa.getEstado());
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
+                cidadeNavView.setText(cidadao.getCidade());
+                estadoNavView.setText(cidadao.getEstado());
+
             }
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
