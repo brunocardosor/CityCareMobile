@@ -112,4 +112,8 @@ public interface Service {
     Call<Denuncia> atualizarDenuncia(@Header("X-Token") String token,
                                      @Part MultipartBody.Part file,
                                      @Part ("denuncia") Denuncia denuncia);
+    @POST("denuncia/excluir")
+    @Headers("content-type:application/json")
+    Call<Void> recuperarSenha(@Header("X-Token") String token,
+                              @Body Login login);
 }

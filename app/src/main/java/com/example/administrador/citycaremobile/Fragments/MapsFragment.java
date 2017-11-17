@@ -97,24 +97,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if(UsuarioApplication.getInstance().getUsuario() != null){
             if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao){
                 try {
-                    List<Address> cidade = geo.getFromLocationName(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getCidade(),1);
-                    CameraUpdateFactory.newLatLng(new LatLng(cidade.get(0).getLatitude(), cidade.get(0).getLongitude()));
+                    Address cidade = geo.getFromLocationName(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getCidade(),1).get(0);
+                    gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.getLatitude(), cidade.getLongitude())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             } else {
                 try {
-                    List<Address> cidade = geo.getFromLocationName(((Empresa)UsuarioApplication.getInstance().getUsuario()).getCidade(), 1);
-                    CameraUpdateFactory.newLatLng(new LatLng(cidade.get(0).getLatitude(), cidade.get(0).getLongitude()));
+                    Address cidade = geo.getFromLocationName(((Empresa) UsuarioApplication.getInstance().getUsuario()).getCidade(),1).get(0);
+                    gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.getLatitude(), cidade.getLongitude())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         } else {
             try {
-                List<Address> cidade = geo.getFromLocationName("Juazeiro do Norte", 1);
-                gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.get(0).getLatitude(), cidade.get(0).getLongitude())));
+                Address cidade = geo.getFromLocationName("Juazeiro do Norte", 1).get(0);
+                gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.getLatitude(), cidade.getLongitude())));
             } catch (IOException e) {
                 e.printStackTrace();
             }

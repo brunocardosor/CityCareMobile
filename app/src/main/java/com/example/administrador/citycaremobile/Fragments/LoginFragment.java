@@ -2,7 +2,9 @@ package com.example.administrador.citycaremobile.Fragments;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -98,6 +100,7 @@ public class LoginFragment extends Fragment {
                                         try {
                                             UsuarioApplication.getInstance().setUsuario(cidadao);
                                             FeedFragment.getFeedAdapter().notifyDataSetChanged();
+                                            saveLogin(cidadao);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -110,7 +113,7 @@ public class LoginFragment extends Fragment {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         Service service = CallService.createService(Service.class);
-                                                        Toast.makeText(getContext(), "Falta Implementar", Toast.LENGTH_LONG).show();
+
                                                         //serviço de re-ativação da conta
                                                     }
                                                 }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -128,6 +131,8 @@ public class LoginFragment extends Fragment {
                                     if (empresa.getLoginEmpresa().isStatus_login()) {
                                         try {
                                             UsuarioApplication.getInstance().setUsuario(empresa);
+                                            FeedFragment.getFeedAdapter().notifyDataSetChanged();
+                                            saveLogin(empresa);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -176,7 +181,9 @@ public class LoginFragment extends Fragment {
         {
             @Override
             public void onClick(View v) {
-
+                FragmentManager fm = getFragmentManager();
+                RecuperarSenhaFragment rst = new RecuperarSenhaFragment();
+                rst.show(fm, "k");
             }
         });
         btMoveToCadastro = (Button) view.findViewById(R.id.bt_move_to_cadastro);
@@ -193,7 +200,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        loginButtonFacebook = (LoginButton) view.findViewById(R.id.bt_facebook_login);
+        /*loginButtonFacebook = (LoginButton) view.findViewById(R.id.bt_facebook_login);
         loginButtonFacebook.setOnClickListener(new View.OnClickListener()
 
         {
@@ -201,16 +208,45 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
 
             }
-        });
+        });*/
 
         edtLogin.requestFocus();
         return view;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        return true;
+    private void saveLogin(Object o){
+        Login login;
+        SharedPreferences.Editor editor = UsuarioApplication.getInstance().getPreferences().edit();
+        if(o instanceof Cidadao){
+            editor.putInt("idCidadao",((Cidadao) o).getIdCidadao());
+            editor.putString("nome", ((Cidadao) o).getNome());
+            editor.putString("sobrenome", ((Cidadao) o).getSobrenome());
+            editor.putString("sexo", ((Cidadao) o).getSexo());
+            editor.putString("cidade", ((Cidadao) o).getCidade());
+            editor.putString("estado", ((Cidadao) o).getEstado());
+            editor.putString("dirFoto", ((Cidadao) o).getDirFotoUsuario());
+            login = ((Cidadao) o).getLoginCidadao();
+            editor.putBoolean("administrator",login.isAdministrador());
+            editor.putBoolean("statusAcc", login.isStatus_login());
+            editor.putInt("idLogin", login.getIdLogin());
+            editor.putString("email", login.getEmail());
+            editor.putString("login", login.getLogin());
+            editor.apply();
+        } else if(o instanceof Empresa) {
+            editor.putInt("idEmpresa", ((Empresa) o).getIdEmpresa());
+            editor.putString("cnpj", ((Empresa) o).getCnpj());
+            editor.putString("razaoSocial", ((Empresa) o).getRazaoSocial());
+            editor.putString("nomeFantasia", ((Empresa) o).getNomeFantasia());
+            editor.putString("cidade", ((Empresa) o).getCidade());
+            editor.putString("estado", ((Empresa) o).getEstado());
+            editor.putString("dirFoto", ((Empresa) o).getDirFotoUsuario());
+            login = ((Empresa) o).getLoginEmpresa();
+            editor.putBoolean("administrator",login.isAdministrador());
+            editor.putBoolean("statusAcc", login.isStatus_login());
+            editor.putInt("idLogin", login.getIdLogin());
+            editor.putString("email", login.getEmail());
+            editor.putString("login", login.getLogin());
+            editor.apply();
+        }
     }
-
 }

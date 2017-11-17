@@ -31,7 +31,7 @@ public class Empresa implements Parcelable {
     public Empresa() {
     }
 
-    public Empresa(int idEmpresa, String cnpj, String razaoSocial, String nomeFantasia, String cidade, String estado, Login loginEmpresa, String dirFotoUsuario) {
+    public Empresa(int idEmpresa, String cnpj, String razaoSocial, String nomeFantasia, String cidade, String estado, String dirFotoUsuario, Login loginEmpresa) {
         this.idEmpresa = idEmpresa;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;

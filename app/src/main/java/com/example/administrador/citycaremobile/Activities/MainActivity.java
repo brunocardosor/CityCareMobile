@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.bt_logout){
                     ProgressDialog dialog = ProgressDialog.show(MainActivity.this,"","Saindo...");
                     UsuarioApplication.getInstance().logout();
+                    UsuarioApplication.getInstance().getPreferences().edit().clear().apply();
                     toolbar.setNavigationIcon(null);
                     btEntrar.setVisibility(View.VISIBLE);
                     btEntrar.setClickable(true);

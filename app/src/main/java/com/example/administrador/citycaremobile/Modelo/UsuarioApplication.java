@@ -1,6 +1,8 @@
 package com.example.administrador.citycaremobile.Modelo;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,12 +33,20 @@ public class UsuarioApplication extends Application {
     private Cidadao cidadao;
     private Empresa empresa;
     private static UsuarioApplication instance = null;
+    private SharedPreferences preferences;
+    private static String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoicm9vdCIsInNlbmhhIjoiY2FyZWNpdHkiLCJpcCI6IjE3Ny4xMjkuNjAuMTA1In0.4gAD8--mlchHdjsSs-0lQlQZkxI6UbqHM0TYmfv2xdA";
+
+    public SharedPreferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(SharedPreferences preferences) {
+        this.preferences = preferences;
+    }
 
     public static void setToken(String token) {
         UsuarioApplication.token = token;
     }
-
-    private static String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoicm9vdCIsInNlbmhhIjoiY2FyZWNpdHkiLCJpcCI6IjE3Ny4xMjkuNjAuMTA1In0.4gAD8--mlchHdjsSs-0lQlQZkxI6UbqHM0TYmfv2xdA";
 
     public Object getUsuario() {
         if (cidadao != null && empresa == null) {
@@ -65,8 +75,10 @@ public class UsuarioApplication extends Application {
     public void logout() {
         if (cidadao != null) {
             cidadao = null;
+            preferences.edit().clear();
         } else if (empresa != null) {
             empresa = null;
+            preferences.edit().clear();
         }
     }
 
@@ -78,10 +90,51 @@ public class UsuarioApplication extends Application {
         return token;
     }
 
+    private Object getUserPreferences(){
+        if(preferences.getInt("idCidadao",0) != 0){
+            return new Cidadao(preferences.getInt("idCidadao",0),
+                    preferences.getString("nome", ""),
+                    preferences.getString("sobrenome", ""),
+                    preferences.getString("cidade", ""),
+                    preferences.getString("estado", ""),
+                    preferences.getString("dirFoto",""),
+                    preferences.getString("sexo", ""),
+                    new Login(preferences.getInt("idLogin", 0),
+                            preferences.getString("email", ""),
+                            preferences.getString("login",""),
+                            null,
+                            preferences.getBoolean("administrator", false),
+                            preferences.getBoolean("statusAcc", false)));
+        } else if(preferences.getInt("idEmpresa",0) != 0){
+            return new Empresa(preferences.getInt("idEmpresa", 0),
+                    preferences.getString("cnpj",""),
+                    preferences.getString("razaoSocial", ""),
+                    preferences.getString("nomeFantasia", ""),
+                    preferences.getString("cidade", ""),
+                    preferences.getString("estado", ""),
+                    preferences.getString("dirFoto"," "),
+                    new Login(preferences.getInt("idLogin", 0),
+                    preferences.getString("email", ""),
+                    preferences.getString("login",""),
+                    null,
+                    preferences.getBoolean("administrator", false),
+                    preferences.getBoolean("statusAcc", false)));
+        } else {
+            return null;
+        }
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+        preferences = getApplicationContext().getSharedPreferences("acess", Context.MODE_PRIVATE);
+        if(getUserPreferences() instanceof Cidadao){
+            cidadao = (Cidadao) getUserPreferences();
+        } else if(getUserPreferences() instanceof Empresa){
+            empresa = (Empresa) getUserPreferences();
+        }
     }
 }
 

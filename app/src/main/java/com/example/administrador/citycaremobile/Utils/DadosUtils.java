@@ -145,9 +145,7 @@ public class DadosUtils extends SQLiteOpenHelper {
                 String[] strings = TextUtils.split(linha, ";");
                 db.execSQL(linha);
                 Log.e("Teste", "Erro : " + strings[0].trim());
-
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -32,6 +32,7 @@ import com.example.administrador.citycaremobile.Activities.DenunciaActivity;
 import com.example.administrador.citycaremobile.Exceptions.APIError;
 import com.example.administrador.citycaremobile.Fragments.ComentarioFragment;
 import com.example.administrador.citycaremobile.Fragments.MapsFragment;
+import com.example.administrador.citycaremobile.Fragments.SolucaoFragment;
 import com.example.administrador.citycaremobile.Modelo.Agiliza;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Comentario;
@@ -65,6 +66,8 @@ import retrofit2.Response;
 
 public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapter.FeedDenunciaHolder> {
 
+
+    private FragmentManager fm;
     private ArrayList<Postagem> postagens = new ArrayList<>();
     private HashMap<Integer, Object> usuarios = new HashMap<>();
     private Context context;
@@ -73,6 +76,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
     public FeedDenunciaAdapter(Context context) {
         this.postagens = new ArrayList<>();
         this.context = context;
+        fm = ((FragmentActivity) context).getSupportFragmentManager();
     }
 
 
@@ -93,7 +97,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.agilizarPost.setCompoundDrawablesWithIntrinsicBounds(ic_agilizaUnselected, null, null, null);
         holder.agilizarPost.setTextColor(context.getResources().getColor(R.color.com_facebook_button_background_color_focused_disabled));
 
-        if (post.getDenuncia().getStatusDenuncia() == 0){
+        if (post.getDenuncia().getStatusDenuncia() == 0) {
             holder.statusButton.setBackground(context.getResources().getDrawable(R.drawable.shape_button_radius_green));
             holder.statusButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_done));
         }
@@ -101,7 +105,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         //Serviço para pegar dados de quem criou a denúncia e Binda-los
         final Service service = CallService.createService(Service.class);
         Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getInstance().getToken(), post.getDenuncia().getLogin());
-        if (usuarios.get(position) == null) {
+        if (usuarios.get(post.getDenuncia().getIdDenuncia()) == null) {
             callUsuario.enqueue(new Callback<Object>() {
 
                 @Override
@@ -113,7 +117,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
                             String jsonCidadao = gson.toJson(o);
                             Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
                             usuarios.put(post.getDenuncia().getIdDenuncia(), cidadao);
-                            holder.nameProfilePost.setText(cidadao.getNome());
+                            holder.nameProfilePost.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
                             Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.profilePicPost);
                         } else if (response.code() == 223) {
                             Object o = response.body();
@@ -137,12 +141,13 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
             });
 
         } else {
-            if (usuarios.get(position) instanceof Cidadao) {
-                holder.nameProfilePost.setText(((Cidadao) usuarios.get(position)).getNome());
-                Glide.with(context).load(((Cidadao) usuarios.get(position)).getDirFotoUsuario()).into(holder.profilePicPost);
+            if (usuarios.get(post.getDenuncia().getIdDenuncia()) instanceof Cidadao) {
+                holder.nameProfilePost.setText(((Cidadao) usuarios.get(post.getDenuncia().getIdDenuncia())).getNome() + " "
+                        + ((Cidadao) usuarios.get(post.getDenuncia().getIdDenuncia())).getSobrenome());
+                Glide.with(context).load(((Cidadao) usuarios.get(post.getDenuncia().getIdDenuncia())).getDirFotoUsuario()).into(holder.profilePicPost);
             } else {
-                holder.nameProfilePost.setText(((Empresa) usuarios.get(position)).getNomeFantasia());
-                Glide.with(context).load(((Empresa) usuarios.get(position)).getDirFotoUsuario()).into(holder.profilePicPost);
+                holder.nameProfilePost.setText(((Empresa) usuarios.get(post.getDenuncia().getIdDenuncia())).getNomeFantasia());
+                Glide.with(context).load(((Empresa) usuarios.get(post.getDenuncia().getIdDenuncia())).getDirFotoUsuario()).into(holder.profilePicPost);
 
             }
         }
@@ -284,10 +289,18 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.statusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(post.getDenuncia().getStatusDenuncia() == 0){
-
-                } else {
-
+                if (post.getDenuncia().getStatusDenuncia() == 0) {
+                    SolucaoFragment.newInstance(post.getDenuncia().getSolucaoDenuncia()).show(fm,"s");
+                    } else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialog);
+                    dialog.setTitle("Denúncia ainda em processo de resolução")
+                            .setMessage("Infelizmente a denúncia está em fase de análise, aguarde que em breve sua prefeitura irá atualiza a situação da denúncia.")
+                            .setNegativeButton("Entendi", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
                 }
             }
         });
@@ -296,7 +309,6 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         holder.comentarPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
                 if (post.getComentarios() == null) {
                     ComentarioFragment cf = ComentarioFragment.newInstance(new ArrayList<Comentario>(0),
                             post.getDenuncia().getIdDenuncia(),
@@ -389,7 +401,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
 
     public void atualizarPostagem(int position, Denuncia den) {
         postagens.get(position).setDenuncia(den);
-        notifyItemChanged(position,den);
+        notifyItemChanged(position, den);
     }
 
     public void deletarPostagem(int position) {
@@ -488,7 +500,7 @@ public class FeedDenunciaAdapter extends RecyclerView.Adapter<FeedDenunciaAdapte
         return false;
     }
 
-    private String getPeriodo(DateTime inicio) {
+    public String getPeriodo(DateTime inicio) {
         Period period = new Period(inicio, DateTime.now());
         if (period.getYears() != 0) {
             if (period.getYears() > 1) {

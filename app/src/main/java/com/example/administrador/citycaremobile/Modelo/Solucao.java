@@ -21,7 +21,7 @@ public class Solucao implements Parcelable{
     private String dirFotoSolucao;
     @SerializedName("data_solucao")
     private String dataSolucao;
-    @SerializedName("fk_solucao_login")
+    @SerializedName("fk_login_solucao")
     private Login loginSolucao;
 
     protected Solucao(Parcel in) {

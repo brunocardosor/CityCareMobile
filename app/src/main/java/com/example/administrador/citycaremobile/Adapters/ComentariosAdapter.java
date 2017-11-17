@@ -68,7 +68,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         if (comentarios.isEmpty()) {
             cf.viewSemComentarios(View.VISIBLE, true);
         } else {
-            Comentario comentario = comentarios.get(position);
+            final Comentario comentario = comentarios.get(position);
             holder.descricaoComentario.setText(comentario.getDescricao());
             Service service = CallService.createService(Service.class);
             Call<Object> callUsuario = service.getUsuario(UsuarioApplication.getToken(), comentario.getLogin());
@@ -82,14 +82,14 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
                                 Object o = response.body();
                                 String jsonCidadao = gson.toJson(o);
                                 Cidadao cidadao = gson.fromJson(jsonCidadao, Cidadao.class);
-                                usuarios.put(position, cidadao);
+                                usuarios.put(comentario.getIdComentario(), cidadao);
                                 Glide.with(context).load(cidadao.getDirFotoUsuario()).into(holder.picProfileComentario);
                                 holder.tvPorfileComentario.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
                             } else if (response.code() == 223) {
                                 Object o = response.body();
                                 String jsonEmpresa = gson.toJson(o);
                                 Empresa empresa = gson.fromJson(jsonEmpresa, Empresa.class);
-                                usuarios.put(position, empresa);
+                                usuarios.put(comentario.getIdComentario(), empresa);
                                 Glide.with(context).load(empresa.getDirFotoUsuario()).into(holder.picProfileComentario);
                                 holder.tvPorfileComentario.setText(empresa.getNomeFantasia());
                             }
@@ -111,11 +111,11 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
 
             } else {
                 if (usuarios.get(position) instanceof Cidadao) {
-                    Glide.with(context).load(((Cidadao) usuarios.get(position)).getDirFotoUsuario()).into(holder.picProfileComentario);
-                    holder.tvPorfileComentario.setText(((Cidadao) usuarios.get(position)).getNome() + " " + ((Cidadao) usuarios.get(position)).getSobrenome());
+                    Glide.with(context).load(((Cidadao) usuarios.get(comentario.getIdComentario())).getDirFotoUsuario()).into(holder.picProfileComentario);
+                    holder.tvPorfileComentario.setText(((Cidadao) usuarios.get(comentario.getIdComentario())).getNome() + " " + ((Cidadao) usuarios.get(position)).getSobrenome());
                 } else {
-                    Glide.with(context).load(((Empresa) usuarios.get(position)).getDirFotoUsuario()).into(holder.picProfileComentario);
-                    holder.tvPorfileComentario.setText(((Empresa) usuarios.get(position)).getNomeFantasia());
+                    Glide.with(context).load(((Empresa) usuarios.get(comentario.getIdComentario())).getDirFotoUsuario()).into(holder.picProfileComentario);
+                    holder.tvPorfileComentario.setText(((Empresa) usuarios.get(comentario.getIdComentario())).getNomeFantasia());
                 }
             }
             if (UsuarioApplication.getInstance().getUsuario() != null) {
@@ -170,7 +170,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
-                                        removerComentario(position);
+                                        removerComentario(position, comentario.getIdComentario());
                                         if (comentarios.isEmpty()) {
                                             cf.viewSemComentarios(View.VISIBLE, true);
                                         }
@@ -222,9 +222,9 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         cf.viewSemComentarios(View.INVISIBLE, false);
     }
 
-    public void removerComentario(int position) {
+    public void removerComentario(int position, int idComentario) {
         comentarios.remove(position);
-        usuarios.remove(position);
+        usuarios.remove(idComentario);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
         cf.atualizarPostagem();
