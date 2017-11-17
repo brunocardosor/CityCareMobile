@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             toolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.ic_drawable_menu);
-            if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
+            if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
                 cidadeNavView.setText(empresa.getCidade());
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
-                nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
+                nomeNavView.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
                 cidadeNavView.setText(cidadao.getCidade());
                 estadoNavView.setText(cidadao.getEstado());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
         menuView.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.edit_profile){
-                    Intent i = new Intent(MainActivity.this,EditProfileActivity.class);
+                if (item.getItemId() == R.id.edit_profile) {
+                    Intent i = new Intent(MainActivity.this, EditProfileActivity.class);
                     startActivity(i);
                     return true;
                 }
@@ -143,8 +143,19 @@ public class MainActivity extends AppCompatActivity {
         menuView.getItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.bt_logout){
-                    ProgressDialog dialog = ProgressDialog.show(MainActivity.this,"","Saindo...");
+                if (item.getItemId() == R.id.bt_nova_denuncia) {
+                    Intent i = new Intent(MainActivity.this, DenunciaActivity.class);
+                    startActivity(i);
+                }
+                return false;
+            }
+        });
+
+        menuView.getItem(2).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.bt_logout) {
+                    ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "", "Saindo...");
                     UsuarioApplication.getInstance().logout();
                     UsuarioApplication.getInstance().getPreferences().edit().clear().apply();
                     toolbar.setNavigationIcon(null);
@@ -172,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(UsuarioApplication.getInstance().getUsuario() == null){
+        if (UsuarioApplication.getInstance().getUsuario() == null) {
             btEntrar.setVisibility(View.VISIBLE);
             btEntrar.setClickable(true);
             navDrawer.setClickable(false);
@@ -185,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             btEntrar.setVisibility(View.GONE);
             btEntrar.setClickable(false);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
-            if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
+            if (UsuarioApplication.getInstance().getUsuario() instanceof Empresa) {
                 Empresa empresa = (Empresa) UsuarioApplication.getInstance().getUsuario();
                 nomeNavView.setText(empresa.getNomeFantasia());
                 Glide.with(this).load(empresa.getDirFotoUsuario()).into(picProfileNav);
@@ -193,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 estadoNavView.setText(empresa.getEstado());
             } else {
                 Cidadao cidadao = (Cidadao) UsuarioApplication.getInstance().getUsuario();
-                nomeNavView.setText(cidadao.getNome() + " " +cidadao.getSobrenome());
+                nomeNavView.setText(cidadao.getNome() + " " + cidadao.getSobrenome());
                 Glide.with(this).load(cidadao.getDirFotoUsuario()).into(picProfileNav);
                 cidadeNavView.setText(cidadao.getCidade());
                 estadoNavView.setText(cidadao.getEstado());

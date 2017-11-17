@@ -9,6 +9,19 @@
         app:title="Recuperar senha"
         app:titleTextColor="@android:color/black"
         android:id="@+id/toolbar_title"/>
+    <TextView
+        android:id="@+id/view_sucesso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sucesso"
+        android:drawableRight="@drawable/ic_simple_done"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:drawablePadding="10dp"
+        android:layout_centerInParent="true"
+        android:drawableTint="@android:color/holo_green_light"
+        android:textColor="@android:color/holo_green_light"
+        android:visibility="gone"/>
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +44,6 @@
     android:padding="13dp">
     <Button
         android:id="@+id/button_recuperar_senha"
-
         android:layout_marginTop="5dp"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
@@ -44,7 +56,7 @@
         android:textSize="15dp"/>
     <Button
         android:id="@+id/button_cancelar"
-        android:layout_margin="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@id/button_recuperar_senha"
         android:layout_width="wrap_content"

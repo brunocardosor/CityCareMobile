@@ -67,7 +67,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private InfoWindowMapsAdapter infoWindowMapsAdapter;
 
     public MapsFragment() {
-        if(instance == null){
+        if (instance == null) {
             instance = this;
             hashMap = new HashMap<>();
         } else {
@@ -92,19 +92,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        infoWindowMapsAdapter = new InfoWindowMapsAdapter(getActivity().getLayoutInflater(),postagemMap);
+        gMap.clear();
+        infoWindowMapsAdapter = new InfoWindowMapsAdapter(getActivity().getLayoutInflater(), postagemMap);
         Geocoder geo = new Geocoder(getContext());
-        if(UsuarioApplication.getInstance().getUsuario() != null){
-            if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao){
+        if (UsuarioApplication.getInstance().getUsuario() != null) {
+            if (UsuarioApplication.getInstance().getUsuario() instanceof Cidadao) {
                 try {
-                    Address cidade = geo.getFromLocationName(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getCidade(),1).get(0);
+                    Address cidade = geo.getFromLocationName(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getCidade(), 1).get(0);
                     gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.getLatitude(), cidade.getLongitude())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    Address cidade = geo.getFromLocationName(((Empresa) UsuarioApplication.getInstance().getUsuario()).getCidade(),1).get(0);
+                    Address cidade = geo.getFromLocationName(((Empresa) UsuarioApplication.getInstance().getUsuario()).getCidade(), 1).get(0);
                     gMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(cidade.getLatitude(), cidade.getLongitude())));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -123,12 +124,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         getMapsData();
     }
 
-    public void addDenuncia(Postagem postagem){
+    public void addDenuncia(Postagem postagem) {
         addMarker(postagem);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void atualizarDenuncia(Denuncia den){
+    public void atualizarDenuncia(Denuncia den) {
         Marker marker = hashMap.get(den.getIdDenuncia());
         infoWindowMapsAdapter.atualizarPostagem(marker, den);
     }
@@ -142,8 +143,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } else if (postagem.getDenuncia().getStatusDenuncia() == 0) {
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_done));
         }
-        hashMap.put(postagem.getDenuncia().getIdDenuncia(), marker);
-        infoWindowMapsAdapter.addPostagem(marker,postagem);
+        if (postagem.getDenuncia() != null) {
+            hashMap.put(postagem.getDenuncia().getIdDenuncia(), marker);
+        }
+        infoWindowMapsAdapter.addPostagem(marker, postagem);
     }
 
     public void removeMarker(Postagem postagem) {
@@ -161,7 +164,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         private TextView tvCategoria;
         private TextView tvAgilizas;
         private TextView tvComentarios;
-        private static Map<Marker,Postagem> mapPostagem;
+        private static Map<Marker, Postagem> mapPostagem;
 
         InfoWindowMapsAdapter(LayoutInflater inflater, Map<Marker, Postagem> postagemMap) {
             view = inflater.inflate(R.layout.info_window_maps, null);
@@ -185,55 +188,56 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             return view;
         }
 
-        public void addPostagem(Marker marker, Postagem post){
-            mapPostagem.put(marker,post);
+        public void addPostagem(Marker marker, Postagem post) {
+            mapPostagem.put(marker, post);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
-        public void atualizarPostagem(Marker marker, Denuncia denuncia){
+        public void atualizarPostagem(Marker marker, Denuncia denuncia) {
             Postagem post = mapPostagem.get(marker);
             post.setDenuncia(denuncia);
             mapPostagem.replace(marker, post);
         }
 
-        public void removePostagem(Marker marker){
+        public void removePostagem(Marker marker) {
             mapPostagem.remove(marker);
         }
     }
-        private void getMapsData() {
-            Service service = CallService.createService(Service.class);
-            Call<ArrayList<Postagem>> getMapsData = service.mapsPostagens(UsuarioApplication.getToken());
-            getMapsData.enqueue(new Callback<ArrayList<Postagem>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
-                    if (response.isSuccessful()) {
-                        gMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
-                        setData(response.body());
-                        for (Postagem p : postagens) {
-                            addMarker(p);
-                        }
-                        return;
-                    } else if (response.code() == 401) {
-                        new SystemUtils().authenticateToken(getContext());
-                        getMapsData();
-                    } else {
-                        APIError error = ErrorUtils.parseError(response);
-                        Log.e("getToken", error.getMessage());
-                        Toasty.error(getContext(), "Erro na conexão", Toast.LENGTH_LONG).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
-                    Log.e("getToken", t.getMessage());
+    private void getMapsData() {
+        Service service = CallService.createService(Service.class);
+        Call<ArrayList<Postagem>> getMapsData = service.mapsPostagens(UsuarioApplication.getToken());
+        getMapsData.enqueue(new Callback<ArrayList<Postagem>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
+                if (response.isSuccessful()) {
+                    gMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+                    setData(response.body());
+                    for (Postagem p : postagens) {
+                        addMarker(p);
+                    }
+                    return;
+                } else if (response.code() == 401) {
+                    new SystemUtils().authenticateToken(getContext());
+                    getMapsData();
+                } else {
+                    APIError error = ErrorUtils.parseError(response);
+                    Log.e("getToken", error.getMessage());
                     Toasty.error(getContext(), "Erro na conexão", Toast.LENGTH_LONG).show();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
+                Log.e("getToken", t.getMessage());
+                Toasty.error(getContext(), "Erro na conexão", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        mapFragment.getMapAsync(this);
+        getMapsData();
     }
 }

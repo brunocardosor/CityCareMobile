@@ -317,7 +317,6 @@ public class CriarDenunciaFragment extends Fragment {
                 imgDenuncia = CropImage.getPickImageResultUri(getContext(), data);
                 CropImage.activity(imgDenuncia)
                         .setOutputCompressQuality(70)
-                        .setMaxCropResultSize(720, 720)
                         .setAspectRatio(1, 1)
                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                         .start(getContext(), this);

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.administrador.citycaremobile.Fragments.EditProfileCidadaoFragment;
+import com.example.administrador.citycaremobile.Fragments.ProfileFragment;
 import com.example.administrador.citycaremobile.Modelo.Cidadao;
 import com.example.administrador.citycaremobile.Modelo.Empresa;
 import com.example.administrador.citycaremobile.Modelo.UsuarioApplication;
@@ -23,10 +24,10 @@ public class EditProfileActivity extends AppCompatActivity {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
         if(UsuarioApplication.getInstance().getUsuario() instanceof Cidadao){
-            ft.add(R.id.frame_edit_profile, new EditProfileCidadaoFragment());
+            ft.add(R.id.frame_edit_profile, ProfileFragment.newInstance(((Cidadao) UsuarioApplication.getInstance().getUsuario()).getLoginCidadao().getIdLogin()));
             ft.commit();
-        } else if(UsuarioApplication.getInstance().getUsuario() instanceof Empresa){
-            ft.add(R.id.frame_edit_profile, new EditProfileCidadaoFragment());
+        } else {
+            ft.add(R.id.frame_edit_profile, ProfileFragment.newInstance(((Empresa) UsuarioApplication.getInstance().getUsuario()).getLoginEmpresa().getIdLogin()));
             ft.commit();
         }
     }

@@ -120,15 +120,18 @@ public class FeedFragment extends Fragment {
         listPosts.enqueue(new Callback<ArrayList<Postagem>>() {
             @Override
             public void onResponse(Call<ArrayList<Postagem>> call, Response<ArrayList<Postagem>> response) {
-                feedAdapter.setContext(getContext());
-                feedAdapter.inserirData(response.body());
-                swipe.setRefreshing(false);
+                if(response.isSuccessful()){
+                    feedAdapter.setContext(getContext());
+                    feedAdapter.inserirData(response.body());
+                    swipe.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Postagem>> call, Throwable t) {
                 Log.e("PostRequest", t.getLocalizedMessage());
                 Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                swipe.setRefreshing(false);
             }
         });
 
